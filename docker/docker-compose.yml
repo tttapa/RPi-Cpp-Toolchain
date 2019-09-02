@@ -1,0 +1,15 @@
+version: '3.4'
+services:
+  build:
+    image: eagle/raspberry/develop:v1
+    build:
+      context: .
+      dockerfile: Dockerfile
+      # network: host
+      target: build
+    privileged: false
+    cap_add: 
+      - SYS_PTRACE
+    security_opt:
+      - seccomp:unconfined
+    container_name: eagle-raspberry
