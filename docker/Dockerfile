@@ -49,6 +49,7 @@ FROM ct-ng as build
 WORKDIR /home/develop
 RUN mkdir RPi3-sysroot
 ENV RPI3_SYSROOT=/home/develop/RPi3-sysroot
+# ENV RPI3_SYSROOT=/home/develop/RPi3-staging
 # RUN cp -r $TOOLCHAIN_PATH/aarch64-rpi3-linux-gnu/sysroot/* ~/RPi3-sysroot/
 # RUN chmod -R u+w /home/develop/RPi3-sysroot
 # RUN mkdir -p ${RPI3_SYSROOT}/usr/include
@@ -164,7 +165,8 @@ RUN cd && rm -rf zlib-1.2.11/build
 WORKDIR /home/develop
 RUN mkdir zlib-1.2.11/build-arm
 WORKDIR /home/develop/zlib-1.2.11/build-arm
-RUN CFLAGS="-O2" \
+RUN CFLAGS="${STAGING_INCLUDE_FLAGS}" \
+    LDFLAGS="${STAGING_LD_FLAGS}" \
     CC="aarch64-rpi3-linux-gnu-gcc" \
     LD="aarch64-rpi3-linux-gnu-ld" \
     ../configure \
@@ -247,7 +249,8 @@ ENV PKG_CONFIG_PATH=/home/develop/RPi3-sysroot/usr/lib/pkgconfig
 
 # Python ARM
 WORKDIR /home/develop/Python-3.7.4
-RUN echo "ac_cv_file__dev_ptmx=no\nac_cv_file__dev_ptc=no\n" > config.site
+# COPY setup.py setup.py
+RUN echo "ac_cv_file__dev_ptmx=no\nac_cv_file__dev_ptc=no" > config.site
 RUN cat config.site
 RUN mkdir build-arm
 WORKDIR /home/develop/Python-3.7.4/build-arm
@@ -261,12 +264,13 @@ RUN CONFIG_SITE=../config.site ../configure \
         CC="aarch64-rpi3-linux-gnu-gcc" \
         CXX="aarch64-rpi3-linux-gnu-g++" \
         LD="aarch64-rpi3-linux-gnu-ld" \
-        LDFLAGS="${STAGING_LD_FLAGS}" \
-        CFLAGS="${STAGING_INCLUDE_FLAGS}" \
-        CXXFLAGS="${STAGING_INCLUDE_FLAGS}" && \
+        LDFLAGS="${STAGING_LD_FLAGS} --sysroot=${RPI3_SYSROOT}" \
+        CFLAGS="${STAGING_INCLUDE_FLAGS} --sysroot=${RPI3_SYSROOT}" \
+        CXXFLAGS="${STAGING_INCLUDE_FLAGS} --sysroot=${RPI3_SYSROOT}" && \
+    cat config.log && \
     make -j$(($(nproc) * 2)) && \
     make install && \
-    cd && rm -rf Python-3.7.4/build-arm || cat config.log
+    cd && rm -rf Python-3.7.4/build-arm 
 WORKDIR /home/develop
 USER root
 RUN rm -rf Python-3.7.4
@@ -286,7 +290,6 @@ RUN wget -O opencv-4.1.1.tar.gz https://codeload.github.com/opencv/opencv/tar.gz
     tar xzf opencv-4.1.1.tar.gz && rm opencv-4.1.1.tar.gz
 
 # Build OpenCV ARM
-ENV PKG_CONFIG_LIBDIR=/home/develop/RPi3-sysroot/usr/lib
 RUN mkdir /home/develop/opencv-4.1.1/build-arm
 WORKDIR /home/develop/opencv-4.1.1/build-arm
 RUN cmake \
@@ -364,3 +367,5 @@ WORKDIR /home/develop
 RUN cp -r $TOOLCHAIN_PATH/aarch64-rpi3-linux-gnu/debug-root/* ~/RPi3-sysroot/
 RUN tar cf x-tools.tar x-tools
 RUN tar cf RPi3-sysroot.tar RPi3-sysroot
+ENV PKG_CONFIG_PATH=/home/develop/RPi3-sysroot/usr/lib/pkgconfig
+RUN pkg-config --libs zlib
