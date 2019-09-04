@@ -49,23 +49,16 @@ FROM ct-ng as build
 WORKDIR /home/develop
 RUN mkdir RPi3-sysroot
 ENV RPI3_SYSROOT=/home/develop/RPi3-sysroot
-# ENV RPI3_SYSROOT=/home/develop/RPi3-staging
-# RUN cp -r $TOOLCHAIN_PATH/aarch64-rpi3-linux-gnu/sysroot/* ~/RPi3-sysroot/
-# RUN chmod -R u+w /home/develop/RPi3-sysroot
+ENV RPI3_STAGING=/home/develop/RPi3-staging
+RUN cp -r $TOOLCHAIN_PATH/aarch64-rpi3-linux-gnu/sysroot/* ~/RPi3-sysroot/
+RUN chmod -R u+w /home/develop/RPi3-sysroot
 # RUN mkdir -p ${RPI3_SYSROOT}/usr/include
-RUN mkdir -p ${RPI3_SYSROOT}/usr/lib
-RUN ln -s lib ${RPI3_SYSROOT}/usr/lib64
+# RUN mkdir -p ${RPI3_SYSROOT}/usr/lib
+# RUN ln -s lib ${RPI3_SYSROOT}/usr/lib64
 # RUN mkdir -p ${RPI3_SYSROOT}/lib
+
 # Use the pkg-config folder inside of the root filesystem
 ENV PKG_CONFIG_PATH=/home/develop/RPi3-sysroot/usr/lib/pkgconfig
-ENV STAGING_LD_FLAGS="-L${RPI3_SYSROOT}/lib -L${RPI3_SYSROOT}/usr/lib \
--Wl,-rpath-link,${RPI3_SYSROOT}/lib,-rpath-link,${RPI3_SYSROOT}/usr/lib"
-ENV STAGING_INCLUDE_FLAGS="-I${RPI3_SYSROOT}/usr/include"
-# ENV PKG_CONFIG_LIBDIR=/home/develop/RPi3-sysroot/usr/lib # TODO
-
-RUN touch empty.c
-RUN aarch64-rpi3-linux-gnu-gcc ${STAGING_LD_FLAGS} ${STAGING_INCLUDE_FLAGS} -c empty.c
-
 
 # Download & Build FFMPEG
 WORKDIR /home/develop
@@ -77,6 +70,7 @@ RUN ../configure \
         --arch="aarch64" \
         --target-os="linux" \
         --prefix="$RPI3_SYSROOT/usr" \
+        --sysroot="${RPI3_SYSROOT}" \
         --enable-cross-compile \
         --cross-prefix="aarch64-rpi3-linux-gnu-" \
         --enable-gpl \
@@ -85,6 +79,7 @@ RUN ../configure \
         --disable-doc && \
     make -j$(($(nproc) * 2)) && \
     make install && \
+    make install DESTDIR="${RPI3_STAGING}/usr" && \
     cd && rm -rf ffmpeg-4.2
 
 # Install zbar
@@ -107,11 +102,12 @@ RUN ../configure \
         --host="aarch64-linux-gnu" \
         --prefix="$RPI3_SYSROOT/usr" \
         CFLAGS="-O2" \
-        CC="aarch64-rpi3-linux-gnu-gcc" \
-        CXX="aarch64-rpi3-linux-gnu-g++" \
-        LD="aarch64-rpi3-linux-gnu-ld" && \
+        CC="aarch64-rpi3-linux-gnu-gcc --sysroot=${RPI3_SYSROOT}" \
+        CXX="aarch64-rpi3-linux-gnu-g++ --sysroot=${RPI3_SYSROOT}" \
+        LD="aarch64-rpi3-linux-gnu-ld --sysroot=${RPI3_SYSROOT}" && \
     make -j$(($(nproc) * 2)) && \
     make install && \
+    make install DESTDIR="${RPI3_STAGING}/usr" && \
     cd && rm -rf /home/develop/zbar-0.10
 
 # FFI Download
@@ -139,11 +135,13 @@ RUN ../configure \
         --host="aarch64-linux-gnu" \
         --prefix="$RPI3_SYSROOT/usr" \
         CFLAGS="-O2" CXXFLAGS="-O2" \
+        --with-sysroot="${RPI3_SYSROOT}" \
         CC="aarch64-rpi3-linux-gnu-gcc" \
         CXX="aarch64-rpi3-linux-gnu-g++" \
         LD="aarch64-rpi3-linux-gnu-ld" && \
     make -j$(($(nproc) * 2)) && \
     make install && \
+    make install DESTDIR="${RPI3_STAGING}/usr" && \
     cd && rm -rf libffi-3.2.1
 
 # Zlib Download
@@ -167,12 +165,13 @@ RUN mkdir zlib-1.2.11/build-arm
 WORKDIR /home/develop/zlib-1.2.11/build-arm
 RUN CFLAGS="${STAGING_INCLUDE_FLAGS}" \
     LDFLAGS="${STAGING_LD_FLAGS}" \
-    CC="aarch64-rpi3-linux-gnu-gcc" \
-    LD="aarch64-rpi3-linux-gnu-ld" \
+    CC="aarch64-rpi3-linux-gnu-gcc --sysroot=${RPI3_SYSROOT}" \
+    LD="aarch64-rpi3-linux-gnu-ld --sysroot=${RPI3_SYSROOT}" \
     ../configure \
         --prefix="$RPI3_SYSROOT/usr" && \
     make -j$(($(nproc) * 2)) && \
     make install && \
+    make install DESTDIR="${RPI3_STAGING}/usr" && \
     cd && rm -rf zlib-1.2.11
 
 # Download OpenSSL
@@ -185,7 +184,7 @@ WORKDIR /home/develop/openssl-OpenSSL_1_1_1c
 RUN ./config && \
     make -j$(($(nproc) * 2))
 USER root
-RUN make install && \
+RUN make install_sw && \
     make distclean && \
     cd && rm -rf openssl-OpenSSL_1_1_1c
 USER develop
@@ -194,11 +193,13 @@ USER develop
 WORKDIR /home/develop
 RUN tar xzf OpenSSL_1_1_1c.tar.gz && rm OpenSSL_1_1_1c.tar.gz
 WORKDIR /home/develop/openssl-OpenSSL_1_1_1c
-RUN ./Configure linux-aarch64 \
+RUN ./Configure \
         --prefix="$RPI3_SYSROOT/usr" \
-        --cross-compile-prefix="aarch64-rpi3-linux-gnu-" && \
+        --cross-compile-prefix="aarch64-rpi3-linux-gnu-" \
+        linux-aarch64 && \
     make -j$(($(nproc) * 2)) && \
-    make install && \
+    make install_sw && \
+    make install_sw DESTDIR="${RPI3_STAGING}/usr" && \
     cd && rm -rf openssl-OpenSSL_1_1_1c
 
 # Python Download
@@ -269,7 +270,8 @@ RUN CONFIG_SITE=../config.site ../configure \
         CXXFLAGS="${STAGING_INCLUDE_FLAGS} --sysroot=${RPI3_SYSROOT}" && \
     cat config.log && \
     make -j$(($(nproc) * 2)) && \
-    make install && \
+    make altinstall && \
+    make altinstall DESTDIR="${RPI3_STAGING}/usr" && \
     cd && rm -rf Python-3.7.4/build-arm 
 WORKDIR /home/develop
 USER root
@@ -281,8 +283,8 @@ USER develop
 #     tar xzf numpy-1.16.5.tar.gz && rm numpy-1.16.5.tar.gz
 # # RUN touch numpy-1.16.5/numpy/core/include/numpy/_numpyconfig.h
 # WORKDIR /home/develop/numpy-1.16.5
-# RUN python3 setup.py build -j $(($(nproc) * 2)) install --prefix $HOME/.local
-RUN python3 -m pip install --user numpy
+# RUN python3.7 setup.py build -j $(($(nproc) * 2)) install --prefix $HOME/.local
+RUN python3.7 -m pip install --user numpy
 
 # Download OpenCV
 WORKDIR /home/develop
@@ -292,29 +294,36 @@ RUN wget -O opencv-4.1.1.tar.gz https://codeload.github.com/opencv/opencv/tar.gz
 # Build OpenCV ARM
 RUN mkdir /home/develop/opencv-4.1.1/build-arm
 WORKDIR /home/develop/opencv-4.1.1/build-arm
+#        -DCMAKE_C_FLAGS="-I${RPI3_STAGING}/usr/include" \
+#        -DCMAKE_CXX_FLAGS="-I${RPI3_STAGING}/usr/include" \
+#        -DCMAKE_EXE_LINKER_FLAGS="-L${RPI3_STAGING}/usr/lib" \
+#        -DCMAKE_MODULE_LINKER_FLAGS="-L${RPI3_STAGING}/usr/lib" \
+#        -DCMAKE_SHARED_LINKER_FLAGS="-L${RPI3_STAGING}/usr/lib" \
+ENV PKG_CONFIG_LIBDIR=/home/develop/RPi3-sysroot/usr/lib
 RUN cmake \
         -DCMAKE_TOOLCHAIN_FILE=../opencv-4.1.1/platforms/linux/arm.toolchain.cmake \
-        -DCMAKE_EXE_LINKER_FLAGS="${STAGING_LD_FLAGS}" \
-        -DCMAKE_SHARED_LINKER_FLAGS="${STAGING_LD_FLAGS}" \
-        -DCMAKE_C_FLAGS="${STAGING_INCLUDE_FLAGS}" \
-        -DCMAKE_CXX_FLAGS="${STAGING_INCLUDE_FLAGS}" \
         -DGNU_MACHINE="aarch64-rpi3-linux-gnu" \
         -DCMAKE_SYSTEM_PROCESSOR=aarch64 \
-        -DWITH_V4L=ON -DWITH_LIBV4L=ON \
+        -DCMAKE_SYSROOT="${RPI3_SYSROOT}" \
         -DWITH_JPEG=ON -DBUILD_JPEG=ON \
         -DWITH_PNG=ON -DBUILD_PNG=ON \
         -DWITH_TBB=ON -DBUILD_TBB=ON \
         -DWITH_FFMPEG=ON \
+        -DWITH_V4L=ON -DWITH_LIBV4L=ON \
         -DCMAKE_BUILD_TYPE=RelWithDebInfo \
-        -DCMAKE_INSTALL_PREFIX=$RPI3_SYSROOT/usr \
+        -DCMAKE_INSTALL_PREFIX="${RPI3_SYSROOT}/usr" \
         -DOPENCV_GENERATE_PKGCONFIG=ON \
-        -DPYTHON3_INCLUDE_PATH=$RPI3_SYSROOT/usr/include/python3.7m \
-        -DPYTHON3_LIBRARIES=$RPI3_SYSROOT/usr/lib/libpython3.7m.so \
-        -DPYTHON3_NUMPY_INCLUDE_DIRS=$(python3 -c "import numpy; print(numpy.get_include(),end='')") \
+        -DBUILD_TESTS=OFF -DBUILD_PERF_TESTS=OFF \
+        -DPYTHON3_INCLUDE_PATH="${RPI3_SYSROOT}/usr/include/python3.7m" \
+        -DPYTHON3_LIBRARIES="${RPI3_SYSROOT}/usr/lib/libpython3.7m.so" \
+        -DPYTHON3_NUMPY_INCLUDE_DIRS=$(python3.7 -c "import numpy; print(numpy.get_include(),end='')") \
         .. && \
+    cat CMakeFiles/CMakeOutput.log && \
+    cat CMakeFiles/CMakeError.log && \
     make -j$(($(nproc) * 2)) && \
     make install && \
-    cd && rm -rf /home/develop/opencv-4.1.1 && rm -rf numpy
+    make install DESTDIR="${RPI3_STAGING}/usr" && \
+    cd && rm -rf /home/develop/opencv-4.1.1
 
 
 # # LibJPEG
@@ -364,8 +373,10 @@ RUN cmake \
 #     make arch=aarch64
 
 WORKDIR /home/develop
-RUN cp -r $TOOLCHAIN_PATH/aarch64-rpi3-linux-gnu/debug-root/* ~/RPi3-sysroot/
+RUN cp -r $TOOLCHAIN_PATH/aarch64-rpi3-linux-gnu/debug-root/* ${RPI3_SYSROOT}
+RUN cp -r $TOOLCHAIN_PATH/aarch64-rpi3-linux-gnu/debug-root/* \
+          ${RPI3_STAGING}/usr${RPI3_SYSROOT}
 RUN tar cf x-tools.tar x-tools
 RUN tar cf RPi3-sysroot.tar RPi3-sysroot
-ENV PKG_CONFIG_PATH=/home/develop/RPi3-sysroot/usr/lib/pkgconfig
-RUN pkg-config --libs zlib
+RUN mv ${RPI3_STAGING}/usr${RPI3_SYSROOT} ${RPI3_STAGING}/usr/home/develop/RPi3-staging
+RUN tar cf $HOME/RPi3-staging.tar -C ${RPI3_STAGING}/usr/home/develop RPi3-staging
