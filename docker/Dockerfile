@@ -317,6 +317,8 @@ RUN cmake \
         -DPYTHON3_INCLUDE_PATH="${RPI3_SYSROOT}/usr/include/python3.7m" \
         -DPYTHON3_LIBRARIES="${RPI3_SYSROOT}/usr/lib/libpython3.7m.so" \
         -DPYTHON3_NUMPY_INCLUDE_DIRS=$(python3.7 -c "import numpy; print(numpy.get_include(),end='')") \
+        -DOPENCV_SKIP_PYTHON_LOADER=ON \
+        -DOPENCV_PYTHON3_INSTALL_PATH="${RPI3_SYSROOT}/usr/lib/python3.7/site-packages/cv2" \
         .. && \
     cat CMakeFiles/CMakeOutput.log && \
     cat CMakeFiles/CMakeError.log && \
@@ -371,6 +373,17 @@ RUN cmake \
 #     CXX="aarch64-rpi3-linux-gnu-g++ --sysroot=$RPI3_SYSROOT" \
 #     LD="aarch64-rpi3-linux-gnu-ld --sysroot=$RPI3_SYSROOT" \
 #     make arch=aarch64
+
+WORKDIR /home/develop
+RUN python3.7 -m pip install --user crossenv
+RUN python3.7 -m crossenv ${RPI3_SYSROOT}/usr/bin/python3.7 venv
+ENV PYTHONPATH="/usr/local/lib/python3.7/dist-packages:$PYTHONPATH"
+RUN . venv/bin/activate && python3.7 -m pip -v install wheel 
+RUN . venv/bin/activate && python3.7 -m pip -v install numpy
+# RUN . venv/bin/activate && python3.7 -m pip -v install scipy
+
+RUN mv venv/cross/lib/python3.7/site-packages/wheel* ${RPI3_STAGING}/usr/${RPI3_SYSROOT}/usr/lib/python3.7/site-packages
+RUN mv venv/cross/lib/python3.7/site-packages/numpy* ${RPI3_STAGING}/usr/${RPI3_SYSROOT}/usr/lib/python3.7/site-packages
 
 WORKDIR /home/develop
 RUN cp -r $TOOLCHAIN_PATH/aarch64-rpi3-linux-gnu/debug-root/* ${RPI3_SYSROOT}
