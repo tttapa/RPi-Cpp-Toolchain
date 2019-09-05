@@ -69,7 +69,7 @@ WORKDIR /home/develop/ffmpeg-4.2/build-arm
 RUN ../configure \
         --arch="aarch64" \
         --target-os="linux" \
-        --prefix="$RPI3_SYSROOT/usr" \
+        --prefix="/usr" \
         --sysroot="${RPI3_SYSROOT}" \
         --enable-cross-compile \
         --cross-prefix="aarch64-rpi3-linux-gnu-" \
@@ -78,8 +78,8 @@ RUN ../configure \
         --enable-shared \
         --disable-doc && \
     make -j$(($(nproc) * 2)) && \
-    make install && \
-    make install DESTDIR="${RPI3_STAGING}/usr" && \
+    make install DESTDIR="${RPI3_SYSROOT}" && \
+    make install DESTDIR="${RPI3_STAGING}" && \
     cd && rm -rf ffmpeg-4.2
 
 # Install zbar
@@ -100,14 +100,14 @@ RUN ../configure \
         --disable-video --without-imagemagick --without-gtk --without-python \
         --without-qt --without-jpeg \
         --host="aarch64-linux-gnu" \
-        --prefix="$RPI3_SYSROOT/usr" \
+        --prefix="/usr" \
         CFLAGS="-O2" \
         CC="aarch64-rpi3-linux-gnu-gcc --sysroot=${RPI3_SYSROOT}" \
         CXX="aarch64-rpi3-linux-gnu-g++ --sysroot=${RPI3_SYSROOT}" \
         LD="aarch64-rpi3-linux-gnu-ld --sysroot=${RPI3_SYSROOT}" && \
     make -j$(($(nproc) * 2)) && \
-    make install && \
-    make install DESTDIR="${RPI3_STAGING}/usr" && \
+    make install DESTDIR="${RPI3_SYSROOT}" && \
+    make install DESTDIR="${RPI3_STAGING}" && \
     cd && rm -rf /home/develop/zbar-0.10
 
 # FFI Download
@@ -133,15 +133,15 @@ RUN mkdir build-arm
 WORKDIR /home/develop/libffi-3.2.1/build-arm
 RUN ../configure \
         --host="aarch64-linux-gnu" \
-        --prefix="$RPI3_SYSROOT/usr" \
+        --prefix="/usr" \
         CFLAGS="-O2" CXXFLAGS="-O2" \
         --with-sysroot="${RPI3_SYSROOT}" \
         CC="aarch64-rpi3-linux-gnu-gcc" \
         CXX="aarch64-rpi3-linux-gnu-g++" \
         LD="aarch64-rpi3-linux-gnu-ld" && \
     make -j$(($(nproc) * 2)) && \
-    make install && \
-    make install DESTDIR="${RPI3_STAGING}/usr" && \
+    make install DESTDIR="${RPI3_SYSROOT}" && \
+    make install DESTDIR="${RPI3_STAGING}" && \
     cd && rm -rf libffi-3.2.1
 
 # Zlib Download
@@ -168,10 +168,10 @@ RUN CFLAGS="${STAGING_INCLUDE_FLAGS}" \
     CC="aarch64-rpi3-linux-gnu-gcc --sysroot=${RPI3_SYSROOT}" \
     LD="aarch64-rpi3-linux-gnu-ld --sysroot=${RPI3_SYSROOT}" \
     ../configure \
-        --prefix="$RPI3_SYSROOT/usr" && \
+        --prefix="/usr" && \
     make -j$(($(nproc) * 2)) && \
-    make install && \
-    make install DESTDIR="${RPI3_STAGING}/usr" && \
+    make install DESTDIR="${RPI3_SYSROOT}" && \
+    make install DESTDIR="${RPI3_STAGING}" && \
     cd && rm -rf zlib-1.2.11
 
 # Download OpenSSL
@@ -194,12 +194,12 @@ WORKDIR /home/develop
 RUN tar xzf OpenSSL_1_1_1c.tar.gz && rm OpenSSL_1_1_1c.tar.gz
 WORKDIR /home/develop/openssl-OpenSSL_1_1_1c
 RUN ./Configure \
-        --prefix="$RPI3_SYSROOT/usr" \
+        --prefix="/usr" \
         --cross-compile-prefix="aarch64-rpi3-linux-gnu-" \
         linux-aarch64 && \
     make -j$(($(nproc) * 2)) && \
-    make install_sw && \
-    make install_sw DESTDIR="${RPI3_STAGING}/usr" && \
+    make install_sw DESTDIR="${RPI3_SYSROOT}" && \
+    make install_sw DESTDIR="${RPI3_STAGING}" && \
     cd && rm -rf openssl-OpenSSL_1_1_1c
 
 # Python Download
@@ -261,7 +261,7 @@ RUN CONFIG_SITE=../config.site ../configure \
         --with-ensurepip=install \
         --build="$(gcc -dumpmachine)" \
         --host="aarch64-rpi3-linux-gnu" \
-        --prefix="$RPI3_SYSROOT/usr" \
+        --prefix="/usr" \
         CC="aarch64-rpi3-linux-gnu-gcc" \
         CXX="aarch64-rpi3-linux-gnu-g++" \
         LD="aarch64-rpi3-linux-gnu-ld" \
@@ -270,8 +270,8 @@ RUN CONFIG_SITE=../config.site ../configure \
         CXXFLAGS="${STAGING_INCLUDE_FLAGS} --sysroot=${RPI3_SYSROOT}" && \
     cat config.log && \
     make -j$(($(nproc) * 2)) && \
-    make altinstall && \
-    make altinstall DESTDIR="${RPI3_STAGING}/usr" && \
+    make altinstall DESTDIR="${RPI3_SYSROOT}" && \
+    make altinstall DESTDIR="${RPI3_STAGING}" && \
     cd && rm -rf Python-3.7.4/build-arm 
 WORKDIR /home/develop
 USER root
@@ -294,11 +294,8 @@ RUN wget -O opencv-4.1.1.tar.gz https://codeload.github.com/opencv/opencv/tar.gz
 # Build OpenCV ARM
 RUN mkdir /home/develop/opencv-4.1.1/build-arm
 WORKDIR /home/develop/opencv-4.1.1/build-arm
-#        -DCMAKE_C_FLAGS="-I${RPI3_STAGING}/usr/include" \
-#        -DCMAKE_CXX_FLAGS="-I${RPI3_STAGING}/usr/include" \
-#        -DCMAKE_EXE_LINKER_FLAGS="-L${RPI3_STAGING}/usr/lib" \
-#        -DCMAKE_MODULE_LINKER_FLAGS="-L${RPI3_STAGING}/usr/lib" \
-#        -DCMAKE_SHARED_LINKER_FLAGS="-L${RPI3_STAGING}/usr/lib" \
+# PKG_CONFIG_PATH is ignored when cross-compiling to prevent finding system libs
+# You can override it by setting the LIBDIR
 ENV PKG_CONFIG_LIBDIR=/home/develop/RPi3-sysroot/usr/lib
 RUN cmake \
         -DCMAKE_TOOLCHAIN_FILE=../opencv-4.1.1/platforms/linux/arm.toolchain.cmake \
@@ -311,21 +308,24 @@ RUN cmake \
         -DWITH_FFMPEG=ON \
         -DWITH_V4L=ON -DWITH_LIBV4L=ON \
         -DCMAKE_BUILD_TYPE=RelWithDebInfo \
-        -DCMAKE_INSTALL_PREFIX="${RPI3_SYSROOT}/usr" \
+        -DCMAKE_INSTALL_PREFIX="/usr" \
         -DOPENCV_GENERATE_PKGCONFIG=ON \
         -DBUILD_TESTS=OFF -DBUILD_PERF_TESTS=OFF \
         -DPYTHON3_INCLUDE_PATH="${RPI3_SYSROOT}/usr/include/python3.7m" \
         -DPYTHON3_LIBRARIES="${RPI3_SYSROOT}/usr/lib/libpython3.7m.so" \
         -DPYTHON3_NUMPY_INCLUDE_DIRS=$(python3.7 -c "import numpy; print(numpy.get_include(),end='')") \
-        -DOPENCV_SKIP_PYTHON_LOADER=ON \
-        -DOPENCV_PYTHON3_INSTALL_PATH="${RPI3_SYSROOT}/usr/lib/python3.7/site-packages/cv2" \
         .. && \
     cat CMakeFiles/CMakeOutput.log && \
     cat CMakeFiles/CMakeError.log && \
     make -j$(($(nproc) * 2)) && \
-    make install && \
-    make install DESTDIR="${RPI3_STAGING}/usr" && \
+    make install DESTDIR="${RPI3_SYSROOT}" && \
+    make install DESTDIR="${RPI3_STAGING}" && \
     cd && rm -rf /home/develop/opencv-4.1.1
+# Why is the architecture wrong?
+RUN mv ${RPI3_SYSROOT}/usr/lib/python3.7/site-packages/cv2/python-3.7/cv2.cpython-37m-x86_64-linux-gnu.so \
+       ${RPI3_SYSROOT}/usr/lib/python3.7/site-packages/cv2/python-3.7/cv2.cpython-37m-aarch64-linux-gnu.so
+RUN mv ${RPI3_STAGING}/usr/lib/python3.7/site-packages/cv2/python-3.7/cv2.cpython-37m-x86_64-linux-gnu.so \
+       ${RPI3_STAGING}/usr/lib/python3.7/site-packages/cv2/python-3.7/cv2.cpython-37m-aarch64-linux-gnu.so
 
 
 # # LibJPEG
@@ -377,19 +377,16 @@ RUN cmake \
 WORKDIR /home/develop
 RUN python3.7 -m pip install --user crossenv
 RUN python3.7 -m crossenv ${RPI3_SYSROOT}/usr/bin/python3.7 venv
-ENV PYTHONPATH="/usr/local/lib/python3.7/dist-packages:$PYTHONPATH"
 RUN . venv/bin/activate && python3.7 -m pip -v install wheel 
 RUN . venv/bin/activate && python3.7 -m pip -v install numpy
 # RUN . venv/bin/activate && python3.7 -m pip -v install scipy
 
-RUN mv venv/cross/lib/python3.7/site-packages/wheel* ${RPI3_STAGING}/usr/${RPI3_SYSROOT}/usr/lib/python3.7/site-packages
-RUN mv venv/cross/lib/python3.7/site-packages/numpy* ${RPI3_STAGING}/usr/${RPI3_SYSROOT}/usr/lib/python3.7/site-packages
+RUN mv venv/cross/lib/python3.7/site-packages/wheel* ${RPI3_STAGING}/usr/lib/python3.7/site-packages
+RUN mv venv/cross/lib/python3.7/site-packages/numpy* ${RPI3_STAGING}/usr/lib/python3.7/site-packages
 
 WORKDIR /home/develop
 RUN cp -r $TOOLCHAIN_PATH/aarch64-rpi3-linux-gnu/debug-root/* ${RPI3_SYSROOT}
-RUN cp -r $TOOLCHAIN_PATH/aarch64-rpi3-linux-gnu/debug-root/* \
-          ${RPI3_STAGING}/usr${RPI3_SYSROOT}
+RUN cp -r $TOOLCHAIN_PATH/aarch64-rpi3-linux-gnu/debug-root/* ${RPI3_STAGING}
 RUN tar cf x-tools.tar x-tools
 RUN tar cf RPi3-sysroot.tar RPi3-sysroot
-RUN mv ${RPI3_STAGING}/usr${RPI3_SYSROOT} ${RPI3_STAGING}/usr/home/develop/RPi3-staging
-RUN tar cf $HOME/RPi3-staging.tar -C ${RPI3_STAGING}/usr/home/develop RPi3-staging
+RUN tar cf RPi3-staging.tar RPi3-staging
