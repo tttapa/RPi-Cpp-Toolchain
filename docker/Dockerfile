@@ -248,26 +248,58 @@ ENV PKG_CONFIG_PATH=/home/develop/RPi3-sysroot/usr/lib/pkgconfig
 # " > "$RPI3_SYSROOT/usr/lib/pkgconfig/bz2.pc"
 # # TODO: why doesn't Python recognize it?
 
+WORKDIR /home/develop
+RUN wget ftp://ftp.gnu.org/gnu/ncurses/ncurses-6.1.tar.gz
+RUN tar xzf ncurses-6.1.tar.gz && rm ncurses-6.1.tar.gz
+
+RUN mkdir ncurses-6.1/build-arm
+WORKDIR /home/develop/ncurses-6.1/build-arm
+RUN ../configure \
+        --with-shared --without-normal --without-debug --prefix=/usr \
+        --with-build-cc=gcc \
+        --host="aarch64-rpi3-linux-gnu" \
+        CC="aarch64-rpi3-linux-gnu-gcc --sysroot=${RPI3_SYSROOT}"
+RUN make -j$(($(nproc) * 2))
+RUN make install.libs DESTDIR=${RPI3_SYSROOT}
+RUN make install.libs DESTDIR=${RPI3_STAGING}
+
+WORKDIR /home/develop
+RUN wget https://ftp.gnu.org/gnu/readline/readline-8.0.tar.gz
+RUN tar xzf readline-8.0.tar.gz && rm readline-8.0.tar.gz 
+RUN mkdir readline-8.0/build-arm 
+WORKDIR /home/develop/readline-8.0/build-arm
+RUN ../configure \
+        --enable-shared --with-curses \
+        --prefix=/usr \
+        --host="aarch64-rpi3-linux-gnu" \
+        CC="aarch64-rpi3-linux-gnu-gcc --sysroot=${RPI3_SYSROOT}"
+RUN make -j$(($(nproc) * 2))
+RUN make install DESTDIR=${RPI3_SYSROOT}
+RUN make install DESTDIR=${RPI3_STAGING}
+
 # Python ARM
 WORKDIR /home/develop/Python-3.7.4
-# COPY setup.py setup.py
+ENV PKG_CONFIG_LIBDIR=/home/develop/RPi3-sysroot/usr/lib
+ENV PKG_CONFIG_PATH=/home/develop/RPi3-sysroot/usr/lib/pkgconfig
+ENV PKG_CONFIG_SYSROOT_DIR=/home/develop/RPi3-sysroot
 RUN echo "ac_cv_file__dev_ptmx=no\nac_cv_file__dev_ptc=no" > config.site
-RUN cat config.site
 RUN mkdir build-arm
 WORKDIR /home/develop/Python-3.7.4/build-arm
-RUN CONFIG_SITE=../config.site ../configure \
+RUN ls /home/develop/RPi3-sysroot/usr/include && find /home/develop/RPi3-sysroot/ -name 'ffi.h'
+RUN echo "${RPI3_SYSROOT}/usr/lib/libffi-3.2.1/include"
+
+RUN CONFIG_SITE=../config.site \
+    ../configure \
         --enable-ipv6 \
         --enable-shared --with-lto --enable-optimizations \
+        --disable-static \
         --with-ensurepip=install \
         --build="$(gcc -dumpmachine)" \
         --host="aarch64-rpi3-linux-gnu" \
         --prefix="/usr" \
-        CC="aarch64-rpi3-linux-gnu-gcc" \
-        CXX="aarch64-rpi3-linux-gnu-g++" \
-        LD="aarch64-rpi3-linux-gnu-ld" \
-        LDFLAGS="${STAGING_LD_FLAGS} --sysroot=${RPI3_SYSROOT}" \
-        CFLAGS="${STAGING_INCLUDE_FLAGS} --sysroot=${RPI3_SYSROOT}" \
-        CXXFLAGS="${STAGING_INCLUDE_FLAGS} --sysroot=${RPI3_SYSROOT}" && \
+        CC="aarch64-rpi3-linux-gnu-gcc --sysroot=${RPI3_SYSROOT}" \
+        CXX="aarch64-rpi3-linux-gnu-g++ --sysroot=${RPI3_SYSROOT}" \
+        LD="aarch64-rpi3-linux-gnu-ld --sysroot=${RPI3_SYSROOT}" && \
     cat config.log && \
     make -j$(($(nproc) * 2)) && \
     make altinstall DESTDIR="${RPI3_SYSROOT}" && \
