@@ -1,0 +1,22 @@
+[
+    {
+        "name": "Raspberry Pi 3 (AArch64)",
+        "toolchainFile": "${workspaceFolder}/cmake/RPi3-Toolchain-AArch64.cmake",
+        "cmakeSettings": {
+            "PYTHON_EXECUTABLE": "python3"
+        }
+    },
+    {
+        "name": "Raspberry Pi 3 (AArch32)",
+        "toolchainFile": "${workspaceFolder}/cmake/RPi3-Toolchain-AArch32.cmake",
+         "cmakeSettings": {
+             "PYTHON_EXECUTABLE": "python3"
+         }
+    },
+    {
+        "name": "Local",
+        "cmakeSettings": {
+            "PYTHON_EXECUTABLE": "python3"
+        }
+    }
+]

@@ -1,4 +1,4 @@
 *.tar
-docker/config
-ubuntu-rootfs
-ubuntu-18.04.3-preinstalled-server-arm64+raspi3.img
+*.tar.gz
+x-tools
+RPi3-sysroot*
