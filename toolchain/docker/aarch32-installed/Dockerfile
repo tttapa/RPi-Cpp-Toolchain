@@ -262,8 +262,11 @@ WORKDIR /home/develop/gdbm-1.18.1/build-arm
 RUN ../configure \
         --prefix="/usr/local" \
         --host="armv8-rpi3-linux-gnueabihf" \
-        CFLAGS="--sysroot=${RPI3_SYSROOT} -I${RPI3_SYSROOT}/usr/local/include -L${RPI3_SYSROOT}/usr/local/lib" \
-        LDFLAGS="-I${RPI3_SYSROOT}/usr/local/include -L${RPI3_SYSROOT}/usr/local/lib" \
+        CFLAGS="--sysroot=${RPI3_SYSROOT} \
+                -I${RPI3_SYSROOT}/usr/local/include \
+                -L${RPI3_SYSROOT}/usr/local/lib" \
+        LDFLAGS="--sysroot=${RPI3_SYSROOT} \
+                 -L${RPI3_SYSROOT}/usr/local/lib" \
         CC="armv8-rpi3-linux-gnueabihf-gcc" && \
     make -j$(($(nproc) * 2)) && \
     make install DESTDIR=${RPI3_SYSROOT} && \

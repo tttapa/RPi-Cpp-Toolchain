@@ -15,7 +15,7 @@ ENV RPI3_STAGING=/home/develop/RPi3-staging
 RUN mkdir RPi3-sysroot && \
     cp -rp $TOOLCHAIN_PATH/aarch64-rpi3-linux-gnu/sysroot/* ~/RPi3-sysroot/ && \
     chmod -R u+w /home/develop/RPi3-sysroot
- 
+
 # Zlib Download
 WORKDIR /home/develop
 RUN wget https://downloads.sourceforge.net/project/libpng/zlib/1.2.11/zlib-1.2.11.tar.gz && \
@@ -262,8 +262,11 @@ WORKDIR /home/develop/gdbm-1.18.1/build-arm
 RUN ../configure \
         --prefix="/usr/local" \
         --host="aarch64-rpi3-linux-gnu" \
-        CFLAGS="--sysroot=${RPI3_SYSROOT} -I${RPI3_SYSROOT}/usr/local/include -L${RPI3_SYSROOT}/usr/local/lib" \
-        LDFLAGS="-I${RPI3_SYSROOT}/usr/local/include -L${RPI3_SYSROOT}/usr/local/lib" \
+        CFLAGS="--sysroot=${RPI3_SYSROOT} \
+                -I${RPI3_SYSROOT}/usr/local/include \
+                -L${RPI3_SYSROOT}/usr/local/lib" \
+        LDFLAGS="--sysroot=${RPI3_SYSROOT} \
+                 -L${RPI3_SYSROOT}/usr/local/lib" \
         CC="aarch64-rpi3-linux-gnu-gcc" && \
     make -j$(($(nproc) * 2)) && \
     make install DESTDIR=${RPI3_SYSROOT} && \
