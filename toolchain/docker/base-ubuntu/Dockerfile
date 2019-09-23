@@ -12,10 +12,10 @@ RUN apt-get update && \
     apt-get autoremove -y && \
     rm -rf /var/lib/apt/lists/*
 
-# Add a user called `develop`
+# Add a user called `develop`, and add him to the sudo group
 RUN useradd -m develop && \
-    echo "develop:develop" | \
-    chpasswd && adduser develop sudo
+    echo "develop:develop" | chpasswd && \
+    adduser develop sudo
 
 USER develop
 WORKDIR /home/develop
