@@ -39,6 +39,9 @@ if(NOT CMAKE_CROSSCOMPILING)
                         -march=native")
 endif()
 
+# Output all binaries to the build/bin folder
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+
 ################################################################################
 #################################   LIBRARIES   ################################
 ################################################################################
