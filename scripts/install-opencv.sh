@@ -12,10 +12,10 @@ python3 -m pip install --user numpy
 
 # Download OpenCV
 cd /tmp
-if [ ! -e opencv-4.1.1.tar.gz ]; then
-    wget -O opencv-4.1.1.tar.gz https://codeload.github.com/opencv/opencv/tar.gz/4.1.1
+if [ ! -e opencv-4.2.0.tar.gz ]; then
+    wget -O opencv-4.2.0.tar.gz https://codeload.github.com/opencv/opencv/tar.gz/4.2.0
 fi
-tar -xzf opencv-4.1.1.tar.gz
+tar -xzf opencv-4.2.0.tar.gz
 
 # Build OpenCV x86
 mkdir -p /tmp/opencv-x86-build && cd $_
@@ -30,7 +30,7 @@ cmake \
     -DPYTHON_LIBRARY=$py_library \
     -DPYTHON3_NUMPY_INCLUDE_DIRS=$numpy_include \
     -DCMAKE_INSTALL_PREFIX=$HOME/.local \
-    ../opencv-4.1.1
+    ../opencv-4.2.0
 make -j$(($(nproc) * 2))
 make install
 

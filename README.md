@@ -15,12 +15,12 @@ It also has a cross-compiles many useful libraries:
  - **GNU dbm**: library for key-value data (Python dependency)
  - **SQLite**: library for embedded databases (Python dependency)
  - **UUID**: library for unique identifiers (Python dependency)
- - **Python 3.7.4**
+ - **Python 3.8.1**
  - **ZBar**: Bar and QR code decoding library
  - **Raspberry Pi Userland** (VideoCore): hardware acceleration for H.264
  - **FFmpeg**: library to record, convert and stream audio and video
  - **NumPy**: multi-dimensional array container for Python (OpenCV dependency)
- - **OpenCV**: computer vision library and Python module
+ - **OpenCV 4.2.0**: computer vision library and Python module
  
 ## Documentation
  

@@ -138,8 +138,8 @@ RUN ../configure \
  
 # Python Download
 WORKDIR /home/develop
-RUN wget https://www.python.org/ftp/python/3.7.4/Python-3.7.4.tgz && \
-    tar xzf Python-3.7.4.tgz && rm Python-3.7.4.tgz
+RUN wget https://www.python.org/ftp/python/3.8.1/Python-3.8.1.tgz && \
+    tar xzf Python-3.8.1.tgz && rm Python-3.8.1.tgz
  
 # Use the build system's pkg-config folders
 ENV PKG_CONFIG_LIBDIR="" \
@@ -147,9 +147,9 @@ ENV PKG_CONFIG_LIBDIR="" \
     PKG_CONFIG_SYSROOT_DIR=""
  
 # Python build
-WORKDIR /home/develop/Python-3.7.4
+WORKDIR /home/develop/Python-3.8.1
 RUN mkdir build
-WORKDIR /home/develop/Python-3.7.4/build
+WORKDIR /home/develop/Python-3.8.1/build
 USER root
 RUN ln -s /usr/local/lib/libffi-3.2.1/include/* /usr/local/include
 USER develop
@@ -158,7 +158,7 @@ RUN ../configure && \
 USER root
 RUN make install
 USER develop
-RUN cd && rm -rf Python-3.7.4/build
+RUN cd && rm -rf Python-3.8.1/build
  
 # Use the pkg-config folder inside of the RPi's root filesystem 
 ENV PKG_CONFIG_LIBDIR=/home/develop/RPi3-sysroot/usr/local/lib \
@@ -308,11 +308,11 @@ RUN ../configure \
     ln -s uuid/uuid.h ${RPI3_SYSROOT}/usr/local/include/uuid.h
  
 # Python ARM
-WORKDIR /home/develop/Python-3.7.4
+WORKDIR /home/develop/Python-3.8.1
 RUN echo "ac_cv_file__dev_ptmx=yes\nac_cv_file__dev_ptc=no" > config.site && \
     mkdir build-arm
 # COPY setup.py setup.py
-WORKDIR /home/develop/Python-3.7.4/build-arm
+WORKDIR /home/develop/Python-3.8.1/build-arm
  
 RUN ln -s ${RPI3_SYSROOT}/usr/local/lib/libffi-3.2.1/include/* \
           ${RPI3_SYSROOT}/usr/local/include/ && \
@@ -348,10 +348,10 @@ RUN ln -s ${RPI3_SYSROOT}/usr/local/lib/libffi-3.2.1/include/* \
     make -j$(($(nproc) * 2)) && \
     make altinstall DESTDIR="${RPI3_SYSROOT}" && \
     make altinstall DESTDIR="${RPI3_STAGING}" && \
-    cd && rm -rf Python-3.7.4/build-arm
+    cd && rm -rf Python-3.8.1/build-arm
 WORKDIR /home/develop
 USER root
-RUN rm -rf Python-3.7.4
+RUN rm -rf Python-3.8.1
 USER develop
  
 FROM python as aarch32-installed
@@ -423,16 +423,16 @@ RUN ../configure \
     cd && rm -rf ffmpeg-4.2
  
 # Install NumPy on build
-RUN python3.7 -m pip install --user numpy
+RUN python3.8 -m pip install --user numpy
 
 # OpenCV Download
 WORKDIR /home/develop
-RUN wget -O opencv-4.1.1.tar.gz https://codeload.github.com/opencv/opencv/tar.gz/4.1.1 && \
-    tar xzf opencv-4.1.1.tar.gz && rm opencv-4.1.1.tar.gz
+RUN wget -O opencv-4.2.0.tar.gz https://codeload.github.com/opencv/opencv/tar.gz/4.2.0 && \
+    tar xzf opencv-4.2.0.tar.gz && rm opencv-4.2.0.tar.gz
  
 # OpenCV ARM
-RUN mkdir /home/develop/opencv-4.1.1/build-arm
-WORKDIR /home/develop/opencv-4.1.1/build-arm
+RUN mkdir /home/develop/opencv-4.2.0/build-arm
+WORKDIR /home/develop/opencv-4.2.0/build-arm
 RUN cmake \
         -DCMAKE_TOOLCHAIN_FILE=../platforms/linux/arm.toolchain.cmake \
         -DGNU_MACHINE="armv8-rpi3-linux-gnueabihf" \
@@ -447,38 +447,38 @@ RUN cmake \
         -DCMAKE_INSTALL_PREFIX="/usr/local" \
         -DOPENCV_GENERATE_PKGCONFIG=ON \
         -DBUILD_TESTS=OFF -DBUILD_PERF_TESTS=OFF \
-        -DPYTHON3_INCLUDE_PATH="${RPI3_SYSROOT}/usr/local/include/python3.7m" \
-        -DPYTHON3_LIBRARIES="${RPI3_SYSROOT}/usr/local/lib/libpython3.7m.so" \
+        -DPYTHON3_INCLUDE_PATH="${RPI3_SYSROOT}/usr/local/include/python3.8" \
+        -DPYTHON3_LIBRARIES="${RPI3_SYSROOT}/usr/local/lib/libpython3.8.so" \
         -DPYTHON3_NUMPY_INCLUDE_DIRS=$( \
-            python3.7 -c "import numpy; print(numpy.get_include(),end='')") \
+            python3.8 -c "import numpy; print(numpy.get_include(),end='')") \
         .. && \
     cat CMakeFiles/CMakeOutput.log && \
     cat CMakeFiles/CMakeError.log && \
     make -j$(($(nproc) * 2)) && \
     make install DESTDIR="${RPI3_SYSROOT}" && \
     make install DESTDIR="${RPI3_STAGING}" && \
-    cd && rm -rf /home/develop/opencv-4.1.1
+    cd && rm -rf /home/develop/opencv-4.2.0
  
 # Why is the architecture wrong?
-RUN mv ${RPI3_SYSROOT}/usr/local/lib/python3.7/site-packages/cv2/python-3.7/cv2.cpython-37m-x86_64-linux-gnu.so \
-       ${RPI3_SYSROOT}/usr/local/lib/python3.7/site-packages/cv2/python-3.7/cv2.cpython-37m-arm-linux-gnu.so && \
-    mv ${RPI3_STAGING}/usr/local/lib/python3.7/site-packages/cv2/python-3.7/cv2.cpython-37m-x86_64-linux-gnu.so \
-       ${RPI3_STAGING}/usr/local/lib/python3.7/site-packages/cv2/python-3.7/cv2.cpython-37m-arm-linux-gnu.so
+RUN mv ${RPI3_SYSROOT}/usr/local/lib/python3.8/site-packages/cv2/python-3.8/cv2.cpython-38-x86_64-linux-gnu.so \
+       ${RPI3_SYSROOT}/usr/local/lib/python3.8/site-packages/cv2/python-3.8/cv2.cpython-38-arm-linux-gnu.so && \
+    mv ${RPI3_STAGING}/usr/local/lib/python3.8/site-packages/cv2/python-3.8/cv2.cpython-38-x86_64-linux-gnu.so \
+       ${RPI3_STAGING}/usr/local/lib/python3.8/site-packages/cv2/python-3.8/cv2.cpython-38-arm-linux-gnu.so
 
 # Crossenv, Wheel ARM and NumPy ARM
 WORKDIR /home/develop
-RUN python3.7 -m pip install --user crossenv && \
-    python3.7 -m crossenv ${RPI3_SYSROOT}/usr/local/bin/python3.7 venv && \
-    . venv/bin/activate && python3.7 -m pip -v install wheel && \
+RUN python3.8 -m pip install --user crossenv && \
+    python3.8 -m crossenv ${RPI3_SYSROOT}/usr/local/bin/python3.8 venv && \
+    . venv/bin/activate && python3.8 -m pip -v install wheel && \
     export NPY_NUM_BUILD_JOBS=$(($(nproc) * 2)) && \
-    . venv/bin/activate && python3.7 -m pip -v install numpy
+    . venv/bin/activate && python3.8 -m pip -v install numpy
 
 # SciPy doesn't want to cross-compile
-# RUN . venv/bin/activate && python3.7 -m pip -v install scipy
+# RUN . venv/bin/activate && python3.8 -m pip -v install scipy
  
 # Move the compiled Wheel and NumPy packages to the staging area
-RUN mv venv/cross/lib/python3.7/site-packages/wheel* ${RPI3_STAGING}/usr/local/lib/python3.7/site-packages && \
-    mv venv/cross/lib/python3.7/site-packages/numpy* ${RPI3_STAGING}/usr/local/lib/python3.7/site-packages
+RUN mv venv/cross/lib/python3.8/site-packages/wheel* ${RPI3_STAGING}/usr/local/lib/python3.8/site-packages && \
+    mv venv/cross/lib/python3.8/site-packages/numpy* ${RPI3_STAGING}/usr/local/lib/python3.8/site-packages
 
 # Copy gdbserver to the sysroot and staging area, as well as the latest C++ 
 # library, and store everything in tar.gz archives.

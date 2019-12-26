@@ -6,5 +6,6 @@
         "ratio": "cpp",
         "iosfwd": "cpp"
     },
-    "cmake.configureOnOpen": true
+    "cmake.configureOnOpen": true,
+    "docker.defaultRegistryPath": "tttapa"
 }
