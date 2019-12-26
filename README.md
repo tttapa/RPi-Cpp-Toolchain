@@ -37,6 +37,8 @@ This is much faster than compiling everything on the Pi itself.
 The toolchains are built inside of a Docker container for clean and reproducable builds. 
 It also makes it relatively easy to start a build from scratch if you have to.
 
+You can find more information about the Docker containers in [`toolchain/docker`](toolchain/docker).
+
 ### Cross-Compiling the Necessary Libraries
 
 The toolchain is then used to compile all libraries for the Raspberry Pi.  
