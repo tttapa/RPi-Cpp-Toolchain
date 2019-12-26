@@ -29,6 +29,12 @@ The documentation is still a work in progress, but parts of it are already avail
 
 ## Quick Overview
 
+### Pulling the Toolchain from Docker Hub
+
+You can either build the toolchain and libraries yourself, as explained below, 
+or you can download the pre-built version from [**Docker Hub**](https://hub.docker.com/r/tttapa/rpi3-aarch64-installed)
+using the [`toolchain/pull-and-export-toolchain.sh`](toolchain/pull-and-export-toolchain.sh) script.
+
 ### Building the Toolchain
 
 Crosstool-NG is used to build a modern GCC toolchain that runs on your computer and generates binaries for the Raspberry Pi.
@@ -49,7 +55,7 @@ These libraries are installed in two locations:
 ### Exporting the Toolchain, Sysroot and Staging Area
 
 Once all components have been built, they have to be extracted from the Docker build containers, and installed to the correct locations.  
-This is handled by the [toolchain/build-and-export-toolchain.sh](https://github.com/tttapa/RPi-Cpp-Toolchain/blob/master/toolchain/build-and-export-toolchain.sh) script.
+This is handled by the [`toolchain/build-and-export-toolchain.sh`](toolchain/build-and-export-toolchain.sh) script.
 
 The next step is to copy all files of the `RPi3-staging-$arch.tar.gz` archive to the root folder of the Raspberry Pi.
 
