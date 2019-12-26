@@ -1,3 +1,5 @@
+![Download from Docker Hub](https://img.shields.io/docker/pulls/tttapa/rpi3-aarch64-installed?label=Docker%20Hub%20AArch64&logo=docker)
+
 # Raspberry Pi C++ Toolchain
 
 This repository contains all you need to develop and cross-compile C++ applications for the Raspberry Pi (both 32 and 64 bit).
