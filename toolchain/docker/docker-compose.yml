@@ -2,7 +2,7 @@ version: '3.4'
 services:
 
   base-ubuntu:
-    image: base-ubuntu:v1
+    image: base-ubuntu:latest
     build:
       context: ./base-ubuntu
       dockerfile: Dockerfile
@@ -11,7 +11,7 @@ services:
     privileged: false
 
   ct-ng:
-    image: crosstool-ng:v1
+    image: crosstool-ng:latest
     build:
       context: ./crosstool-ng
       dockerfile: Dockerfile
@@ -20,7 +20,7 @@ services:
     privileged: false
 
   aarch64-toolchain:
-    image: aarch64-toolchain:v1
+    image: aarch64-toolchain:latest
     container_name: aarch64-toolchain
     build:
       context: ./aarch64-toolchain
@@ -32,7 +32,7 @@ services:
       - ct-ng
 
   aarch64-installed:
-    image: aarch64-installed:v1
+    image: aarch64-installed:latest
     container_name: aarch64-installed
     build:
       context: ./aarch64-installed
@@ -45,7 +45,7 @@ services:
       - aarch64-toolchain
 
   aarch32-toolchain:
-    image: aarch32-toolchain:v1
+    image: aarch32-toolchain:latest
     container_name: aarch32-toolchain
     build:
       context: ./aarch32-toolchain
@@ -57,7 +57,7 @@ services:
       - ct-ng
 
   aarch32-installed:
-    image: aarch32-installed:v1
+    image: aarch32-installed:latest
     container_name: aarch32-installed
     build:
       context: ./aarch32-installed
