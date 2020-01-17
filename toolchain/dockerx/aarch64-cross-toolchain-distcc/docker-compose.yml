@@ -1,0 +1,12 @@
+version: "3"
+
+services:
+  server:
+    build:
+      context: .
+    container_name: 'aarch64-cross-toolchain-distcc'
+    links: client
+  client:
+    image: aarch64-installed-distcc
+    environment:
+      DISTCC_POSSIBLE_HOSTS: 'server'
