@@ -22,4 +22,6 @@ RUN git clone https://github.com/distcc/distcc.git --depth=1 --single-branch && 
     make -j`nproc` && \
     make install && \
     cd .. && rm -rf distcc
+RUN mkdir -p /usr/local/lib/distcc && ln -s ${TOOLCHAIN_PATH}/bin/* /usr/local/lib/distcc
+RUN update-distcc-symlinks
 USER develop

@@ -1,8 +1,4 @@
-FROM --platform=$BUILDPLATFORM base-ubuntu:v1 as python
-ARG TARGETPLATFORM
-ARG BUILDPLATFORM
-
-RUN echo $BUILDPLATFORM
+FROM base-ubuntu
 
 # Copy the toolchain from the previous Docker image
 COPY --from=aarch64-cross-toolchain \
@@ -362,24 +358,6 @@ USER root
 RUN rm -rf Python-3.8.1
 USER develop
 
-# DistCC build
-WORKDIR /home/develop
-RUN git clone https://github.com/distcc/distcc.git --depth=1 --single-branch && \
-    cd distcc && \
-    ./autogen.sh && \
-    ./configure \
-        --host="aarch64-linux-gnu" \
-        --prefix="/usr/local" \
-        CFLAGS="-O2" \
-        CXXFLAGS="-O2" \
-        CC="aarch64-rpi3-linux-gnu-gcc --sysroot ${RPI3_SYSROOT} \
-            -Wimplicit-fallthrough=0" \
-        CXX="aarch64-rpi3-linux-gnu-g++ --sysroot ${RPI3_SYSROOT}" \
-        LD="aarch64-rpi3-linux-gnu-ld --sysroot ${RPI3_SYSROOT}" && \
-    make -j`nproc` && \
-    make install DESTDIR="${RPI3_STAGING}" && \
-    cd .. && rm -rf distcc
- 
 # ZBar Download
 WORKDIR /home/develop
 RUN wget http://downloads.sourceforge.net/project/zbar/zbar/0.10/zbar-0.10.tar.bz2 && \
@@ -523,17 +501,3 @@ RUN mkdir -p ${RPI3_STAGING}/usr/lib/aarch64-linux-gnu/ && \
 #     tar zcf RPi3-sysroot.tar.gz RPi3-sysroot & \
 #     tar zcf RPi3-staging.tar.gz RPi3-staging & \
 #     wait
-
-FROM arm64v8/ubuntu:latest as aarch64-installed
-ARG TARGETPLATFORM
-ARG BUILDPLATFORM
-
-RUN mv /usr/local/man /usr/local/man-tmp
-COPY --from=python /home/develop/RPi3-staging /
-RUN cp -ar /usr/local/man/* /usr/local/man-tmp && \
-    ls /usr/local/man && \
-    rm -rf /usr/local/man && \
-    mv /usr/local/man-tmp /usr/local/man 
-RUN ldconfig
-
-ENTRYPOINT [ "bash" ]

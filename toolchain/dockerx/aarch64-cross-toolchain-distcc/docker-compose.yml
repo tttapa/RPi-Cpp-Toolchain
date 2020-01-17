@@ -1,12 +1,27 @@
 version: "3"
 
 services:
-  server:
+  distcc-server:
     build:
       context: .
-    container_name: 'aarch64-cross-toolchain-distcc'
-    links: client
+    container_name: 'aarch64-cross-toolchain-distcc-server'
+    networks: 
+      - distcc_network
+    entrypoint: 
+      "bash -c '\
+          distccd --daemon --allow 0.0.0.0/0 --nice 0 \
+          --log-file distcc.log \
+          && tail -f distcc.log'"
   client:
-    image: aarch64-installed-distcc
+    image: aarch64-installed-tools-x
+    container_name: aarch64-installed-tools-x-distcc-client
+    stdin_open: true
+    tty: true
     environment:
-      DISTCC_POSSIBLE_HOSTS: 'server'
+      DISTCC_HOSTS: 'distcc-server,cpp,lzo'
+    networks:
+      - distcc_network
+    entrypoint: bash
+
+networks: 
+  distcc_network:
