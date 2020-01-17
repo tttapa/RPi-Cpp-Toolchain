@@ -1,4 +1,4 @@
-![Download from Docker Hub](https://img.shields.io/docker/pulls/tttapa/rpi3-aarch64-installed?label=Docker%20Hub%20AArch64&logo=docker)
+[![Download from Docker Hub](https://img.shields.io/docker/pulls/tttapa/rpi3-aarch64-installed?label=Docker%20Hub%20AArch64&logo=docker)](https://hub.docker.com/r/tttapa/rpi3-aarch64-installed)
 
 # Raspberry Pi C++ Toolchain
 
