@@ -472,23 +472,64 @@ RUN mv ${RPI3_SYSROOT}/usr/local/lib/python3.8/site-packages/cv2/python-3.8/cv2.
     mv ${RPI3_STAGING}/usr/local/lib/python3.8/site-packages/cv2/python-3.8/cv2.cpython-38-x86_64-linux-gnu.so \
        ${RPI3_STAGING}/usr/local/lib/python3.8/site-packages/cv2/python-3.8/cv2.cpython-38-aarch64-linux-gnu.so
 
-# Crossenv, Wheel ARM and NumPy ARM
+# OpenBLAS ARM
 WORKDIR /home/develop
+RUN git clone \
+        -b 'v0.3.7' --single-branch --depth 1 \
+        https://github.com/xianyi/OpenBLAS && \
+    cd OpenBLAS && \
+    make \
+        CC=aarch64-rpi3-linux-gnu-gcc \
+        FC=aarch64-rpi3-linux-gnu-gfortran \
+        HOSTCC=gcc \
+        TARGET=CORTEXA53 && \
+    make install DESTDIR=${RPI3_SYSROOT} PREFIX=/usr/local && \
+    make install DESTDIR=${RPI3_STAGING} PREFIX=/usr/local && \
+    cd .. && rm -rf OpenBLAS
+
+# Crossenv, Wheel ARM and NumPy ARM
 RUN python3.8 -m pip install --user crossenv && \
     python3.8 -m crossenv ${RPI3_SYSROOT}/usr/local/bin/python3.8 venv && \
-    . venv/bin/activate && python3.8 -m pip -v install wheel && \
-    export NPY_NUM_BUILD_JOBS=$(($(nproc) * 2)) && \
-    . venv/bin/activate && python3.8 -m pip -v install numpy
+    . venv/bin/activate && pip install wheel cython pybind11 
+# RUN export NPY_NUM_BUILD_JOBS=$(($(nproc) * 2)) && \
+#     . venv/bin/activate && \
+#     CFLAGS="-I${RPI3_SYSROOT}/usr/local/include \
+#             -L${RPI3_SYSROOT}/usr/local/lib" \
+#     LDFLAGS="-L${RPI3_SYSROOT}/usr/local/lib" \
+#     python3.8 -m pip install \
+#         --install-option="--jobs=$(($(nproc) * 2))" \
+#         -v \
+#         numpy
+COPY --chown=develop:develop build-numpy-scipy-crossenv.sh .
+COPY --chown=develop:develop npymath.ini.patch .
+RUN chmod +x build-numpy-scipy-crossenv.sh && ./build-numpy-scipy-crossenv.sh
 
-# SciPy doesn't want to cross-compile
-# RUN . venv/bin/activate && python3.8 -m pip -v install scipy
-
-# Move the compiled Wheel and NumPy packages to the staging area
-RUN mv venv/cross/lib/python3.8/site-packages/wheel* ${RPI3_STAGING}/usr/local/lib/python3.8/site-packages && \
-    mv venv/cross/lib/python3.8/site-packages/numpy* ${RPI3_STAGING}/usr/local/lib/python3.8/site-packages
+# Move the compiled Python packages to the staging area
+RUN mv \
+        venv/cross/lib/python3.8/site-packages/wheel* \
+        ${RPI3_STAGING}/usr/local/lib/python3.8/site-packages && \
+    mv \
+        venv/cross/lib/python3.8/site-packages/numpy* \
+        ${RPI3_STAGING}/usr/local/lib/python3.8/site-packages && \
+    mv \
+        venv/cross/lib/python3.8/site-packages/scipy* \
+        ${RPI3_STAGING}/usr/local/lib/python3.8/site-packages && \
+    mv \
+        venv/cross/lib/python3.8/site-packages/pybind11* \
+        ${RPI3_STAGING}/usr/local/lib/python3.8/site-packages && \
+    mv \
+        venv/cross/lib/python3.8/site-packages/setuptools* \
+        ${RPI3_STAGING}/usr/local/lib/python3.8/site-packages && \
+    mv \
+        venv/cross/lib/python3.8/site-packages/pip* \
+        ${RPI3_STAGING}/usr/local/lib/python3.8/site-packages
 
 RUN mkdir -p ${RPI3_STAGING}/usr/lib/aarch64-linux-gnu/ && \
-    cp -a ${RPI3_SYSROOT}/lib/libstdc++.so.*.*.* ${RPI3_STAGING}/usr/lib/aarch64-linux-gnu/
+    mkdir -p ${RPI3_STAGING}/lib/aarch64-linux-gnu/ && \
+    cp -a ${RPI3_SYSROOT}/lib/libstdc++.so* \
+        ${RPI3_STAGING}/usr/lib/aarch64-linux-gnu/ && \
+    cp -a ${RPI3_SYSROOT}/lib/libgfortran.so* \
+        ${RPI3_STAGING}/lib/aarch64-linux-gnu/
 # Copy gdbserver to the sysroot and staging area, as well as the latest C++ 
 # library, and store everything in tar.gz archives.
 # WORKDIR /home/develop

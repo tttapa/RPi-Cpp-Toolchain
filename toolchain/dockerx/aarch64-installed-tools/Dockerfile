@@ -67,7 +67,12 @@ RUN wget https://curl.haxx.se/download/curl-7.68.0.tar.gz && \
                 -I${RPI3_SYSROOT}/usr/local/include" && \
     make -j$(($(nproc) * 2)) && \
     make install DESTDIR="${RPI3_STAGING}" && \
+    make install DESTDIR="${RPI3_SYSROOT}" && \
     cd .. && rm -rf curl-7.68.0
+
+RUN mkdir /tmp/curl-config && \
+    ln -s "${RPI3_SYSROOT}/usr/local/bin/curl-config" /tmp/curl-config/
+ENV PATH="/tmp/curl-config:${PATH}"
 
 # Git build
 WORKDIR /home/develop
@@ -92,6 +97,7 @@ RUN wget https://mirrors.edge.kernel.org/pub/software/scm/git/git-2.25.0.tar.gz 
 WORKDIR ${RPI3_STAGING}/usr/local/bin
 COPY pump.patch .
 RUN git apply pump.patch && rm pump.patch
+
 # Patch DistCC Python 3.8 compatibility
 WORKDIR ${RPI3_STAGING}/usr/local/lib/python3.8/site-packages
 COPY include_server.patch .

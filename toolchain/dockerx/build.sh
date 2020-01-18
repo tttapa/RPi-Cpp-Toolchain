@@ -4,7 +4,7 @@ set -ex
 
 cd "$( dirname "${BASH_SOURCE[0]}" )"
 
-if false; then
+if true; then
 # Install crosstool-ng
 pushd crosstool-ng-master
 ./build.sh
