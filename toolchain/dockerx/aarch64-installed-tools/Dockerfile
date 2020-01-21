@@ -13,18 +13,14 @@ RUN git clone https://github.com/distcc/distcc.git --depth=1 --single-branch && 
     . venv/bin/activate && \
     ./autogen.sh && \
     ./configure \
-        --host="aarch64-linux-gnu" \
+        --host="aarch64-rpi3-linux-gnu" \
         --prefix="/usr/local" \
-        CFLAGS="-O2" \
-        CXXFLAGS="-O2" \
-        CC="aarch64-rpi3-linux-gnu-gcc --sysroot ${RPI3_SYSROOT} \
-            -Wimplicit-fallthrough=0" \
-        CXX="aarch64-rpi3-linux-gnu-g++ --sysroot ${RPI3_SYSROOT}" \
-        LD="aarch64-rpi3-linux-gnu-ld --sysroot ${RPI3_SYSROOT}" && \
-    make -j`nproc` && \
+        CFLAGS="-O3 -Wimplicit-fallthrough=0 --sysroot ${RPI3_SYSROOT}" \
+        CXXFLAGS="-O3 -Wimplicit-fallthrough=0 --sysroot ${RPI3_SYSROOT}" && \
+    make -j$(($(nproc) * 2)) && \
     make install DESTDIR="${RPI3_STAGING}" && \
     cd .. && rm -rf distcc
- 
+
 # CMake build
 WORKDIR /home/develop
 COPY RPi3.toolchain.cmake .
@@ -70,6 +66,8 @@ RUN wget https://curl.haxx.se/download/curl-7.68.0.tar.gz && \
     make install DESTDIR="${RPI3_SYSROOT}" && \
     cd .. && rm -rf curl-7.68.0
 
+# The Git build process has to call `curl-config` script to find the right 
+# cURL libraries
 RUN mkdir /tmp/curl-config && \
     ln -s "${RPI3_SYSROOT}/usr/local/bin/curl-config" /tmp/curl-config/
 ENV PATH="/tmp/curl-config:${PATH}"
