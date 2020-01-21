@@ -9,8 +9,10 @@ services:
       - distcc_network
     entrypoint: 
       "bash -c '\
-          distccd --daemon --allow 0.0.0.0/0 --nice 0 \
-          --log-file distcc.log \
+          distccd --daemon \
+                  --allow 0.0.0.0/0 \
+                  --nice 0 \
+                  --log-file distcc.log \
           && tail -f distcc.log'"
   client:
     image: aarch64-installed-tools-x

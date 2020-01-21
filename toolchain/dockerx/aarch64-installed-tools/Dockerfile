@@ -36,11 +36,11 @@ RUN wget https://github.com/Kitware/CMake/releases/download/v3.16.2/cmake-3.16.2
 
 # Make build
 WORKDIR /home/develop
-COPY make-4.2.patch .
-RUN wget https://ftpmirror.gnu.org/gnu/make/make-4.2.tar.gz && \
-    tar xzf make-4.2.tar.gz && rm make-4.2.tar.gz && \
-    cd make-4.2 && \
-    git apply ../make-4.2.patch && \
+# COPY make-4.2.patch .
+#    git apply ../make-4.2.patch && \
+RUN wget https://ftpmirror.gnu.org/gnu/make/make-4.3.tar.gz && \
+    tar xzf make-4.3.tar.gz && rm make-4.3.tar.gz && \
+    cd make-4.3 && \
     ./configure \
         --host="aarch64-rpi3-linux-gnu" \
         --prefix="/usr/local" \
@@ -48,7 +48,7 @@ RUN wget https://ftpmirror.gnu.org/gnu/make/make-4.2.tar.gz && \
         CXXFLAGS="--sysroot=${RPI3_SYSROOT} -O3" && \
     make -j$(($(nproc) * 2)) && \
     make install DESTDIR="${RPI3_STAGING}" && \
-    cd .. && rm -rf make-4.2
+    cd .. && rm -rf make-4.3
 
 # cURL build
 WORKDIR /home/develop
