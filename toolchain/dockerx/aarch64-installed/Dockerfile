@@ -1,19 +1,23 @@
 FROM base-ubuntu
 
+# Set the path to the toolchain executables
+ENV HOST_CPU=CORTEXA53
+ENV HOST_ARCH=aarch64
+ENV HOST_TRIPLE=aarch64-rpi3-linux-gnu
+ENV TOOLCHAIN_PATH=/home/develop/x-tools/${HOST_TRIPLE}
+ENV PATH=${PATH}:${TOOLCHAIN_PATH}/bin
+
 # Copy the toolchain from the previous Docker image
 COPY --from=aarch64-cross-toolchain \
-    /home/develop/x-tools/aarch64-rpi3-linux-gnu \
-    /home/develop/x-tools/aarch64-rpi3-linux-gnu
-# Set the path to the toolchain executables
-ENV TOOLCHAIN_PATH=/home/develop/x-tools/aarch64-rpi3-linux-gnu
-ENV PATH=${PATH}:${TOOLCHAIN_PATH}/bin
+    /home/develop/x-tools/${HOST_TRIPLE} \
+    ${TOOLCHAIN_PATH}
 
 # Create a sysroot and staging area for the RPi
 WORKDIR /home/develop
 ENV RPI3_SYSROOT=/home/develop/RPi3-sysroot
 ENV RPI3_STAGING=/home/develop/RPi3-staging
 RUN mkdir RPi3-sysroot && \
-    cp -rp $TOOLCHAIN_PATH/aarch64-rpi3-linux-gnu/sysroot/* ~/RPi3-sysroot/ && \
+    cp -rp $TOOLCHAIN_PATH/${HOST_TRIPLE}/sysroot/* ~/RPi3-sysroot/ && \
     chmod -R u+w /home/develop/RPi3-sysroot
 
 # Use the pkg-config folder inside of the RPi's root filesystem  
@@ -45,10 +49,10 @@ ENV PKG_CONFIG_LIBDIR=/home/develop/RPi3-sysroot/usr/local/lib \
 WORKDIR /home/develop
 RUN mkdir zlib-1.2.11/build-arm
 WORKDIR /home/develop/zlib-1.2.11/build-arm
-RUN CFLAGS="--sysroot=${RPI3_SYSROOT}" \
-    LDFLAGS="--sysroot=${RPI3_SYSROOT}" \
-    CC="aarch64-rpi3-linux-gnu-gcc" \
-    LD="aarch64-rpi3-linux-gnu-ld" \
+RUN CFLAGS="--sysroot=${RPI3_SYSROOT} -O3 -flto" \
+    LDFLAGS="--sysroot=${RPI3_SYSROOT} -flto" \
+    CC="${HOST_TRIPLE}-gcc" \
+    LD="${HOST_TRIPLE}-ld" \
     ../configure \
         --prefix="/usr/local" && \
     make -j$(($(nproc) * 2)) && \
@@ -87,11 +91,11 @@ RUN tar xzf OpenSSL_1_1_1c.tar.gz && rm OpenSSL_1_1_1c.tar.gz
 WORKDIR /home/develop/openssl-OpenSSL_1_1_1c
 RUN ./Configure \
         --prefix="/usr/local" \
-        --cross-compile-prefix="aarch64-rpi3-linux-gnu-" \
+        --cross-compile-prefix="${HOST_TRIPLE}-" \
         CFLAGS="--sysroot=${RPI3_SYSROOT}" \
         CPPFLAGS="--sysroot=${RPI3_SYSROOT}" \
         LDFLAGS="--sysroot=${RPI3_SYSROOT}" \
-        linux-aarch64 && \
+        "linux-${HOST_ARCH}" && \
     make -j$(($(nproc) * 2)) && \
     make install_sw DESTDIR="${RPI3_SYSROOT}" && \
     make install_sw DESTDIR="${RPI3_STAGING}" && \
@@ -129,13 +133,10 @@ WORKDIR /home/develop/libffi-3.2.1
 RUN mkdir build-arm
 WORKDIR /home/develop/libffi-3.2.1/build-arm
 RUN ../configure \
-        --host="aarch64-linux-gnu" \
+        --host="${HOST_TRIPLE}" \
         --prefix="/usr/local" \
         CFLAGS="-O2" CXXFLAGS="-O2" \
-        --with-sysroot="${RPI3_SYSROOT}" \
-        CC="aarch64-rpi3-linux-gnu-gcc" \
-        CXX="aarch64-rpi3-linux-gnu-g++" \
-        LD="aarch64-rpi3-linux-gnu-ld" && \
+        --with-sysroot="${RPI3_SYSROOT}" && \
     make -j$(($(nproc) * 2)) && \
     make install DESTDIR="${RPI3_SYSROOT}" && \
     make install DESTDIR="${RPI3_STAGING}" && \
@@ -177,7 +178,7 @@ RUN git clone --branch bzip2-1.0.8 --depth 1 git://sourceware.org/git/bzip2.git
 # Bzip2 ARM
 WORKDIR /home/develop/bzip2
 RUN make -f Makefile-libbz2_so -j $(($(nproc) * 2)) \
-    CC="aarch64-rpi3-linux-gnu-gcc --sysroot=${RPI3_SYSROOT}" && \
+        CC="${HOST_TRIPLE}-gcc --sysroot=${RPI3_SYSROOT}" && \
     cp -a libbz2.so.1.0 $RPI3_SYSROOT/usr/local/lib && \
     cp -a libbz2.so.1.0.8 $RPI3_SYSROOT/usr/local/lib && \
     ln -s libbz2.so.1.0 ${RPI3_SYSROOT}/usr/local/lib/libbz2.so && \
@@ -185,7 +186,7 @@ RUN make -f Makefile-libbz2_so -j $(($(nproc) * 2)) \
     cp -a libbz2.so.1.0.8 $RPI3_STAGING/usr/local/lib && \
     ln -s libbz2.so.1.0 ${RPI3_STAGING}/usr/local/lib/libbz2.so && \
     make bzip2 bzip2recover -j $(($(nproc) * 2)) \
-    CC="aarch64-rpi3-linux-gnu-gcc --sysroot=${RPI3_SYSROOT}" && \
+        CC="${HOST_TRIPLE}-gcc --sysroot=${RPI3_SYSROOT}" && \
     make install PREFIX="${RPI3_SYSROOT}/usr/local" && \
     make install PREFIX="${RPI3_STAGING}/usr/local"
  
@@ -227,15 +228,15 @@ RUN ../configure \
         --prefix="/usr/local" \
         --datadir="/usr/local/share" \
         --with-build-cc="gcc" \
-        --host="aarch64-rpi3-linux-gnu" \
+        --host="${HOST_TRIPLE}" \
         CFLAGS="--sysroot=${RPI3_SYSROOT}" \
-        CC="aarch64-rpi3-linux-gnu-gcc" \
-        STRIP="aarch64-rpi3-linux-gnu-strip" && \
+        CC="${HOST_TRIPLE}-gcc" \
+        STRIP="${HOST_TRIPLE}-strip" && \
     make -j$(($(nproc) * 2)) && \
     make install DESTDIR=${RPI3_SYSROOT} \
-         INSTALL="install --strip-program=aarch64-rpi3-linux-gnu-strip" && \
+         INSTALL="install --strip-program=${HOST_TRIPLE}-strip" && \
     make install DESTDIR=${RPI3_STAGING} \
-         INSTALL="install --strip-program=aarch64-rpi3-linux-gnu-strip"
+         INSTALL="install --strip-program=${HOST_TRIPLE}-strip"
  
 # GNU Readline Download
 WORKDIR /home/develop
@@ -249,9 +250,9 @@ RUN ../configure \
         --with-curses \
         --enable-shared \
         --prefix="/usr/local" \
-        --host="aarch64-rpi3-linux-gnu" \
+        --host="${HOST_TRIPLE}" \
         CFLAGS="--sysroot=${RPI3_SYSROOT}" \
-        CC="aarch64-rpi3-linux-gnu-gcc" && \
+        CC="${HOST_TRIPLE}-gcc" && \
     make -j$(($(nproc) * 2)) && \
     make install DESTDIR=${RPI3_SYSROOT} && \
     make install DESTDIR=${RPI3_STAGING}
@@ -266,13 +267,13 @@ RUN wget ftp://ftp.gnu.org/gnu/gdbm/gdbm-1.18.1.tar.gz && \
 WORKDIR /home/develop/gdbm-1.18.1/build-arm
 RUN ../configure \
         --prefix="/usr/local" \
-        --host="aarch64-rpi3-linux-gnu" \
+        --host="${HOST_TRIPLE}" \
         CFLAGS="--sysroot=${RPI3_SYSROOT} \
                 -I${RPI3_SYSROOT}/usr/local/include \
                 -L${RPI3_SYSROOT}/usr/local/lib" \
         LDFLAGS="--sysroot=${RPI3_SYSROOT} \
                  -L${RPI3_SYSROOT}/usr/local/lib" \
-        CC="aarch64-rpi3-linux-gnu-gcc" && \
+        CC="${HOST_TRIPLE}-gcc" && \
     make -j$(($(nproc) * 2)) && \
     make install DESTDIR=${RPI3_SYSROOT} && \
     make install DESTDIR=${RPI3_STAGING}
@@ -287,9 +288,9 @@ RUN wget https://www.sqlite.org/2019/sqlite-autoconf-3290000.tar.gz && \
 WORKDIR /home/develop/sqlite-autoconf-3290000/build-arm
 RUN ../configure \
         --prefix="/usr/local" \
-        --host="aarch64-rpi3-linux-gnu" \
+        --host="${HOST_TRIPLE}" \
         CFLAGS="--sysroot=${RPI3_SYSROOT}" \
-        CC="aarch64-rpi3-linux-gnu-gcc" && \
+        CC="${HOST_TRIPLE}-gcc" && \
     make -j$(($(nproc) * 2)) && \
     make install DESTDIR=${RPI3_SYSROOT} && \
     make install DESTDIR=${RPI3_STAGING}
@@ -304,9 +305,9 @@ RUN wget https://downloads.sourceforge.net/project/libuuid/libuuid-1.0.3.tar.gz 
 WORKDIR /home/develop/libuuid-1.0.3/build-arm
 RUN ../configure \
         --prefix="/usr/local" \
-        --host="aarch64-rpi3-linux-gnu" \
+        --host="${HOST_TRIPLE}" \
         CFLAGS="--sysroot=${RPI3_SYSROOT}" \
-        CC="aarch64-rpi3-linux-gnu-gcc" && \
+        CC="${HOST_TRIPLE}-gcc" && \
     make -j$(($(nproc) * 2)) && \
     make install DESTDIR=${RPI3_SYSROOT} && \
     make install DESTDIR=${RPI3_STAGING} && \
@@ -327,7 +328,7 @@ RUN ln -s ${RPI3_SYSROOT}/usr/local/lib/libffi-3.2.1/include/* \
         --enable-loadable-sqlite-extensions --with-dbmliborder=bdb:gdbm \
         --with-ensurepip=install \
         --build="$(gcc -dumpmachine)" \
-        --host="aarch64-rpi3-linux-gnu" \
+        --host="${HOST_TRIPLE}" \
         --prefix="/usr/local" \
         CFLAGS="--sysroot=${RPI3_SYSROOT} \
                 -I${RPI3_SYSROOT}/usr/local/include \
@@ -345,9 +346,9 @@ RUN ln -s ${RPI3_SYSROOT}/usr/local/lib/libffi-3.2.1/include/* \
                  -I${RPI3_SYSROOT}/usr/local/include \
                  -L${RPI3_SYSROOT}/usr/local/lib \
                  -L${RPI3_SYSROOT}/usr/local/lib64" \
-        CC="aarch64-rpi3-linux-gnu-gcc" \
-        CXX="aarch64-rpi3-linux-gnu-g++" \
-        LD="aarch64-rpi3-linux-gnu-ld" && \
+        CC="${HOST_TRIPLE}-gcc" \
+        CXX="${HOST_TRIPLE}-g++" \
+        LD="${HOST_TRIPLE}-ld" && \
     cat config.log && \
     make -j$(($(nproc) * 2)) && \
     make altinstall DESTDIR="${RPI3_SYSROOT}" && \
@@ -374,12 +375,12 @@ WORKDIR /home/develop/zbar-0.10/build-arm
 RUN ../configure \
         --disable-video --without-imagemagick --without-gtk --without-python \
         --without-qt --without-jpeg \
-        --host="aarch64-linux-gnu" \
+        --host="${HOST_TRIPLE}" \
         --prefix="/usr/local" \
         CFLAGS="-O2" \
-        CC="aarch64-rpi3-linux-gnu-gcc --sysroot=${RPI3_SYSROOT}" \
-        CXX="aarch64-rpi3-linux-gnu-g++ --sysroot=${RPI3_SYSROOT}" \
-        LD="aarch64-rpi3-linux-gnu-ld --sysroot=${RPI3_SYSROOT}" && \
+        CC="${HOST_TRIPLE}-gcc --sysroot=${RPI3_SYSROOT}" \
+        CXX="${HOST_TRIPLE}-g++ --sysroot=${RPI3_SYSROOT}" \
+        LD="${HOST_TRIPLE}-ld --sysroot=${RPI3_SYSROOT}" && \
     make -j$(($(nproc) * 2)) && \
     make install DESTDIR="${RPI3_SYSROOT}" && \
     make install DESTDIR="${RPI3_STAGING}" && \
@@ -410,12 +411,12 @@ RUN wget https://ffmpeg.org/releases/ffmpeg-4.2.tar.bz2 && \
 RUN mkdir ffmpeg-4.2/build-arm
 WORKDIR /home/develop/ffmpeg-4.2/build-arm
 RUN ../configure \
-        --arch="aarch64" \
+        --arch="${HOST_ARCH}" \
         --target-os="linux" \
         --prefix="/usr/local" \
         --sysroot="${RPI3_SYSROOT}" \
         --enable-cross-compile \
-        --cross-prefix="aarch64-rpi3-linux-gnu-" \
+        --cross-prefix="${HOST_TRIPLE}-" \
         --enable-gpl \
         --enable-avresample \
         --enable-omx \
@@ -442,8 +443,8 @@ RUN mkdir /home/develop/opencv-4.2.0/build-arm
 WORKDIR /home/develop/opencv-4.2.0/build-arm
 RUN cmake \
         -DCMAKE_TOOLCHAIN_FILE=../platforms/linux/arm.toolchain.cmake \
-        -DGNU_MACHINE="aarch64-rpi3-linux-gnu" \
-        -DCMAKE_SYSTEM_PROCESSOR=aarch64 \
+        -DGNU_MACHINE="${HOST_TRIPLE}" \
+        -DCMAKE_SYSTEM_PROCESSOR="${HOST_ARCH}" \
         -DCMAKE_SYSROOT="${RPI3_SYSROOT}" \
         -DWITH_JPEG=ON -DBUILD_JPEG=ON \
         -DWITH_PNG=ON -DBUILD_PNG=ON \
@@ -468,9 +469,9 @@ RUN cmake \
  
 # Why is the architecture wrong?
 RUN mv ${RPI3_SYSROOT}/usr/local/lib/python3.8/site-packages/cv2/python-3.8/cv2.cpython-38-x86_64-linux-gnu.so \
-       ${RPI3_SYSROOT}/usr/local/lib/python3.8/site-packages/cv2/python-3.8/cv2.cpython-38-aarch64-linux-gnu.so && \
+       ${RPI3_SYSROOT}/usr/local/lib/python3.8/site-packages/cv2/python-3.8/cv2.cpython-38-${HOST_ARCH}-linux-gnu.so && \
     mv ${RPI3_STAGING}/usr/local/lib/python3.8/site-packages/cv2/python-3.8/cv2.cpython-38-x86_64-linux-gnu.so \
-       ${RPI3_STAGING}/usr/local/lib/python3.8/site-packages/cv2/python-3.8/cv2.cpython-38-aarch64-linux-gnu.so
+       ${RPI3_STAGING}/usr/local/lib/python3.8/site-packages/cv2/python-3.8/cv2.cpython-38-${HOST_ARCH}-linux-gnu.so
 
 # OpenBLAS ARM
 WORKDIR /home/develop
@@ -479,10 +480,10 @@ RUN git clone \
         https://github.com/xianyi/OpenBLAS && \
     cd OpenBLAS && \
     make \
-        CC=aarch64-rpi3-linux-gnu-gcc \
-        FC=aarch64-rpi3-linux-gnu-gfortran \
+        CC="${HOST_TRIPLE}-gcc" \
+        FC="${HOST_TRIPLE}-gfortran" \
         HOSTCC=gcc \
-        TARGET=CORTEXA53 && \
+        TARGET=${HOST_CPU} && \
     make install DESTDIR=${RPI3_SYSROOT} PREFIX=/usr/local && \
     make install DESTDIR=${RPI3_STAGING} PREFIX=/usr/local && \
     cd .. && rm -rf OpenBLAS
@@ -505,31 +506,21 @@ COPY --chown=develop:develop npymath.ini.patch .
 RUN chmod +x build-numpy-scipy-crossenv.sh && ./build-numpy-scipy-crossenv.sh
 
 # Move the compiled Python packages to the staging area
-RUN mv \
-        venv/cross/lib/python3.8/site-packages/wheel* \
-        ${RPI3_STAGING}/usr/local/lib/python3.8/site-packages && \
+RUN rm -rf venv/cross/lib/python3.8/site-packages/__pycache__ && \
     mv \
-        venv/cross/lib/python3.8/site-packages/numpy* \
-        ${RPI3_STAGING}/usr/local/lib/python3.8/site-packages && \
-    mv \
-        venv/cross/lib/python3.8/site-packages/scipy* \
-        ${RPI3_STAGING}/usr/local/lib/python3.8/site-packages && \
-    mv \
-        venv/cross/lib/python3.8/site-packages/pybind11* \
-        ${RPI3_STAGING}/usr/local/lib/python3.8/site-packages && \
-    mv \
-        venv/cross/lib/python3.8/site-packages/setuptools* \
-        ${RPI3_STAGING}/usr/local/lib/python3.8/site-packages && \
-    mv \
-        venv/cross/lib/python3.8/site-packages/pip* \
-        ${RPI3_STAGING}/usr/local/lib/python3.8/site-packages
+        "venv/cross/lib/python3.8/site-packages/"* \
+        "${RPI3_STAGING}/usr/local/lib/python3.8/site-packages"
 
-RUN mkdir -p ${RPI3_STAGING}/usr/lib/aarch64-linux-gnu/ && \
-    mkdir -p ${RPI3_STAGING}/lib/aarch64-linux-gnu/ && \
-    cp -a ${RPI3_SYSROOT}/lib/libstdc++.so* \
-        ${RPI3_STAGING}/usr/lib/aarch64-linux-gnu/ && \
-    cp -a ${RPI3_SYSROOT}/lib/libgfortran.so* \
-        ${RPI3_STAGING}/lib/aarch64-linux-gnu/
+RUN mkdir -p "${RPI3_STAGING}/usr/local/lib/${HOST_ARCH}-linux-gnu/" && \
+    cp -a \
+        "${RPI3_SYSROOT}/lib/libstdc++.so"* \
+        "${RPI3_STAGING}/usr/local/lib/${HOST_ARCH}-linux-gnu/" && \
+    cp -a \
+        "${RPI3_SYSROOT}/lib/libgfortran.so"* \
+        "${RPI3_STAGING}/usr/local/lib/${HOST_ARCH}-linux-gnu/" && \
+    cp -ar \
+        "$TOOLCHAIN_PATH/${HOST_TRIPLE}/debug-root/"* \
+        "${RPI3_STAGING}"
 # Copy gdbserver to the sysroot and staging area, as well as the latest C++ 
 # library, and store everything in tar.gz archives.
 # WORKDIR /home/develop

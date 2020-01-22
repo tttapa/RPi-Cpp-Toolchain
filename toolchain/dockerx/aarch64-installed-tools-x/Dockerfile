@@ -23,24 +23,34 @@ RUN apt-get update && apt install -y ca-certificates && \
     git config --system http.sslCAPath /etc/ssl/certs
 
 WORKDIR /home
-COPY wrapper.sh .
+COPY distcc-wrapper.sh .
 RUN \
-    chmod +x wrapper.sh  && \
+    chmod +x distcc-wrapper.sh  && \
     git clone https://github.com/tttapa/Control-Surface && \
     cd Control-Surface && \
     rm -rf googletest && \
     git clone https://github.com/google/googletest
 WORKDIR /home/Control-Surface/build
+
+# RUN export CC=aarch64-rpi3-linux-gnu-gcc && \
+#     export CXX=aarch64-rpi3-linux-gnu-g++ && \
+#     export AR=aarch64-rpi3-linux-gnu-ar && \
+#     export LD=aarch64-rpi3-linux-gnu-ld && \
+#     export FC=aarch64-rpi3-linux-gnu-gfortran && \
+#     cmake .. \
+#         -DCMAKE_C_COMPILER_LAUNCHER=/home/wrapper.sh \
+#         -DCMAKE_CXX_COMPILER_LAUNCHER=/home/wrapper.sh \
+#         -DCMAKE_AR="/opt/aarch64-rpi3-linux-gnu/bin/${AR}" \
+#         -DFAST_COMPILE=On
 RUN export CC=aarch64-rpi3-linux-gnu-gcc && \
     export CXX=aarch64-rpi3-linux-gnu-g++ && \
     export AR=aarch64-rpi3-linux-gnu-ar && \
     export LD=aarch64-rpi3-linux-gnu-ld && \
     export FC=aarch64-rpi3-linux-gnu-gfortran && \
     cmake .. \
-        -DCMAKE_C_COMPILER_LAUNCHER=/home/wrapper.sh \
-        -DCMAKE_CXX_COMPILER_LAUNCHER=/home/wrapper.sh \
         -DCMAKE_AR="/opt/aarch64-rpi3-linux-gnu/bin/${AR}" \
         -DFAST_COMPILE=On
+ENV CCACHE_PREFIX=/home/distcc-wrapper.sh
 # RUN export CC=aarch64-rpi3-linux-gnu-gcc && \
 #     export CXX=aarch64-rpi3-linux-gnu-g++ && \
 #     export AR=aarch64-rpi3-linux-gnu-ar && \

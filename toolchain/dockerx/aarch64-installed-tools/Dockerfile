@@ -96,7 +96,83 @@ WORKDIR ${RPI3_STAGING}/usr/local/bin
 COPY pump.patch .
 RUN git apply pump.patch && rm pump.patch
 
-# Patch DistCC Python 3.8 compatibility
-WORKDIR ${RPI3_STAGING}/usr/local/lib/python3.8/site-packages
-COPY include_server.patch .
-RUN git apply include_server.patch && rm include_server.patch
+# CCache build
+WORKDIR /home/develop
+RUN wget https://github.com/ccache/ccache/releases/download/v3.7.7/ccache-3.7.7.tar.gz && \
+    tar xzf ccache-3.7.7.tar.gz && rm ccache-3.7.7.tar.gz && \
+    cd ccache-3.7.7 && \
+    ./configure \
+        --host="aarch64-rpi3-linux-gnu" \
+        --prefix="/usr/local" \
+        CFLAGS="--sysroot ${RPI3_SYSROOT} -O3 \
+                $(pkg-config zlib --cflags)" \
+        CXXFLAGS="--sysroot ${RPI3_SYSROOT} -O3 \
+                $(pkg-config zlib --cflags)" \
+        LDFLAGS="$(pkg-config zlib --libs)" && \
+    make -j$(($(nproc) * 2)) && \
+    make install DESTDIR="${RPI3_STAGING}" && \
+    cd .. && rm -rf ccache-3.7.7
+
+# libpipeline build
+WORKDIR /home/develop
+RUN wget http://download.savannah.nongnu.org/releases/libpipeline/libpipeline-1.5.2.tar.gz && \
+    tar xzf libpipeline-1.5.2.tar.gz && \
+    cd libpipeline-1.5.2 && \
+    ./configure \
+        --prefix="/usr/local" \
+        --with-sysroot="${RPI3_SYSROOT}" \
+        --host="${HOST_TRIPLE}" && \
+    make -j$(($(nproc) * 2)) && \
+    make install DESTDIR="${RPI3_SYSROOT}" && \
+    make install DESTDIR="${RPI3_STAGING}" && \
+    cd .. && rm -rf libpipeline-1.5.2
+
+# groff build
+WORKDIR /home/develop
+RUN wget https://ftp.gnu.org/gnu/groff/groff-1.22.4.tar.gz && \
+    tar xzf groff-1.22.4.tar.gz && \
+    mkdir groff-1.22.4/build-arm && \
+    mkdir groff-1.22.4/build && \
+    cd groff-1.22.4/build-arm && \
+    ../configure \
+        --prefix="/usr/local" \
+        --host="${HOST_TRIPLE}" \
+        --with-doc="info" \
+        CPPFLAGS="--sysroot=${RPI3_SYSROOT}" \
+        CFLAGS="--sysroot=${RPI3_SYSROOT}" \
+        LDFLAGS="--sysroot=${RPI3_SYSROOT}" \
+        CXXFLAGS="--sysroot=${RPI3_SYSROOT}" && \
+    make -j$(($(nproc) * 2)) && \
+    make install DESTDIR="${RPI3_SYSROOT}" && \
+    make install DESTDIR="${RPI3_STAGING}" && \
+    cd ../build && \
+    ../configure \
+        --prefix="$HOME/.local" \
+        --with-doc="no" &&\
+    make -j$(($(nproc) * 2)) && \
+    make install && \
+    cd ../.. && rm -rf groff-1.22.4
+
+ENV PATH="/home/develop/.local/bin:${PATH}"
+
+# # man-db build
+# WORKDIR /home/develop
+# RUN wget http://download.savannah.nongnu.org/releases/man-db/man-db-2.9.0.tar.xz && \
+#     tar xJf man-db-2.9.0.tar.xz && \
+#     cd man-db-2.9.0 && \
+#     ./configure \
+#         --enable-mb-groff \
+#         --prefix="/usr/local" \
+#         --with-sysroot="${RPI3_SYSROOT}" \
+#         --host="${HOST_TRIPLE}" \
+#         CFLAGS="$(pkg-config libpipeline --cflags) \
+#                 --sysroot=${RPI3_SYSROOT}" \
+#         CPPFLAGS="$(pkg-config libpipeline --cflags) \
+#                 --sysroot=${RPI3_SYSROOT}" \
+#         CXXFLAGS="$(pkg-config libpipeline --cflags) \
+#                 --sysroot=${RPI3_SYSROOT}" \
+#         LDFLAGS="$(pkg-config libpipeline --libs) \
+#                 --sysroot=${RPI3_SYSROOT}" && \
+#         make -j$(($(nproc) * 2)) && \
+#     make install DESTDIR="${RPI3_STAGING}" && \
+#     cd .. && rm -rf man-db-2.9.0

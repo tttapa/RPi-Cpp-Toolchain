@@ -32,8 +32,13 @@ pushd aarch64-installed
 ./build.sh
 popd
 
+# Install build tools to ARM image
+pushd aarch64-installed-x
+./build.sh
+popd
+
 # Cross-compile build tools for RPi
-pushd aarch64-installed-tools
+pushd aarch64-installed-x
 ./build.sh
 popd
 
