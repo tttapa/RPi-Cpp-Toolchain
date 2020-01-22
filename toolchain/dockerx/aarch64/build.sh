@@ -6,7 +6,7 @@ cd "$( dirname "${BASH_SOURCE[0]}" )"
 
 if true; then
 # Install crosstool-ng
-pushd crosstool-ng-master
+pushd ../crosstool-ng-master
 ./build.sh
 popd
 
@@ -21,7 +21,7 @@ pushd aarch64-cross-native-toolchain
 popd
 
 # Install some build tools in on Ubuntu 
-pushd base-ubuntu
+pushd ../base-ubuntu
 ./build.sh
 popd
 fi

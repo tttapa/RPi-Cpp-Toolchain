@@ -29,7 +29,7 @@ ENV PKG_CONFIG_LIBDIR=/home/develop/RPi3-sysroot/usr/local/lib \
 WORKDIR /home/develop
 RUN wget https://downloads.sourceforge.net/project/libpng/zlib/1.2.11/zlib-1.2.11.tar.gz && \
     tar xzf zlib-1.2.11.tar.gz && rm zlib-1.2.11.tar.gz
- 
+
 # Zlib build
 RUN mkdir zlib-1.2.11/build
 WORKDIR /home/develop/zlib-1.2.11/build
@@ -79,7 +79,7 @@ RUN make install_sw && \
     make distclean && \
     cd && rm -rf openssl-OpenSSL_1_1_1c
 USER develop
- 
+
 # Use the pkg-config folder inside of the RPi's root filesystem 
 ENV PKG_CONFIG_LIBDIR=/home/develop/RPi3-sysroot/usr/local/lib \
     PKG_CONFIG_PATH=/home/develop/RPi3-sysroot/usr/local/lib/pkgconfig \

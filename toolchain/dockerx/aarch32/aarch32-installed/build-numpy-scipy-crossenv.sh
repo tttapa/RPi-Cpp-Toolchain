@@ -7,7 +7,7 @@
 set -ex
 
 WORKING=$PWD
-GFORTRAN=aarch64-rpi3-linux-gnu-gfortran
+GFORTRAN=${HOST_TRIPLE}-gfortran
 
 BUILD_PYTHON=`which python3.8`
 HOST_PYTHON="${RPI3_SYSROOT}/usr/local/bin/python3.8"

@@ -6,7 +6,7 @@ set -ex
 # docker buildx rm testbuilder || true
 # docker buildx create --name testbuilder --platform linux/arm64
 # docker buildx use testbuilder
-../../../scripts/install-docker-binfmt.sh
+../../../../scripts/install-docker-binfmt.sh
 docker buildx inspect --bootstrap
 docker buildx build --platform linux/arm64 . --load -t aarch64-installed-tools-x
 # docker buildx rm testbuilder
