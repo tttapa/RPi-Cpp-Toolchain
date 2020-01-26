@@ -1,6 +1,0 @@
-#!/usr/bin/env bash
-
-PKG_CONFIG_LIBDIR="${RPI3_SYSROOT}/usr/local/lib" \
-PKG_CONFIG_PATH="${RPI3_SYSROOT}/usr/local/lib/pkgconfig" \
-PKG_CONFIG_SYSROOT_DIR="${RPI3_SYSROOT}" \
-/usr/bin/pkg-config "$@"

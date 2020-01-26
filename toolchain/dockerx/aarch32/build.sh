@@ -2,7 +2,7 @@
 
 set -ex
 
-cd "$( dirname "${BASH_SOURCE[0]}" )"
+cd "$(dirname "${BASH_SOURCE[0]}")"
 
 # Install crosstool-ng
 pushd ../crosstool-ng-master
@@ -14,18 +14,18 @@ pushd aarch32-cross-toolchain
 ./build.sh
 popd
 
-# Install some build tools in on Ubuntu 
+# Install some build tools in on Ubuntu
 pushd ../base-ubuntu
 ./build.sh
 popd
 
 # Cross-compile many dependencies for RPi
 # including Python, OpenCV, FFmpeg ...
-pushd aarch32-installed
+pushd aarch32-cross-build
 ./build.sh
 popd
 
 # Install build tools to ARM Raspbian image
-pushd aarch32-installed-raspbian-x
+pushd host/aarch32-python-opencv-raspbian
 ./build.sh
 popd

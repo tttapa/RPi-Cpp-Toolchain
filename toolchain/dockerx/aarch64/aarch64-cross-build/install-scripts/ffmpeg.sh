@@ -14,8 +14,6 @@ pushd ffmpeg-4.2
 
 # Configure
 . cross-pkg-config
-export PKG_CONFIG_LIBDIR="${PKG_CONFIG_LIBDIR}:${RPI3_SYSROOT}/opt/vc/lib"
-export PKG_CONFIG_PATH="${PKG_CONFIG_PATH}:${RPI3_SYSROOT}/opt/vc/lib/pkgconfig"
 ./configure \
     --arch="${HOST_ARCH}" \
     --target-os="linux" \

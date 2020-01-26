@@ -4,7 +4,8 @@ services:
   distcc-server:
     build:
       context: .
-    container_name: 'aarch64-cross-toolchain-distcc-server'
+    image: aarch64-cross-toolchain-distcc
+    container_name: aarch64-cross-toolchain-distcc-server
     networks: 
       - distcc_network
     entrypoint: 
@@ -15,8 +16,8 @@ services:
                   --log-file distcc.log \
           && tail -f distcc.log'"
   client:
-    image: aarch64-installed-tools-x
-    container_name: aarch64-installed-tools-x-distcc-client
+    image: aarch64-develop
+    container_name: aarch64-develop-distcc-client
     stdin_open: true
     tty: true
     environment:

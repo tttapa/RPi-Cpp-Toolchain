@@ -2,47 +2,42 @@
 
 set -ex
 
-cd "$( dirname "${BASH_SOURCE[0]}" )"
+cd "$(dirname "${BASH_SOURCE[0]}")"
 
-if true; then
 # Install crosstool-ng
 pushd ../crosstool-ng-master
 ./build.sh
 popd
 
-# Build a cross-compilation toolchain
+# Build a cross-compilation toolchain for Raspberry Pi 3/3B+
 pushd aarch64-cross-toolchain
 ./build.sh
 popd
 
-# Build a native toolchain for RPi
+# Build a native toolchain for Raspberry Pi 3/3B+
 pushd aarch64-cross-native-toolchain
 ./build.sh
 popd
 
-# Install some build tools in on Ubuntu 
+# Install some build tools on Ubuntu
 pushd ../base-ubuntu
 ./build.sh
 popd
-fi
 
-# Cross-compile many dependencies for RPi
-# including Python, OpenCV, FFmpeg ...
-pushd aarch64-installed
+# Creates two images, one with cross-compiled Python, OpenCV, FFmpeg etc.
+# libraries and executables for the Raspberry Pi, and another one that includes
+# all this, and also development tools like Make, CMake, GCC, CCache, DistCC
+# and Git
+pushd aarch64-cross-build
 ./build.sh
 popd
 
-# Install build tools to ARM image
-pushd aarch64-installed-x
+# Install the cross-compiled libraries and executables to an ARM image
+pushd host/aarch64-python-opencv
 ./build.sh
 popd
 
-# Cross-compile build tools for RPi
-pushd aarch64-installed-x
-./build.sh
-popd
-
-# Install build tools to ARM image
-pushd aarch64-installed-tools-x
+# Install the development tools to an ARM image
+pushd host/aarch64-develop
 ./build.sh
 popd
