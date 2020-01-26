@@ -19,11 +19,11 @@ SCIPY_URL=https://files.pythonhosted.org/packages/04/ab/e2eb3e3f90b9363040a3d885
 
 ################################################################
 # Set up crossenv
-$BUILD_PYTHON -m crossenv $HOST_PYTHON venv
-. venv/bin/activate
+$BUILD_PYTHON -m crossenv $HOST_PYTHON crossenv
+. crossenv/bin/activate
 
-BUILD_SITE=$PWD/venv/build/lib/python3.8/site-packages
-CROSS_SITE=$PWD/venv/cross/lib/python3.8/site-packages
+BUILD_SITE=$PWD/crossenv/build/lib/python3.8/site-packages
+CROSS_SITE=$PWD/crossenv/cross/lib/python3.8/site-packages
 
 ################################################################
 # Host-numpy

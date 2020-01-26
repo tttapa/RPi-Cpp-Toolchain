@@ -488,16 +488,8 @@ RUN git clone \
 # Crossenv, Wheel ARM and NumPy ARM
 RUN python3.8 -m pip install --user crossenv && \
     python3.8 -m crossenv ${RPI3_SYSROOT}/usr/local/bin/python3.8 venv && \
-    . venv/bin/activate && pip install wheel cython pybind11 
-# RUN export NPY_NUM_BUILD_JOBS=$(($(nproc) * 2)) && \
-#     . venv/bin/activate && \
-#     CFLAGS="-I${RPI3_SYSROOT}/usr/local/include \
-#             -L${RPI3_SYSROOT}/usr/local/lib" \
-#     LDFLAGS="-L${RPI3_SYSROOT}/usr/local/lib" \
-#     python3.8 -m pip install \
-#         --install-option="--jobs=$(($(nproc) * 2))" \
-#         -v \
-#         numpy
+    . venv/bin/activate && pip install wheel cython pybind11
+
 COPY --chown=develop:develop build-numpy-scipy-crossenv.sh .
 COPY --chown=develop:develop npymath.ini.patch .
 RUN chmod +x build-numpy-scipy-crossenv.sh && ./build-numpy-scipy-crossenv.sh
@@ -508,6 +500,8 @@ RUN rm -rf venv/cross/lib/python3.8/site-packages/__pycache__ && \
         "venv/cross/lib/python3.8/site-packages/"* \
         "${RPI3_STAGING}/usr/local/lib/python3.8/site-packages"
 
+# Copy gdbserver to the sysroot and staging area, as well as the latest C++ 
+# and Fortran libraries.
 RUN mkdir -p "${RPI3_STAGING}/usr/local/lib/arm-linux-gnueabihf/" && \
     cp -a \
         "${RPI3_SYSROOT}/lib/libstdc++.so"* \
@@ -518,15 +512,3 @@ RUN mkdir -p "${RPI3_STAGING}/usr/local/lib/arm-linux-gnueabihf/" && \
     cp -ar \
         "$TOOLCHAIN_PATH/${HOST_TRIPLE}/debug-root/"* \
         "${RPI3_STAGING}"
-# Copy gdbserver to the sysroot and staging area, as well as the latest C++ 
-# library, and store everything in tar.gz archives.
-# WORKDIR /home/develop
-# RUN cp -ar $TOOLCHAIN_PATH/${HOST_TRIPLE}/debug-root/* ${RPI3_SYSROOT} && \
-#     cp -ar $TOOLCHAIN_PATH/${HOST_TRIPLE}/debug-root/* ${RPI3_STAGING} && \
-#     chmod u+w ${RPI3_STAGING}/usr && \
-#     mkdir -p ${RPI3_STAGING}/usr/lib/arm-linux-gnueabihf/ && \
-#     cp -a ${RPI3_SYSROOT}/lib/libstdc++.so.6.0.26 ${RPI3_STAGING}/usr/lib/arm-linux-gnueabihf/libstdc++.so.6.0.26
-# RUN tar zcf x-tools.tar.gz x-tools & \
-#     tar zcf RPi3-sysroot.tar.gz RPi3-sysroot & \
-#     tar zcf RPi3-staging.tar.gz RPi3-staging & \
-#     wait
