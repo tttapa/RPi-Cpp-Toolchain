@@ -94,7 +94,7 @@ COPY --chown=develop:develop install-scripts/zbar.sh .
 RUN chmod +x zbar.sh && ./zbar.sh
  
 # Raspberry Pi Userland (VideoCore)
-COPY RPi3.toolchain.cmake .
+COPY install-scripts/RPi3.toolchain.cmake .
 COPY --chown=develop:develop install-scripts/userland.sh .
 RUN chmod +x userland.sh && ./userland.sh
 
@@ -116,7 +116,7 @@ RUN chmod +x ffmpeg.sh && ./ffmpeg.sh
 
 # Install NumPy and Crossenv on build
 RUN python3.8 -m pip install crossenv
-RUN python3.8 -m crossenv ${RPI3_SYSROOT}/usr/local/bin/python3.8 crossenv
+RUN python3.8 -m crossenv "${RPI3_SYSROOT}/usr/local/bin/python3.8" crossenv
 
 # OpenBLAS ARM
 COPY --chown=develop:develop install-scripts/openblas.sh .
@@ -124,9 +124,9 @@ RUN chmod +x openblas.sh && ./openblas.sh
 
 # Wheel, Cython, Pybind11, Numpy and Scipy packages ARM
 RUN . crossenv/bin/activate && pip install wheel cython pybind11 
-COPY --chown=develop:develop build-numpy-scipy-crossenv.sh .
-COPY --chown=develop:develop npymath.ini.patch .
-RUN chmod +x build-numpy-scipy-crossenv.sh && ./build-numpy-scipy-crossenv.sh
+COPY --chown=develop:develop install-scripts/numpy-scipy.sh .
+COPY --chown=develop:develop patches/npymath.ini.patch .
+RUN chmod +x numpy-scipy.sh && ./numpy-scipy.sh
 
 # OpenCV ARM
 COPY --chown=develop:develop install-scripts/opencv.sh .

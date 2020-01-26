@@ -34,7 +34,7 @@ export FOPT='-DNDEBUG -O3'
 
 wget $NUMPY_URL
 unzip -q numpy-*.zip && rm numpy-*.zip
-cd numpy-*
+cd numpy-*.*.*
 cat > site.cfg <<EOF
 [openblas]
 libraries = openblas
@@ -64,7 +64,7 @@ cd -
 wget $SCIPY_URL
 wget https://github.com/scipy/scipy/commit/6a963029abc1ab79401fb3c1863c9d9f68020c4c.patch
 tar xf scipy-*.tar.gz && rm scipy-*.tar.gz
-cd scipy-*
+cd scipy-*.*.*
 git apply ../6a963029abc1ab79401fb3c1863c9d9f68020c4c.patch
 cat > site.cfg <<EOF
 [openblas]
