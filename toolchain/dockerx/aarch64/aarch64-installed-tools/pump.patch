@@ -6,7 +6,7 @@ index 2db4f21..8223c0a 100755
  # The autoconf manual suggests that we do.  Right now it doesn't seem
  # to be needed in practice, though.
  
--PYTHON=/home/develop/distcc/venv/cross/bin/python
+-PYTHON=/home/develop/crossenv/cross/bin/python
 +PYTHON=python3
  prefix=/usr/local
  exec_prefix=${prefix}

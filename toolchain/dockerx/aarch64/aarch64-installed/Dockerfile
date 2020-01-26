@@ -1,4 +1,4 @@
-FROM base-ubuntu
+FROM base-ubuntu as python-opencv-build
 
 # Set the path to the toolchain executables
 ENV HOST_CPU="CORTEXA53"
@@ -149,3 +149,32 @@ RUN mkdir -p "${RPI3_STAGING}/usr/local/lib/${HOST_ARCH}-linux-gnu/" && \
     cp -ar \
         "$TOOLCHAIN_PATH/${HOST_TRIPLE}/debug-root/"* \
         "${RPI3_STAGING}"
+
+FROM python-opencv-build as developer-build
+
+# DistCC ARM
+COPY --chown=develop:develop install-scripts/distcc.sh .
+COPY --chown=develop:develop patches/pump.patch .
+RUN chmod +x distcc.sh && ./distcc.sh
+
+# Make ARM
+COPY --chown=develop:develop install-scripts/make.sh .
+RUN chmod +x make.sh && ./make.sh
+
+# CMake ARM
+COPY --chown=develop:develop install-scripts/cmake.sh .
+COPY --chown=develop:develop install-scripts/RPi3.toolchain.cmake.cmake .
+RUN chmod +x cmake.sh && ./cmake.sh
+
+# CCache ARM
+COPY --chown=develop:develop install-scripts/ccache.sh .
+RUN chmod +x ccache.sh && ./ccache.sh
+
+# cURL ARM
+COPY --chown=develop:develop install-scripts/curl.sh .
+RUN chmod +x curl.sh && ./curl.sh
+
+# Git ARM
+COPY --chown=develop:develop install-scripts/git.sh .
+COPY --chown=develop:develop patches/git-2.25.0.patch .
+RUN chmod +x git.sh && ./git.sh
