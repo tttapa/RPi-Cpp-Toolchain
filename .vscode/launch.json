@@ -2,7 +2,7 @@
     "version": "0.3.0",
     "configurations": [
         {
-            "name": "GDB Attach to Raspberry Pi",
+            "name": "GDB Launch Remote (Raspberry Pi)",
             "type": "cppdbg",
             "request": "launch",
             "program": "${command:cmake.launchTargetPath}",
@@ -14,7 +14,7 @@
             "environment": [],
             "externalConsole": false,
             "MIMode": "gdb",
-            "preLaunchTask": "Start GDB Server for Debug Target on RPi"
+            "preLaunchTask": "Start GDB Server (Raspberry Pi)"
         },
         {
             "name": "GDB Launch",
@@ -39,7 +39,7 @@
                 "aarch64-linux-gnu"
             ],
             "description": "The architecture of the Raspberry Pi",
-            "default": "arm-linux-gnueabihf"
-        }
+            "default": "aarch64-linux-gnu"
+        },
     ]
 }

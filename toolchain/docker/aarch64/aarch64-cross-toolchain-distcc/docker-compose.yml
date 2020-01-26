@@ -24,7 +24,7 @@ services:
       DISTCC_HOSTS: 'distcc-server,cpp,lzo'
     networks:
       - distcc_network
-    entrypoint: bash
+    command: bash
 
 networks: 
   distcc_network:

@@ -66,4 +66,4 @@ WORKDIR /home/develop/Control-Surface/build
 RUN cmake .. \
         -DFAST_COMPILE=On
 
-ENTRYPOINT [ "bash" ]
+CMD [ "bash" ]
