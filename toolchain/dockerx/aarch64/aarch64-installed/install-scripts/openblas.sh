@@ -13,12 +13,26 @@ make \
     CC="${HOST_TRIPLE}-gcc" \
     FC="${HOST_TRIPLE}-gfortran" \
     HOSTCC=gcc \
-    TARGET=${HOST_CPU}
+    TARGET=${HOST_CPU} \
+    V=1
 
 # Install
-make install DESTDIR="${RPI3_SYSROOT}" PREFIX="/usr/local"
-make install DESTDIR="${RPI3_STAGING}" PREFIX="/usr/local"
+make install \
+    DESTDIR="${RPI3_SYSROOT}" \
+    PREFIX="/usr/local" \
+    FC="${HOST_TRIPLE}-gfortran"
+make install \
+    DESTDIR="${RPI3_STAGING}" \
+    PREFIX="/usr/local" \
+    FC="${HOST_TRIPLE}-gfortran"
 
 # Cleanup
 popd
 rm -rf OpenBLAS
+
+################################################################################
+#
+# The FC variable for the install scripts is necessary for the makefiles to 
+# detect the Fortran compiler, so that they will enable the LAPACK and LAPACKE
+# libraries when installing.
+#

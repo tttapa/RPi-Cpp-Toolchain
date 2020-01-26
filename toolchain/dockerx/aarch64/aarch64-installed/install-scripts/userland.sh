@@ -16,7 +16,7 @@ cmake \
     -DCMAKE_BUILD_TYPE="Release" \
     -DCMAKE_SYSROOT="${RPI3_SYSROOT}" \
     -DCMAKE_INSTALL_PREFIX="/opt/vc" \
-    -DCMAKE_INSTALL_RPATH_USE_LINK_PATH=ON \
+    -DCMAKE_INSTALL_RPATH='${CMAKE_INSTALL_PREFIX}/lib' \
     ../../..
 
 # Build
