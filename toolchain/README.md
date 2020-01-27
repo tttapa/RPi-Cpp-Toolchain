@@ -16,11 +16,11 @@ To build the cross-compilation toolchain and cross-compile the libraries, use on
 ```sh
 ./build-and-export-toolchain.sh aarch64
 ```
+```sh
+./build-and-export-toolchain.sh aarch64-dev
+```
 
-It can take anywhere between 1 hour up to a couple of hours, depending on your hardware.
-
-If you made changes to the Dockerfiles for the build, and you want to build and export it again, run the `./clean.sh` script first. 
-It'll delete the cross-compilation toolchain, the sysroot and the staging area from this folder (it doesn't delete anything from the Docker containers).
+It can take anywhere between 1 hour and a couple of hours, depending on your hardware.
 
 ## Downloading the pre-built Toolchain from Docker Hub
 
@@ -33,5 +33,11 @@ To download the cross-compilation toolchain and cross-compiled libraries, use on
 ./pull-and-export-toolchain.sh aarch64
 ```
 
-If you want to pull again to update the toolchain to the latest version, run the `./clean.sh` script first. 
-It'll delete the cross-compilation toolchain, the sysroot and the staging area from this folder (it doesn't delete anything from the Docker containers).
+## Deleting the toolchain
+
+The toolchain is read-only, so you can't simply delete it using `rm` or using
+a file manager.  
+The `clean.sh` script will delete the toolchain, the sysroot and the staging 
+area for all architectures and configurations.  
+It doesn't delete anything from the Docker containers, so you can just export it
+again later, without building everything from scratch.

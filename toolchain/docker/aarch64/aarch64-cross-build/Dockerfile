@@ -94,7 +94,7 @@ COPY --chown=develop:develop install-scripts/zbar.sh .
 RUN chmod +x zbar.sh && ./zbar.sh
  
 # Raspberry Pi Userland (VideoCore)
-COPY install-scripts/RPi3.toolchain.cmake .
+COPY install-scripts/RPi3.toolchain.userland.cmake .
 COPY --chown=develop:develop install-scripts/userland.sh .
 RUN chmod +x userland.sh && ./userland.sh
 

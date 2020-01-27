@@ -6,9 +6,9 @@ This repository contains all you need to develop and cross-compile C++ applicati
 Everything was tested using [Ubuntu Server for Raspberry Pi](https://ubuntu.com/download/raspberry-pi).  
 It explains how to build a cross-compilation toolchain, and an example "Hello World" C++ project configured using CMake.
 
-It also has a cross-compiles many useful libraries:
+It also has a cross-compiles many useful libraries and tools:
 
- - **Zlib**: compression library (Python dependency)
+ - **Zlib**: compression library (OpenSSL and Python dependency)
  - **OpenSSL**: cryptography library (Python dependency)
  - **FFI**: foreign function interface (Python dependency, used to call C functions using ctypes)
  - **Bzip2**: compression library (Python dependency)
@@ -17,12 +17,25 @@ It also has a cross-compiles many useful libraries:
  - **GNU dbm**: library for key-value data (Python dependency)
  - **SQLite**: library for embedded databases (Python dependency)
  - **UUID**: library for unique identifiers (Python dependency)
- - **Python 3.8.1**
+ - **Python 3.8.1**: Python interpreter and libraries
  - **ZBar**: Bar and QR code decoding library
- - **Raspberry Pi Userland** (VideoCore): hardware acceleration for H.264
+ - **Raspberry Pi Userland**: VideoCore GPU drivers
+ - **VPX**: VP8/VP9 codec SDK
+ - **x264**: H.264/MPEG-4 AVC encoder
+ - **Xvid**: MPEG-4 video codec
  - **FFmpeg**: library to record, convert and stream audio and video
+ - **OpenBLAS**: linear algebra library (NumPy dependency)
  - **NumPy**: multi-dimensional array container for Python (OpenCV dependency)
+ - **SciPy**: Python module for mathematics, science, and engineering
  - **OpenCV 4.2.0**: computer vision library and Python module
+ - **GDB Server**: on-target remote debugger
+ - **GCC 9.2.0**: C, C++ and Fortran compilers
+ - **GNU Make**: build automation tool
+ - **CMake**: build system
+ - **Distcc**: distributed compiler wrapper (uses your computer to speed up compilation on the RPi)
+ - **CCache**: compiler cache
+ - **cURL**: tool and library for transferring data over the network (Git dependency)
+ - **Git**: version control system
  
 ## Documentation
  
@@ -59,13 +72,13 @@ These libraries are installed in two locations:
 Once all components have been built, they have to be extracted from the Docker build containers, and installed to the correct locations.  
 This is handled by the [`toolchain/build-and-export-toolchain.sh`](toolchain/build-and-export-toolchain.sh) script.
 
-The next step is to copy all files of the `RPi3-staging-$arch.tar.gz` archive to the root folder of the Raspberry Pi.
+The next step is to copy all files of the `RPi3-staging-aarchxx.tar` archive to the root folder of the Raspberry Pi.
 
 ### Building the Example Project
 
 You have to tell CMake to use the new toolchain with the correct "sysroot" directory. This is done through the CMake Toolchain files in the `cmake` directory.
 
-I highly recommend using the CMake Tools extension in Visual Studio code. 
+I highly recommend using the [CMake Tools](https://marketplace.visualstudio.com/items?itemName=ms-vscode.cmake-tools) extension in Visual Studio code. 
 The cross-compilation toolchain kits are defined in `.vscode/cmake-kits.json`. To select one, hit `CTRL+Shift+P` and type `CMake: Select a Kit` and then select the right `Raspberry Pi 3` kit for your architecture.
 It'll configure the CMake project for you, and then you can build everything by clicking the "Build" button in the blue toolbar at the bottom of the window.
 
@@ -88,7 +101,7 @@ The CMake Tools extension makes debugging very easy, just click the bug icon in 
 
 A useful feature of this repository is that it allows you to debug on-target: the GUI for the debugger runs on your computer, but the actual code runs on the Raspberry Pi. This uses SSH and the GDB server.
 
-Checkout the `.vscode/launch.json` and `.vscode/tasks.json` files to see how it works: first, the active target binary is copied to the Raspberry Pi over SSH, next, the GDB server is started on the RPi, and finally, the GDB client is started locally.
+Check out the `.vscode/launch.json` and `.vscode/tasks.json` files to see how it works: first, the active target binary is copied to the Raspberry Pi over SSH, next, the GDB server is started on the RPi, and finally, the GDB client is started locally.
 
 This requires the right SSH and hostname setup, both on your computer and on the RPi. Instructions can be found here: <https://tttapa.github.io/Pages/Raspberry-Pi/Installation+Setup/index.html>  
 Make sure mDNS is setup correctly, so that GDB can find the RPi at the address `rpi3.local`, and that you have a `.ssh/config` file with a config for the Raspberry Pi, called `RPi3`.

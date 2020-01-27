@@ -53,8 +53,8 @@ INI=$(find $BUILD_SITE -name 'npymath.ini')
 LIBDIR=$(find $CROSS_SITE -path '*/numpy/core/lib')
 INCDIR=$(find $CROSS_SITE -path '*/numpy/core/include')
 
-cd $(dirname $INI)
-git apply $WORKING/npymath.ini.patch
+cd $(dirname "$INI")
+patch npymath.ini $WORKING/npymath.ini.patch
 sed -i "s|@LIBDIR|${LIBDIR}|" npymath.ini
 sed -i "s|@INCDIR|${INCDIR}|" npymath.ini
 cd -
@@ -77,3 +77,7 @@ EOF
 F90=$GFORTRAN python setup.py bdist_wheel
 pip install $(ls ./dist/scipy*.whl)
 cd ..
+
+# Cleanup
+rm -rf numpy-*.*.*
+rm -rf scipy-*.*.*

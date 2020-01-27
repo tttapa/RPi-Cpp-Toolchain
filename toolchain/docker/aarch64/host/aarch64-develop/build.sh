@@ -2,6 +2,10 @@
 
 set -e
 
+if [ "$#" = "1" ] && [ "$1" != "dev" ]; then
+    exit 0
+fi
+
 platform='linux/arm64'
 
 docker buildx inspect --bootstrap | grep "$platform" > /dev/null || { \

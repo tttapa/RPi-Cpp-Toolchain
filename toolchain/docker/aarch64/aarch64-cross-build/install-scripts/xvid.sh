@@ -30,4 +30,4 @@ make install DESTDIR="${RPI3_STAGING}"
 
 # Cleanup
 popd
-rm -rf xvid
+rm -rf xvidcore-1.3.3

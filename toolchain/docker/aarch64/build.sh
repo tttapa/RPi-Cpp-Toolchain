@@ -29,7 +29,7 @@ popd
 # all this, and also development tools like Make, CMake, GCC, CCache, DistCC
 # and Git
 pushd aarch64-cross-build
-./build.sh
+./build.sh "$1"
 popd
 
 # Install the cross-compiled libraries and executables to an ARM image
@@ -39,5 +39,5 @@ popd
 
 # Install the development tools to an ARM image
 pushd host/aarch64-develop
-./build.sh
+./build.sh "$1"
 popd

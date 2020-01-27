@@ -12,7 +12,7 @@ pushd userland/build/arm-linux/release
 # Configure
 . cross-pkg-config
 cmake \
-    -DCMAKE_TOOLCHAIN_FILE="/home/develop/RPi3.toolchain.cmake" \
+    -DCMAKE_TOOLCHAIN_FILE="/home/develop/RPi3.toolchain.userland.cmake" \
     -DCMAKE_BUILD_TYPE="Release" \
     -DCMAKE_SYSROOT="${RPI3_SYSROOT}" \
     -DCMAKE_INSTALL_PREFIX="/opt/vc" \

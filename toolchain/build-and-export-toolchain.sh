@@ -19,18 +19,21 @@ aarch32)
     target=armv8-rpi3-linux-gnueabihf
     arch=aarch32
     image=aarch32-python-opencv-cross
+    dev=nodev
     ;;
 aarch64)
     echo "aarch64 (without development tools)"
     target=aarch64-rpi3-linux-gnu
     arch=aarch64
     image=aarch64-python-opencv-cross
+    dev=nodev
     ;;
 aarch64-dev)
     echo "aarch64 (with development tools)"
     target=aarch64-rpi3-linux-gnu
     arch=aarch64
     image=aarch64-develop-cross
+    dev=dev
     ;;
 *)
     echo "Unknown option."
@@ -39,7 +42,7 @@ aarch64-dev)
     ;;
 esac
 
-./docker/$arch/build.sh
+./docker/$arch/build.sh "$dev"
 
 container=$(docker run -d $image \
     bash -c "tar cf RPi3-staging.tar RPi3-staging & \
