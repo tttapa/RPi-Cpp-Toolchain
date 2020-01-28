@@ -4,10 +4,10 @@
 # Raspberry Pi C++ Toolchain
 
 This repository contains all you need to develop and cross-compile C++ applications for the Raspberry Pi (both 32 and 64 bit).
-Everything was tested using [Ubuntu Server for Raspberry Pi](https://ubuntu.com/download/raspberry-pi).  
+Everything was tested using [Ubuntu Server 18.04](https://ubuntu.com/download/raspberry-pi) (64 bit) and Raspbian Buster (32 bit).  
 It explains how to build a cross-compilation toolchain, and an example "Hello World" C++ project configured using CMake.
 
-It also has a cross-compiles many useful libraries and tools:
+It has cross-compiled versions of many useful libraries and tools:
 
  - **Zlib**: compression library (OpenSSL and Python dependency)
  - **OpenSSL**: cryptography library (Python dependency)
@@ -73,7 +73,7 @@ These libraries are installed in two locations:
 2. in the "staging area": this is the folder that will be copied to the SD card of the Raspberry Pi later. It contains the libraries that we built, but not the system files (because those are already part of the Ubuntu installation of the Pi).
 
 Everything is installed in `/usr/local/`, so it shouldn't interfere with the software installed by your package manager.
-`userland` is an exception, it's installed in `/opt/vc`.
+`userland` is an exception, it's installed in `/opt/vc/`.
 
 If you just want to know how to cross-compile a specific package, have a look at the scripts in the
 [`toolchain/docker/aarch64/aarch64-cross-build/install-scripts`](toolchain/docker/aarch64/aarch64-cross-build/install-scripts) folder.  
@@ -88,7 +88,7 @@ To test the newly cross-compiled binaries, just copy the contents of the `RPi3-s
 
 You have to tell CMake to use the new toolchain with the correct "sysroot" directory. This is done through the CMake Toolchain files in the `cmake` directory.
 
-I highly recommend using the [CMake Tools](https://marketplace.visualstudio.com/items?itemName=ms-vscode.cmake-tools) extension in Visual Studio code. 
+I highly recommend using the [CMake Tools](https://marketplace.visualstudio.com/items?itemName=ms-vscode.cmake-tools) extension in Visual Studio Code. 
 The cross-compilation toolchain kits are defined in `.vscode/cmake-kits.json`. To select one, hit `CTRL+Shift+P` and type `CMake: Select a Kit` and then select the right `Raspberry Pi 3` kit for your architecture.
 It'll configure the CMake project for you, and then you can build everything by clicking the "Build" button in the blue toolbar at the bottom of the window.
 
