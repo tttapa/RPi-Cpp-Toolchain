@@ -32,6 +32,9 @@ To download the cross-compilation toolchain and cross-compiled libraries, use on
 ```sh
 ./pull-and-export-toolchain.sh aarch64
 ```
+```sh
+./pull-and-export-toolchain.sh aarch64-dev
+```
 
 ## Deleting the toolchain
 
@@ -41,3 +44,7 @@ The `clean.sh` script will delete the toolchain, the sysroot and the staging
 area for all architectures and configurations.  
 It doesn't delete anything from the Docker containers, so you can just export it
 again later, without building everything from scratch.
+
+```sh
+./clean.sh
+```

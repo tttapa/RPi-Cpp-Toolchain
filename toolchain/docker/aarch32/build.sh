@@ -25,7 +25,9 @@ pushd aarch32-cross-build
 ./build.sh
 popd
 
-# Install build tools to ARM Raspbian image
-pushd host/aarch32-python-opencv-raspbian
-./build.sh
-popd
+if false; then
+    # Install build tools to ARM Raspbian image
+    pushd host/aarch32-python-opencv-raspbian
+    ./build.sh
+    popd
+fi

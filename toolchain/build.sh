@@ -5,7 +5,7 @@ set -e
 cd "$(dirname "$0")"
 
 if [ "$#" -ne 1 ]; then
-    echo "Build and export the Raspberry Pi GCC toolchain and cross-compiled libraries."
+    echo "Build the Raspberry Pi GCC toolchain and cross-compiled libraries."
     echo
     echo "Usage: $0 aarch32|aarch64|aarch64-dev"
     echo
@@ -15,5 +15,3 @@ fi
 source scripts/parse-input.sh "$@"
 
 ./docker/$arch/build.sh "$dev"
-
-source scripts/export.sh

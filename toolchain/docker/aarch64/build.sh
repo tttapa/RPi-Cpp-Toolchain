@@ -16,7 +16,7 @@ popd
 
 # Build a native toolchain for Raspberry Pi 3/3B+
 pushd aarch64-cross-native-toolchain
-./build.sh
+./build.sh "$1"
 popd
 
 # Install some build tools on Ubuntu
@@ -32,12 +32,14 @@ pushd aarch64-cross-build
 ./build.sh "$1"
 popd
 
-# Install the cross-compiled libraries and executables to an ARM image
-pushd host/aarch64-python-opencv
-./build.sh
-popd
+if false; then
+    # Install the cross-compiled libraries and executables to an ARM image
+    pushd host/aarch64-python-opencv
+    ./build.sh
+    popd
 
-# Install the development tools to an ARM image
-pushd host/aarch64-develop
-./build.sh "$1"
-popd
+    # Install the development tools to an ARM image
+    pushd host/aarch64-develop
+    ./build.sh "$1"
+    popd
+fi
