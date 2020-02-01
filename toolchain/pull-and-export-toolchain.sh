@@ -10,11 +10,11 @@ fi
 
 source scripts/parse-input.sh "$@"
 
-hubimg="tttapa/$image:latest"
+hubimg="tttapa/$image-cross:latest"
 echo
 echo "Pulling $hubimg ..."
 echo
 docker pull "$hubimg"
-docker tag "$hubimg" "$image"
+docker tag "$hubimg" "$image-cross"
 
 source scripts/export.sh

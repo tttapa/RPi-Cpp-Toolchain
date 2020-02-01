@@ -1,0 +1,18 @@
+version: "3"
+
+services:
+  distcc-server:
+    build:
+      context: .
+    image: aarch64-cross-toolchain-distcc
+    container_name: aarch64-cross-toolchain-distcc-server
+    entrypoint: 
+      "bash -c '\
+          distccd --daemon \
+                  --allow 0.0.0.0/0 \
+                  --nice 0 \
+                  --log-file distcc.log \
+          && tail -f distcc.log'"
+    ports: 
+      - "3632:3632"
+    tty: true

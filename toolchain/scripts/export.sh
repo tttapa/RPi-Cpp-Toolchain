@@ -1,7 +1,7 @@
 echo
 echo "Exporting toolchain ..."
 echo "Creating archives"
-container=$(docker run -d $image \
+container=$(docker run -d $image-cross \
     bash -c "tar cf RPi3-staging.tar RPi3-staging & \
              tar cf RPi3-sysroot.tar RPi3-sysroot & \
              tar cf x-tools.tar x-tools & \

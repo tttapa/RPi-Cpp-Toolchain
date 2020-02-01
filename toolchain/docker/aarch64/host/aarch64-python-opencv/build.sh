@@ -2,6 +2,8 @@
 
 set -e
 
+cd "$(dirname "$0")"
+
 platform='linux/arm64'
 
 docker buildx inspect --bootstrap | grep "$platform" >/dev/null || {

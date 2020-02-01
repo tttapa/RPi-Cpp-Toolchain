@@ -17,5 +17,5 @@ source scripts/parse-input.sh "$@"
 
 ./docker/$arch/build.sh "$dev"
 
-docker tag "$image" "tttapa/$image:latest"
-docker push "tttapa/$image:latest"
+docker tag "$image-cross" "tttapa/$image-cross:latest"
+docker push "tttapa/$image-cross:latest"

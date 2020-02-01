@@ -2,6 +2,8 @@
 
 set -e
 
+cd "$(dirname "$0")"
+
 if [ "$#" = "1" ] && [ "$1" != "dev" ]; then
     echo "Skipping development build"
     exit 0
