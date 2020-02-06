@@ -1,4 +1,4 @@
-FROM raspbian:buster
+FROM arm32v7/ubuntu:latest
 ARG TARGETPLATFORM
 ARG BUILDPLATFORM
 

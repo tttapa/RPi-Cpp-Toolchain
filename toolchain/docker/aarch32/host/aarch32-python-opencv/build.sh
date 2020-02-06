@@ -2,6 +2,8 @@
 
 set -e
 
+cd "$(dirname "$0")"
+
 platform='linux/arm/v7'
 
 docker buildx inspect --bootstrap | grep "$platform" >/dev/null || {
@@ -10,4 +12,4 @@ docker buildx inspect --bootstrap | grep "$platform" >/dev/null || {
 }
 
 docker buildx build --platform "$platform" . --load \
-    -t aarch32-python-opencv-raspbian
+    -t aarch32-python-opencv

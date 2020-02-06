@@ -139,13 +139,13 @@ RUN rm -rf crossenv/cross/lib/python3.8/site-packages/__pycache__ && \
 
 # Copy gdbserver to the staging area, as well as the latest C++ and Fortran 
 # libraries
-RUN mkdir -p "${RPI3_STAGING}/usr/local/lib/${HOST_ARCH}-linux-gnu/" && \
+RUN mkdir -p "${RPI3_STAGING}/usr/local/lib/arm-linux-gnueabihf/" && \
     cp -a \
         "${RPI3_SYSROOT}/lib/libstdc++.so"* \
-        "${RPI3_STAGING}/usr/local/lib/${HOST_ARCH}-linux-gnu/" && \
+        "${RPI3_STAGING}/usr/local/lib/arm-linux-gnueabihf/" && \
     cp -a \
         "${RPI3_SYSROOT}/lib/libgfortran.so"* \
-        "${RPI3_STAGING}/usr/local/lib/${HOST_ARCH}-linux-gnu/" && \
+        "${RPI3_STAGING}/usr/local/lib/arm-linux-gnueabihf/" && \
     cp -ar \
         "$TOOLCHAIN_PATH/${HOST_TRIPLE}/debug-root/"* \
         "${RPI3_STAGING}"
