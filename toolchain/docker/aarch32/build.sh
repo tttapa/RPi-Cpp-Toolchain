@@ -9,25 +9,37 @@ pushd ../crosstool-ng-master
 ./build.sh
 popd
 
-# Build a cross-compilation toolchain
+# Build a cross-compilation toolchain for Raspberry Pi 3/3B+
 pushd aarch32-cross-toolchain
 ./build.sh
 popd
 
-# Install some build tools in on Ubuntu
+# Build a native toolchain for Raspberry Pi 3/3B+
+pushd aarch32-cross-native-toolchain
+./build.sh "$1"
+popd
+
+# Install some build tools on Ubuntu
 pushd ../base-ubuntu
 ./build.sh
 popd
 
-# Cross-compile many dependencies for RPi
-# including Python, OpenCV, FFmpeg ...
+# Creates two images, one with cross-compiled Python, OpenCV, FFmpeg etc.
+# libraries and executables for the Raspberry Pi, and another one that includes
+# all this, and also development tools like Make, CMake, GCC, CCache, DistCC
+# and Git
 pushd aarch32-cross-build
-./build.sh
+./build.sh "$1"
 popd
 
 if false; then
-    # Install build tools to ARM Raspbian image
-    pushd host/aarch32-python-opencv-raspbian
+    # Install the cross-compiled libraries and executables to an ARM image
+    pushd host/aarch32-python-opencv
     ./build.sh
+    popd
+
+    # Install the development tools to an ARM image
+    pushd host/aarch32-develop
+    ./build.sh "$1"
     popd
 fi

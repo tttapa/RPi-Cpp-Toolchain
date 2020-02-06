@@ -7,6 +7,6 @@ COPY config .config
 
 RUN ct-ng build && rm -rf .build
 
-ENV TOOLCHAIN_PATH=/home/develop/x-tools/armv8-rpi3-linux-gnu
+ENV TOOLCHAIN_PATH=/home/develop/x-tools/armv8-rpi3-linux-gnueabihf
 ENV PATH=${TOOLCHAIN_PATH}/bin:$PATH
 WORKDIR /home/develop

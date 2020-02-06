@@ -4,7 +4,7 @@ set -e
 cd "$(dirname "$0")"
 
 if [ "$#" -ne 1 ]; then
-    echo "Usage: $0 aarch32|aarch64|aarch64-dev"
+    echo "Usage: $0 aarch32|aarch32-dev|aarch64|aarch64-dev"
     exit 0
 fi
 

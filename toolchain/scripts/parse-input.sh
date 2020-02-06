@@ -9,6 +9,13 @@ aarch32)
     image=aarch32-python-opencv
     dev=nodev
     ;;
+aarch32-dev)
+    echo "aarch32 (with development tools)"
+    target=armv8-rpi3-linux-gnu
+    arch=aarch32
+    image=aarch32-develop
+    dev=dev
+    ;;
 aarch64)
     echo "aarch64 (without development tools)"
     target=aarch64-rpi3-linux-gnu
@@ -25,7 +32,7 @@ aarch64-dev)
     ;;
 *)
     echo "Unknown option."
-    echo "Choose either 'aarch32', 'aarch64', 'aarch64-develop'."
+    echo "Choose either 'aarch32', 'aarch32-develop', 'aarch64', 'aarch64-develop'."
     exit 1
     ;;
 esac

@@ -7,7 +7,7 @@ cd "$(dirname "$0")"
 if [ "$#" -ne 1 ]; then
     echo "Build and export the Raspberry Pi GCC toolchain and cross-compiled libraries."
     echo
-    echo "Usage: $0 aarch32|aarch64|aarch64-dev"
+    echo "Usage: $0 aarch32|aarch32-dev|aarch64|aarch64-dev"
     echo
     exit 0
 fi

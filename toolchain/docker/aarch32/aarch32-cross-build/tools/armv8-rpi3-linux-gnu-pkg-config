@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+. cross-pkg-config
+pkg-config "$@"
