@@ -22,6 +22,8 @@ pushd ncurses-6.1
     --without-ada --enable-overwrite \
     --prefix="/usr/local" \
     --datadir="/usr/local/share" \
+    --with-pkg-config-libdir="/usr/local/lib/pkgconfig" \
+    --enable-pc-files \
     --with-build-cc="gcc" \
     --host="${HOST_TRIPLE}" \
     CFLAGS="--sysroot=${RPI3_SYSROOT}"
