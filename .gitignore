@@ -1,4 +1,4 @@
 *.tar
 *.tar.gz
-x-tools*
-RPi3-sysroot*
+toolchain/x-tools
+toolchain/sysroot-*

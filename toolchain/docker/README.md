@@ -9,7 +9,7 @@ CentOS 7 is used so that the resulting toolchain can be used on older systems as
 
 Creates a Ubuntu-based container with common build tools installed. This container will later be used to cross-compile all necessary libraries for the Raspberry Pi.
 
-## `aarch32` and `aarch64`
+## `rpi*`
 
 The Dockerfiles in these folders use the `crosstool-ng` container to build the GCC cross-compilation toolchains, native toolchains for 32-bit and 64-bit ARM architectures respectively.  
 They also cross-compile all libraries and tools for the Raspberry Pi, and create ARM Docker containers that can be run in an emulator on your computer, or on the Raspberry Pi directly.

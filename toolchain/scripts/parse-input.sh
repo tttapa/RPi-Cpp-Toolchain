@@ -2,37 +2,57 @@
 
 name="$1"
 case "$name" in
-aarch32)
-    echo "aarch32 (without development tools)"
-    target=armv8-rpi3-linux-gnueabihf
-    arch=aarch32
-    image=aarch32-python-opencv
+rpi)
+    echo "Raspberry Pi Zero and Raspberry Pi 1"
+    target=armv6-rpi-linux-gnueabihf
+    arch=armv6
+    board=rpi
+    image=rpi-armv6-python-opencv
     dev=nodev
     ;;
-aarch32-dev)
-    echo "aarch32 (with development tools)"
-    target=armv8-rpi3-linux-gnu
-    arch=aarch32
-    image=aarch32-develop
+rpi-dev)
+    echo "Raspberry Pi Zero and Raspberry Pi 1 (without development tools)"
+    target=armv6-rpi-linux-gnueabihf
+    arch=armv6
+    board=rpi
+    image=rpi-armv6-develop
     dev=dev
     ;;
-aarch64)
+rpi3-armv8)
+    echo "armv8 (without development tools)"
+    target=armv8-rpi3-linux-gnueabihf
+    arch=armv8
+    board=rpi3
+    image=rpi3-armv8-python-opencv
+    dev=nodev
+    ;;
+rpi3-armv8-dev)
+    echo "armv8 (with development tools)"
+    target=armv8-rpi3-linux-gnu
+    arch=armv8
+    board=rpi3
+    image=rpi3-armv8-develop
+    dev=dev
+    ;;
+rpi3-aarch64)
     echo "aarch64 (without development tools)"
     target=aarch64-rpi3-linux-gnu
     arch=aarch64
-    image=aarch64-python-opencv
+    board=rpi3
+    image=rpi3-aarch64-python-opencv
     dev=nodev
     ;;
-aarch64-dev)
+rpi3-aarch64-dev)
     echo "aarch64 (with development tools)"
     target=aarch64-rpi3-linux-gnu
     arch=aarch64
-    image=aarch64-develop
+    board=rpi3
+    image=rpi3-aarch64-develop
     dev=dev
     ;;
 *)
     echo "Unknown option."
-    echo "Choose either 'aarch32', 'aarch32-develop', 'aarch64', 'aarch64-develop'."
+    echo "Choose either 'rpi3-armv8', 'rpi3-armv8-develop', 'rpi3-aarch64', 'rpi3-aarch64-develop'."
     exit 1
     ;;
 esac

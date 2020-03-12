@@ -1,24 +1,15 @@
 #!/usr/bin/env bash
 
+set -ex
+
 cd "$(dirname "$0")"
 
-if [ -d x-tools ]; then
+if ls x-tools 1> /dev/null 2>&1; then
     chmod -R u+w x-tools && rm -rf x-tools
 fi
-if [ -d RPi3-sysroot-aarch32 ]; then
-    chmod -R u+w RPi3-sysroot-aarch32 && rm -rf RPi3-sysroot-aarch32
+
+if ls sysroot-* 1> /dev/null 2>&1; then
+    chmod -R u+w sysroot-* && rm -rf sysroot-*
 fi
-if [ -d RPi3-sysroot-aarch32-dev ]; then
-    chmod -R u+w RPi3-sysroot-aarch32-dev && rm -rf RPi3-sysroot-aarch32-dev
-fi
-if [ -d RPi3-sysroot-aarch64 ]; then 
-    chmod -R u+w RPi3-sysroot-aarch64 && rm -rf RPi3-sysroot-aarch64
-fi
-if [ -d RPi3-sysroot-aarch64-dev ]; then 
-    chmod -R u+w RPi3-sysroot-aarch64-dev && rm -rf RPi3-sysroot-aarch64-dev
-fi
-rm -f \
-    RPi3-staging-aarch32.tar \
-    RPi3-staging-aarch32-dev.tar \
-    RPi3-staging-aarch64.tar \
-    RPi3-staging-aarch64-dev.tar
+
+rm -f *.tar
