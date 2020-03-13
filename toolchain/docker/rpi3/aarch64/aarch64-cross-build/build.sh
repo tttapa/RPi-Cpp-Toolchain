@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 set -e
+cd "$(dirname "${BASH_SOURCE[0]}")"
 
 docker build . --target python-opencv-build -t aarch64-python-opencv-cross
 

@@ -1,8 +1,7 @@
 #!/usr/bin/env bash
 
 set -e
-
-cd "$(dirname "$0")"
+cd "$(dirname "${BASH_SOURCE[0]}")"
 
 if [ "$#" = "1" ] && [ "$1" != "dev" ]; then
     echo "Skipping development build"

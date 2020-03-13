@@ -40,7 +40,7 @@
             "type": "shell",
             "command": "${workspaceFolder}/scripts/run-docker.sh",
             "args": [
-                "aarch64-python-opencv",
+                "rpi3-aarch64-python-opencv",
                 "${command:cmake.launchTargetPath}"
             ],
             "problemMatcher": []

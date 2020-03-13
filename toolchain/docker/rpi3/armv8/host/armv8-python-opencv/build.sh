@@ -2,9 +2,8 @@
 
 set -e
 
-cd "$(dirname "$0")"
-
-platform='linux/arm/v7'
+set -e
+cd "$(dirname "${BASH_SOURCE[0]}")"
 
 docker buildx inspect --bootstrap | grep "$platform" >/dev/null || {
     ../../../../../../scripts/install-docker-binfmt.sh
