@@ -14,7 +14,6 @@ fi
 
 source scripts/parse-input.sh "$@"
 
-./docker/$board/$arch/$arch-cross-toolchain/build.sh
-./docker/$board/$arch/$arch-cross-native-toolchain/build.sh "$dev"
+./docker/$board/$arch/build.sh "$dev"
 
-source scripts/export-toolchain.sh
+source scripts/export.sh

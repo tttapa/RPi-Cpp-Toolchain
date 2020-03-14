@@ -21,12 +21,9 @@ RUN mkdir RPi-sysroot && \
     cp -rp $TOOLCHAIN_PATH/${HOST_TRIPLE}/sysroot/* ~/RPi-sysroot/ && \
     chmod -R u+w /home/develop/RPi-sysroot
 
-WORKDIR /home/develop
 RUN mkdir -p "${DOWNLOADS}"
 COPY --chown=develop:develop tools/ ./tools/
 ENV PATH="/home/develop/tools:${PATH}"
-
-WORKDIR /home/develop
 
 # Zlib build
 COPY --chown=develop:develop install-scripts/zlib-build.sh .

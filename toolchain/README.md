@@ -11,21 +11,22 @@ See also:
 To build the cross-compilation toolchain and cross-compile the libraries, use one of the following commands:
 
 ```sh
+./build-and-export.sh rpi
+./build-and-export.sh rpi-dev
+./build-and-export.sh rpi3-armv8
+./build-and-export.sh rpi3-armv8-dev
+./build-and-export.sh rpi3-aarch64
+./build-and-export.sh rpi3-aarch64-dev
+```
+
+To build just the toolchains (without cross-compiling the libraries), use one of the following commands:
+
+```sh
 ./build-and-export-toolchain.sh rpi
-```
-```sh
 ./build-and-export-toolchain.sh rpi-dev
-```
-```sh
 ./build-and-export-toolchain.sh rpi3-armv8
-```
-```sh
 ./build-and-export-toolchain.sh rpi3-armv8-dev
-```
-```sh
 ./build-and-export-toolchain.sh rpi3-aarch64
-```
-```sh
 ./build-and-export-toolchain.sh rpi3-aarch64-dev
 ```
 
@@ -36,22 +37,12 @@ It can take anywhere between 1 hour and a couple of hours, depending on your har
 To download the cross-compilation toolchain and cross-compiled libraries, use one of the following commands:
 
 ```sh
-./pull-and-export-toolchain.sh rpi
-```
-```sh
-./pull-and-export-toolchain.sh rpi-dev
-```
-```sh
-./pull-and-export-toolchain.sh rpi3-armv8
-```
-```sh
-./pull-and-export-toolchain.sh rpi3-armv8-dev
-```
-```sh
-./pull-and-export-toolchain.sh rpi3-aarch64
-```
-```sh
-./pull-and-export-toolchain.sh rpi3-aarch64-dev
+./pull-and-export.sh rpi
+./pull-and-export.sh rpi-dev
+./pull-and-export.sh rpi3-armv8
+./pull-and-export.sh rpi3-armv8-dev
+./pull-and-export.sh rpi3-aarch64
+./pull-and-export.sh rpi3-aarch64-dev
 ```
 
 ## Deleting the toolchain

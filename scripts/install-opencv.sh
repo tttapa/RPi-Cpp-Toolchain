@@ -1,10 +1,15 @@
 #!/usr/bin/env bash
 
+# Installs OpenCV on your computer.
+# It is installed to ~/.local if no Python Virtual Environment is active.
+# If a Virtual Environment is active, OpenCV will be installed to this 
+# environment.
+
 set -e
 
 # Install dependencies
+echo "-- Installing dependencies"
 if sudo -v; then
-    echo "-- Installing dependencies"
     sudo apt install -y libavcodec-dev libavformat-dev libswscale-dev
 else
     echo "[WARNING] Cannot install dependencies using the package manager"
