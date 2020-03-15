@@ -1,5 +1,5 @@
 #include <greeter/greeter.hpp>
-#include <iostream>
+#include <iostream>  // std::endl, <<
 
 namespace greeter {
 
