@@ -3,14 +3,15 @@
 set -ex
 
 # Download
-URL="https://www.python.org/ftp/python/3.8.1/Python-3.8.1.tgz"
+version=3.8.2
+URL="https://www.python.org/ftp/python/$version/Python-$version.tgz"
 pushd "${DOWNLOADS}"
 wget -N "$URL"
 popd
 
 # Extract
-tar xzf "${DOWNLOADS}/Python-3.8.1.tgz"
-pushd Python-3.8.1
+tar xzf "${DOWNLOADS}/Python-$version.tgz"
+pushd Python-$version
 
 # Ensure Python can find libffi
 ln -s ${RPI_SYSROOT}/usr/local/lib/libffi-3.2.1/include/* \
@@ -51,4 +52,4 @@ make altinstall DESTDIR="${RPI_STAGING}"
 
 # Cleanup
 popd
-rm -rf Python-3.8.1
+rm -rf Python-$version

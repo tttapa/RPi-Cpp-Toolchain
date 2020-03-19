@@ -3,19 +3,19 @@
 set -ex
 
 # Download
-URL="https://www.python.org/ftp/python/3.8.1/Python-3.8.1.tgz"
+version=3.8.2
+URL="https://www.python.org/ftp/python/$version/Python-$version.tgz"
 pushd "${DOWNLOADS}"
 wget -N "$URL"
 popd
 
 # Extract
-tar xzf "${DOWNLOADS}/Python-3.8.1.tgz"
-pushd Python-3.8.1
+tar xzf "${DOWNLOADS}/Python-$version.tgz"
+pushd Python-$version
 
 # Configure
-# Use the pkg-config folder inside of the RPi's root filesystem
-export PKG_CONFIG_LIBDIR=$HOME/.local/lib
-export PKG_CONFIG_PATH=$HOME/.local/lib/pkgconfig
+export PKG_CONFIG_LIBDIR=$HOME/.local/lib:/usr/lib
+export PKG_CONFIG_PATH=$HOME/.local/lib/pkgconfig:/usr/lib/pkgconfig
 ./configure \
     --prefix="$HOME/.local" \
     CFLAGS="-I$HOME/.local/lib/libffi-3.2.1/include \
@@ -35,4 +35,4 @@ make altinstall
 
 # Cleanup
 popd
-rm -rf Python-3.8.1
+rm -rf Python-$version
