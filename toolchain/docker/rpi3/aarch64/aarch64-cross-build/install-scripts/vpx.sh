@@ -15,15 +15,15 @@ CROSS="${HOST_TRIPLE}-" \
     --disable-install-docs \
     --target="arm64-linux-gcc" \
     --prefix="/usr/local" \
-    --extra-cflags="--sysroot=${RPI3_SYSROOT}" \
-    --extra-cxxflags="--sysroot=${RPI3_SYSROOT}"
+    --extra-cflags="--sysroot=${RPI_SYSROOT}" \
+    --extra-cxxflags="--sysroot=${RPI_SYSROOT}"
 
 # Build
 make -j$(($(nproc) * 2))
 
 # Install
-make install DESTDIR="${RPI3_SYSROOT}"
-make install DESTDIR="${RPI3_STAGING}"
+make install DESTDIR="${RPI_SYSROOT}"
+make install DESTDIR="${RPI_STAGING}"
 
 # Cleanup
 popd

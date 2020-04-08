@@ -23,7 +23,7 @@ pushd cmake-3.16.2
 make -j$(($(nproc) * 2))
 
 # Install
-make install DESTDIR="${RPI3_STAGING}"
+make install DESTDIR="${RPI_STAGING}"
 
 # Cleanup
 popd

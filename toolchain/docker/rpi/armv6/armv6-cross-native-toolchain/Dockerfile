@@ -1,4 +1,4 @@
-FROM rpi-armv6-cross-toolchain as armv6-cross-native-toolchain
+FROM rpi-armv6-cross-toolchain as rpi-armv6-cross-native-toolchain
 
 RUN rm -rf /home/develop/RPi && mkdir /home/develop/RPi
 WORKDIR /home/develop/RPi

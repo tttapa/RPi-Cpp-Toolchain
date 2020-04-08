@@ -10,8 +10,8 @@ WORKING=$PWD
 GFORTRAN=${HOST_TRIPLE}-gfortran
 
 BUILD_PYTHON=`which python3.8`
-HOST_PYTHON="${RPI3_SYSROOT}/usr/local/bin/python3.8"
-SYSROOT="${RPI3_SYSROOT}"
+HOST_PYTHON="${RPI_SYSROOT}/usr/local/bin/python3.8"
+SYSROOT="${RPI_SYSROOT}"
 
 NUMPY_URL=https://files.pythonhosted.org/packages/40/de/0ea5092b8bfd2e3aa6fdbb2e499a9f9adf810992884d414defc1573dca3f/numpy-1.18.1.zip
 SCIPY_URL=https://files.pythonhosted.org/packages/04/ab/e2eb3e3f90b9363040a3d885ccc5c79fe20c5b8a3caa8fe3bf47ff653260/scipy-1.4.1.tar.gz

@@ -17,14 +17,14 @@ pushd make-4.3
 ./configure \
     --host="${HOST_TRIPLE}" \
     --prefix="/usr/local" \
-    CFLAGS="--sysroot=${RPI3_SYSROOT} -O3" \
-    CXXFLAGS="--sysroot=${RPI3_SYSROOT} -O3"
+    CFLAGS="--sysroot=${RPI_SYSROOT} -O3" \
+    CXXFLAGS="--sysroot=${RPI_SYSROOT} -O3"
 
 # Build
 make -j$(($(nproc) * 2))
 
 # Install
-make install DESTDIR="${RPI3_STAGING}"
+make install DESTDIR="${RPI_STAGING}"
 
 # Cleanup
 popd

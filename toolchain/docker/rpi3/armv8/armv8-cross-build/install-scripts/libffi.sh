@@ -19,14 +19,14 @@ pushd libffi-3.2.1
     --host="${HOST_TRIPLE}" \
     --prefix="/usr/local" \
     CFLAGS="-O2" CXXFLAGS="-O2" \
-    --with-sysroot="${RPI3_SYSROOT}"
+    --with-sysroot="${RPI_SYSROOT}"
 
 # Build
 make -j$(($(nproc) * 2))
 
 # Install
-make install DESTDIR="${RPI3_SYSROOT}"
-make install DESTDIR="${RPI3_STAGING}"
+make install DESTDIR="${RPI_SYSROOT}"
+make install DESTDIR="${RPI_STAGING}"
 
 # Cleanup
 popd

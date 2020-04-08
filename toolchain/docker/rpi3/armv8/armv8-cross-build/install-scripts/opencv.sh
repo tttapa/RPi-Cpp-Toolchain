@@ -21,7 +21,7 @@ cmake \
     -DCMAKE_TOOLCHAIN_FILE=../platforms/linux/arm.toolchain.cmake \
     -DGNU_MACHINE="${HOST_TRIPLE}" \
     -DCMAKE_SYSTEM_PROCESSOR="${HOST_ARCH}" \
-    -DCMAKE_SYSROOT="${RPI3_SYSROOT}" \
+    -DCMAKE_SYSROOT="${RPI_SYSROOT}" \
     -DENABLE_NEON=ON \
     -DOPENCV_ENABLE_NONFREE=ON \
     -DWITH_JPEG=ON -DBUILD_JPEG=ON \
@@ -33,8 +33,8 @@ cmake \
     -DCMAKE_INSTALL_PREFIX="/usr/local" \
     -DOPENCV_GENERATE_PKGCONFIG=ON \
     -DBUILD_TESTS=OFF -DBUILD_PERF_TESTS=OFF \
-    -DPYTHON3_INCLUDE_PATH="${RPI3_SYSROOT}/usr/local/include/python3.8" \
-    -DPYTHON3_LIBRARIES="${RPI3_SYSROOT}/usr/local/lib/libpython3.8.so" \
+    -DPYTHON3_INCLUDE_PATH="${RPI_SYSROOT}/usr/local/include/python3.8" \
+    -DPYTHON3_LIBRARIES="${RPI_SYSROOT}/usr/local/lib/libpython3.8.so" \
     -DPYTHON3_NUMPY_INCLUDE_DIRS="$NUMPY_INC" \
     -DBUILD_OPENCV_PYTHON2=OFF \
     -DBUILD_OPENCV_PYTHON3=ON \
@@ -47,15 +47,15 @@ cat CMakeFiles/CMakeOutput.log
 make -j$(($(nproc) * 2))
 
 # Install
-make install DESTDIR="${RPI3_SYSROOT}"
-make install DESTDIR="${RPI3_STAGING}"
+make install DESTDIR="${RPI_SYSROOT}"
+make install DESTDIR="${RPI_STAGING}"
 
 # Cleanup
 popd
 rm -rf opencv-4.2.0
 
 # Patch the architecture name
-# mv  ${RPI3_SYSROOT}/usr/local/lib/python3.8/site-packages/cv2/python-3.8/cv2.cpython-38-x86_64-linux-gnu.so \
-#     ${RPI3_SYSROOT}/usr/local/lib/python3.8/site-packages/cv2/python-3.8/cv2.cpython-38-${HOST_ARCH}-linux-gnu.so && \
-# mv  ${RPI3_STAGING}/usr/local/lib/python3.8/site-packages/cv2/python-3.8/cv2.cpython-38-x86_64-linux-gnu.so \
-#     ${RPI3_STAGING}/usr/local/lib/python3.8/site-packages/cv2/python-3.8/cv2.cpython-38-${HOST_ARCH}-linux-gnu.so
+# mv  ${RPI_SYSROOT}/usr/local/lib/python3.8/site-packages/cv2/python-3.8/cv2.cpython-38-x86_64-linux-gnu.so \
+#     ${RPI_SYSROOT}/usr/local/lib/python3.8/site-packages/cv2/python-3.8/cv2.cpython-38-${HOST_ARCH}-linux-gnu.so && \
+# mv  ${RPI_STAGING}/usr/local/lib/python3.8/site-packages/cv2/python-3.8/cv2.cpython-38-x86_64-linux-gnu.so \
+#     ${RPI_STAGING}/usr/local/lib/python3.8/site-packages/cv2/python-3.8/cv2.cpython-38-${HOST_ARCH}-linux-gnu.so

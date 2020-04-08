@@ -2,3 +2,4 @@
 *.tar.gz
 toolchain/x-tools
 toolchain/sysroot-*
+toolchain/RPi-staging

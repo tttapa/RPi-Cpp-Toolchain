@@ -16,7 +16,7 @@ RUN cp -ar /usr/local/man/* /usr/local/man-tmp && \
 RUN ln -s python3.8 /usr/local/bin/python3
 
 # Copy the GCC toolchain
-COPY --from=armv6-cross-native-toolchain \
+COPY --from=rpi-armv6-cross-native-toolchain \
     /home/develop/x-tools/HOST-armv6-linux-gnueabihf \
     /opt
 ENV PATH="/opt/armv6-rpi-linux-gnueabihf/bin:${PATH}"

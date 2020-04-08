@@ -3,4 +3,4 @@
 set -e
 cd "$(dirname "${BASH_SOURCE[0]}")"
 
-docker build . -t aarch64-cross-toolchain
+docker build . -t rpi3-aarch64-cross-toolchain

@@ -52,9 +52,3 @@ make install DESTDIR="${RPI_STAGING}"
 # Cleanup
 popd
 rm -rf opencv-4.2.0
-
-# Patch the architecture name
-# mv  ${RPI_SYSROOT}/usr/local/lib/python3.8/site-packages/cv2/python-3.8/cv2.cpython-38-x86_64-linux-gnu.so \
-#     ${RPI_SYSROOT}/usr/local/lib/python3.8/site-packages/cv2/python-3.8/cv2.cpython-38-${HOST_ARCH}-linux-gnu.so && \
-# mv  ${RPI_STAGING}/usr/local/lib/python3.8/site-packages/cv2/python-3.8/cv2.cpython-38-x86_64-linux-gnu.so \
-#     ${RPI_STAGING}/usr/local/lib/python3.8/site-packages/cv2/python-3.8/cv2.cpython-38-${HOST_ARCH}-linux-gnu.so

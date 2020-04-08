@@ -18,7 +18,7 @@ pushd ffmpeg-4.2
     --arch="${HOST_ARCH}" \
     --target-os="linux" \
     --prefix="/usr/local" \
-    --sysroot="${RPI3_SYSROOT}" \
+    --sysroot="${RPI_SYSROOT}" \
     --enable-cross-compile \
     --cross-prefix="${HOST_TRIPLE}-" \
     --toolchain=hardened \
@@ -30,12 +30,12 @@ pushd ffmpeg-4.2
     --disable-static \
     --disable-doc \
     --extra-cflags="$(pkg-config --cflags mmal) \
-                    -I${RPI3_SYSROOT}/usr/include \
-                    -I${RPI3_SYSROOT}/usr/local/include \
-                    -I${RPI3_SYSROOT}/opt/vc/include/IL" \
-    --extra-ldflags="-L${RPI3_SYSROOT}/usr/local/lib \
+                    -I${RPI_SYSROOT}/usr/include \
+                    -I${RPI_SYSROOT}/usr/local/include \
+                    -I${RPI_SYSROOT}/opt/vc/include/IL" \
+    --extra-ldflags="-L${RPI_SYSROOT}/usr/local/lib \
                         $(pkg-config --libs-only-L mmal) \
-                        -Wl,-rpath-link,${RPI3_SYSROOT}/opt/vc/lib \
+                        -Wl,-rpath-link,${RPI_SYSROOT}/opt/vc/lib \
                         -Wl,-rpath,/opt/vc/lib" \
  || cat ffbuild/config.log
     
@@ -43,8 +43,8 @@ pushd ffmpeg-4.2
 make -j$(($(nproc) * 2))
 
 # Install
-make install DESTDIR="${RPI3_SYSROOT}"
-make install DESTDIR="${RPI3_STAGING}"
+make install DESTDIR="${RPI_SYSROOT}"
+make install DESTDIR="${RPI_STAGING}"
 
 # Cleanup
 popd

@@ -8,4 +8,4 @@ if [ "$#" = "1" ] && [ "$1" != "dev" ]; then
     exit 0
 fi
 
-docker build . -t aarch64-cross-native-toolchain
+docker build . -t rpi3-aarch64-cross-native-toolchain

@@ -142,9 +142,9 @@ RUN mkdir -p "${RPI_STAGING}/usr/local/lib/arm-linux-gnueabihf/" && \
     cp -a \
         "${RPI_SYSROOT}/lib/libgfortran.so"* \
         "${RPI_STAGING}/usr/local/lib/arm-linux-gnueabihf/" && \
-    cp -ar \
-        "$TOOLCHAIN_PATH/${HOST_TRIPLE}/debug-root/"* \
-        "${RPI_STAGING}"
+    cp -a \
+        "$TOOLCHAIN_PATH/${HOST_TRIPLE}/debug-root/usr/bin/gdbserver" \
+        "${RPI_STAGING}/usr/local/bin"
 
 FROM python-opencv-build as developer-build
 
@@ -174,3 +174,35 @@ RUN chmod +x curl.sh && ./curl.sh
 COPY --chown=develop:develop install-scripts/git.sh .
 COPY --chown=develop:develop patches/git-2.25.0.patch .
 RUN chmod +x git.sh && ./git.sh
+
+# CMake build
+COPY --chown=develop:develop install-scripts/cmake-build.sh .
+RUN chmod +x cmake-build.sh && ./cmake-build.sh
+
+# Ninja ARM
+COPY --chown=develop:develop install-scripts/ninja.sh .
+RUN chmod +x ninja.sh && ./ninja.sh
+
+# Copy the GCC toolchain
+COPY --from=rpi-armv6-cross-native-toolchain \
+    /home/develop/x-tools/HOST-armv6-linux-gnueabihf \
+    ${RPI_STAGING}/opt
+# Create links to the toolchain in /usr/local/bin
+RUN cd "${RPI_STAGING}/usr/local/bin" && \
+    find "../../../opt/${HOST_TRIPLE}/bin" -type f \
+        -name "${HOST_TRIPLE}-*" \
+        -exec ln -s {} . ';'
+# Create links without the target prefix 
+# (e.g. gcc instead of armv6-rpi-linux-gnueabihf-gcc)
+COPY --chown=develop:develop dev-tools/strip-toolchain-prefix.sh .
+RUN chmod +x strip-toolchain-prefix.sh \
+ && cd "${RPI_STAGING}/usr/local/bin" \
+ && /home/develop/strip-toolchain-prefix.sh \
+        "${HOST_TRIPLE}" \
+        "../../../opt/${HOST_TRIPLE}/bin" \
+        "${RPI_STAGING}/usr/local/bin"
+# Make links to distcc for gcc and g++
+RUN mkdir -p "${RPI_STAGING}/usr/local/lib/distcc/bin" \
+ && cd "${RPI_STAGING}/usr/local/lib/distcc/bin" \
+ && ln -s "../../../bin/distcc" "${HOST_TRIPLE}-gcc" \
+ && ln -s "../../../bin/distcc" "${HOST_TRIPLE}-g++"

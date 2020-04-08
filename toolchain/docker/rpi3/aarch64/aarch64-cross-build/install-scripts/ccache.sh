@@ -17,9 +17,9 @@ pushd ccache-3.7.7
 ./configure \
     --host="${HOST_TRIPLE}" \
     --prefix="/usr/local" \
-    CFLAGS="--sysroot ${RPI3_SYSROOT} -O3 \
+    CFLAGS="--sysroot ${RPI_SYSROOT} -O3 \
             $(pkg-config zlib --cflags)" \
-    CXXFLAGS="--sysroot ${RPI3_SYSROOT} -O3 \
+    CXXFLAGS="--sysroot ${RPI_SYSROOT} -O3 \
             $(pkg-config zlib --cflags)" \
     LDFLAGS="$(pkg-config zlib --libs)"
 
@@ -27,7 +27,7 @@ pushd ccache-3.7.7
 make -j$(($(nproc) * 2))
 
 # Install
-make install DESTDIR="${RPI3_STAGING}"
+make install DESTDIR="${RPI_STAGING}"
 
 # Cleanup
 popd

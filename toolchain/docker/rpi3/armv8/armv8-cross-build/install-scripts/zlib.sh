@@ -14,8 +14,8 @@ pushd zlib-1.2.11
 
 # Configure
 . cross-pkg-config
-CFLAGS="--sysroot=${RPI3_SYSROOT}" \
-LDFLAGS="--sysroot=${RPI3_SYSROOT}" \
+CFLAGS="--sysroot=${RPI_SYSROOT}" \
+LDFLAGS="--sysroot=${RPI_SYSROOT}" \
 CC="${HOST_TRIPLE}-gcc" \
 LD="${HOST_TRIPLE}-ld" \
 ./configure \
@@ -25,8 +25,8 @@ LD="${HOST_TRIPLE}-ld" \
 make -j$(($(nproc) * 2))
 
 # Install
-make install DESTDIR="${RPI3_SYSROOT}"
-make install DESTDIR="${RPI3_STAGING}"
+make install DESTDIR="${RPI_SYSROOT}"
+make install DESTDIR="${RPI_STAGING}"
 
 # Cleanup
 popd

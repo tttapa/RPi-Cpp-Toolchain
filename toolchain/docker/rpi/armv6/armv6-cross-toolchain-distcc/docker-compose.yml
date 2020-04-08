@@ -1,0 +1,35 @@
+version: "3"
+
+services:
+  distcc-server:
+    build:
+      context: server
+    image: rpi-armv6-cross-toolchain-distcc
+    networks: 
+      - distcc_network
+    entrypoint: 
+      "bash -c '\
+          distccd --daemon \
+                  --allow 0.0.0.0/0 \
+                  --nice 0 \
+                  --log-file distcc.log \
+          && tail -f distcc.log'"
+    ports: 
+      - "3632:3632"
+
+  distcc-client:
+    build:
+        context: client
+    image: rpi-armv6-native-toolchain-distcc
+    stdin_open: true
+    tty: true
+    command: bash
+    environment:
+      DISTCC_HOSTS: 'distcc-server/16,cpp,lzo'
+    networks:
+      - distcc_network
+    depends_on: 
+        - distcc-server
+
+networks: 
+  distcc_network:

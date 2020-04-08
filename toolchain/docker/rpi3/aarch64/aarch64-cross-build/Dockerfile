@@ -9,14 +9,14 @@ ENV PATH="${PATH}:${TOOLCHAIN_PATH}/bin"
 ENV DOWNLOADS="/tmp/downloads"
 
 # Copy the toolchain from the previous Docker image
-COPY --from=aarch64-cross-toolchain \
+COPY --from=rpi3-aarch64-cross-toolchain \
     /home/develop/x-tools/${HOST_TRIPLE} \
     ${TOOLCHAIN_PATH}
 
 # Create a sysroot and staging area for the RPi
 WORKDIR /home/develop
-ENV RPI3_SYSROOT=/home/develop/RPi-sysroot
-ENV RPI3_STAGING=/home/develop/RPi-staging
+ENV RPI_SYSROOT=/home/develop/RPi-sysroot
+ENV RPI_STAGING=/home/develop/RPi-staging
 RUN mkdir RPi-sysroot && \
     cp -rp $TOOLCHAIN_PATH/${HOST_TRIPLE}/sysroot/* ~/RPi-sysroot/ && \
     chmod -R u+w /home/develop/RPi-sysroot
@@ -113,7 +113,7 @@ RUN chmod +x ffmpeg.sh && ./ffmpeg.sh
 
 # Install NumPy and Crossenv on build
 RUN python3.8 -m pip install crossenv
-RUN python3.8 -m crossenv "${RPI3_SYSROOT}/usr/local/bin/python3.8" crossenv
+RUN python3.8 -m crossenv "${RPI_SYSROOT}/usr/local/bin/python3.8" crossenv
 
 # OpenBLAS ARM
 COPY --chown=develop:develop install-scripts/openblas.sh .
@@ -132,20 +132,20 @@ RUN chmod +x opencv.sh && ./opencv.sh
 # Move the compiled Python packages to the staging area
 RUN rm -rf crossenv/cross/lib/python3.8/site-packages/__pycache__ && \
     mv "crossenv/cross/lib/python3.8/site-packages/"* \
-       "${RPI3_STAGING}/usr/local/lib/python3.8/site-packages"
+       "${RPI_STAGING}/usr/local/lib/python3.8/site-packages"
 
 # Copy gdbserver to the staging area, as well as the latest C++ and Fortran 
 # libraries
-RUN mkdir -p "${RPI3_STAGING}/usr/local/lib/${HOST_ARCH}-linux-gnu/" && \
+RUN mkdir -p "${RPI_STAGING}/usr/local/lib/${HOST_ARCH}-linux-gnu/" && \
     cp -a \
-        "${RPI3_SYSROOT}/lib/libstdc++.so"* \
-        "${RPI3_STAGING}/usr/local/lib/${HOST_ARCH}-linux-gnu/" && \
+        "${RPI_SYSROOT}/lib/libstdc++.so"* \
+        "${RPI_STAGING}/usr/local/lib/${HOST_ARCH}-linux-gnu/" && \
     cp -a \
-        "${RPI3_SYSROOT}/lib/libgfortran.so"* \
-        "${RPI3_STAGING}/usr/local/lib/${HOST_ARCH}-linux-gnu/" && \
-    cp -ar \
-        "$TOOLCHAIN_PATH/${HOST_TRIPLE}/debug-root/"* \
-        "${RPI3_STAGING}"
+        "${RPI_SYSROOT}/lib/libgfortran.so"* \
+        "${RPI_STAGING}/usr/local/lib/${HOST_ARCH}-linux-gnu/" && \
+    cp -a \
+        "$TOOLCHAIN_PATH/${HOST_TRIPLE}/debug-root/usr/bin/gdbserver" \
+        "${RPI_STAGING}/usr/local/bin"
 
 FROM python-opencv-build as developer-build
 
@@ -175,3 +175,35 @@ RUN chmod +x curl.sh && ./curl.sh
 COPY --chown=develop:develop install-scripts/git.sh .
 COPY --chown=develop:develop patches/git-2.25.0.patch .
 RUN chmod +x git.sh && ./git.sh
+
+# CMake build
+COPY --chown=develop:develop install-scripts/cmake-build.sh .
+RUN chmod +x cmake-build.sh && ./cmake-build.sh
+
+# Ninja ARM
+COPY --chown=develop:develop install-scripts/ninja.sh .
+RUN chmod +x ninja.sh && ./ninja.sh
+
+# Copy the GCC toolchain
+COPY --from=rpi3-aarch64-cross-native-toolchain \
+    /home/develop/x-tools/HOST-aarch64-linux-gnu \
+    ${RPI_STAGING}/opt
+# Create links to the toolchain in /usr/local/bin
+RUN cd "${RPI_STAGING}/usr/local/bin" && \
+    find "../../../opt/${HOST_TRIPLE}/bin" -type f \
+        -name "${HOST_TRIPLE}-*" \
+        -exec ln -s {} . ';'
+# Create links without the target prefix 
+# (e.g. gcc instead of aarch64-rpi3-linux-gnu-gcc)
+COPY --chown=develop:develop dev-tools/strip-toolchain-prefix.sh .
+RUN chmod +x strip-toolchain-prefix.sh \
+ && cd "${RPI_STAGING}/usr/local/bin" \
+ && /home/develop/strip-toolchain-prefix.sh \
+        "${HOST_TRIPLE}" \
+        "../../../opt/${HOST_TRIPLE}/bin" \
+        "${RPI_STAGING}/usr/local/bin"
+# Make links to distcc for gcc and g++
+RUN mkdir -p "${RPI_STAGING}/usr/local/lib/distcc/bin" \
+ && cd "${RPI_STAGING}/usr/local/lib/distcc/bin" \
+ && ln -s "../../../bin/distcc" "${HOST_TRIPLE}-gcc" \
+ && ln -s "../../../bin/distcc" "${HOST_TRIPLE}-g++"

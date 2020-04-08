@@ -4,7 +4,7 @@ link_toolchain_bin () {
     newname=$(sed "s|.*$1-||" <<< "$2")
     echo $2
     echo $newname
-    ln -s "$2" "$3/$newname"
+    [ "$newname" == "ldd" ] || ln -s "$2" "$3/$newname"
 }
 
 find "$2" -name "$1-*" -type f | while read bin; \

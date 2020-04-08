@@ -1,4 +1,4 @@
-FROM armv8-cross-toolchain as armv8-cross-native-toolchain
+FROM rpi3-armv8-cross-toolchain as rpi3-armv8-cross-native-toolchain
 
 RUN rm -rf /home/develop/RPi3 && mkdir /home/develop/RPi3
 WORKDIR /home/develop/RPi3

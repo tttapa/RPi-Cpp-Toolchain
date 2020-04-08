@@ -17,15 +17,15 @@ pushd libuuid-1.0.3
 ./configure \
         --prefix="/usr/local" \
         --host="${HOST_TRIPLE}" \
-        CFLAGS="--sysroot=${RPI3_SYSROOT}"
+        CFLAGS="--sysroot=${RPI_SYSROOT}"
 
 # Build
 make -j$(($(nproc) * 2))
 
 # Install
-make install DESTDIR="${RPI3_SYSROOT}"
-make install DESTDIR="${RPI3_STAGING}"
-ln -s uuid/uuid.h ${RPI3_SYSROOT}/usr/local/include/uuid.h
+make install DESTDIR="${RPI_SYSROOT}"
+make install DESTDIR="${RPI_STAGING}"
+ln -s uuid/uuid.h ${RPI_SYSROOT}/usr/local/include/uuid.h
 
 # Cleanup
 popd

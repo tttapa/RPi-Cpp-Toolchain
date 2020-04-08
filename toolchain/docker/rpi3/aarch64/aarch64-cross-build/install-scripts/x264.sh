@@ -12,7 +12,7 @@ pushd x264
 ./configure \
     --host="${HOST_TRIPLE}" \
     --cross-prefix="${HOST_TRIPLE}-" \
-    --sysroot="${RPI3_SYSROOT}" \
+    --sysroot="${RPI_SYSROOT}" \
     --enable-shared \
     --prefix="/usr/local" && \
 
@@ -20,8 +20,8 @@ pushd x264
 make -j$(($(nproc) * 2))
 
 # Install
-make install DESTDIR="${RPI3_SYSROOT}"
-make install DESTDIR="${RPI3_STAGING}"
+make install DESTDIR="${RPI_SYSROOT}"
+make install DESTDIR="${RPI_STAGING}"
 
 # Cleanup
 popd

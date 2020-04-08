@@ -14,8 +14,8 @@ tar xzf "${DOWNLOADS}/Python-$version.tgz"
 pushd Python-$version
 
 # Ensure Python can find libffi
-ln -s ${RPI3_SYSROOT}/usr/local/lib/libffi-3.2.1/include/* \
-      ${RPI3_SYSROOT}/usr/local/include/
+ln -s ${RPI_SYSROOT}/usr/local/lib/libffi-3.2.1/include/* \
+      ${RPI_SYSROOT}/usr/local/include/
 
 # Configure
 echo -e "ac_cv_file__dev_ptmx=yes\nac_cv_file__dev_ptc=no" > config.site
@@ -28,27 +28,27 @@ CONFIG_SITE="$PWD/config.site" \
     --build="$(gcc -dumpmachine)" \
     --host="${HOST_TRIPLE}" \
     --prefix="/usr/local" \
-    CFLAGS="--sysroot=${RPI3_SYSROOT} \
-                -I${RPI3_SYSROOT}/usr/local/include \
-                -L${RPI3_SYSROOT}/usr/local/lib \
-                -L${RPI3_SYSROOT}/usr/local/lib64" \
-    CPPFLAGS="--sysroot=${RPI3_SYSROOT} \
-                -I${RPI3_SYSROOT}/usr/local/include" \
-    CXXFLAGS="--sysroot=${RPI3_SYSROOT} \
-                -I${RPI3_SYSROOT}/usr/local/include \
-                -L${RPI3_SYSROOT}/usr/local/lib \
-                -L${RPI3_SYSROOT}/usr/local/lib64" \
-    LDFLAGS="--sysroot=${RPI3_SYSROOT} \
-                -L${RPI3_SYSROOT}/usr/local/lib \
-                -L${RPI3_SYSROOT}/usr/local/lib64"
+    CFLAGS="--sysroot=${RPI_SYSROOT} \
+                -I${RPI_SYSROOT}/usr/local/include \
+                -L${RPI_SYSROOT}/usr/local/lib \
+                -L${RPI_SYSROOT}/usr/local/lib64" \
+    CPPFLAGS="--sysroot=${RPI_SYSROOT} \
+                -I${RPI_SYSROOT}/usr/local/include" \
+    CXXFLAGS="--sysroot=${RPI_SYSROOT} \
+                -I${RPI_SYSROOT}/usr/local/include \
+                -L${RPI_SYSROOT}/usr/local/lib \
+                -L${RPI_SYSROOT}/usr/local/lib64" \
+    LDFLAGS="--sysroot=${RPI_SYSROOT} \
+                -L${RPI_SYSROOT}/usr/local/lib \
+                -L${RPI_SYSROOT}/usr/local/lib64"
 cat config.log
 
 # Build
 make -j$(($(nproc) * 2))
 
 # Install
-make altinstall DESTDIR="${RPI3_SYSROOT}"
-make altinstall DESTDIR="${RPI3_STAGING}"
+make altinstall DESTDIR="${RPI_SYSROOT}"
+make altinstall DESTDIR="${RPI_STAGING}"
 
 # Cleanup
 popd

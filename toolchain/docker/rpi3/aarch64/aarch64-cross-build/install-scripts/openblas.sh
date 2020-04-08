@@ -18,11 +18,11 @@ make \
 
 # Install
 make install \
-    DESTDIR="${RPI3_SYSROOT}" \
+    DESTDIR="${RPI_SYSROOT}" \
     PREFIX="/usr/local" \
     FC="${HOST_TRIPLE}-gfortran"
 make install \
-    DESTDIR="${RPI3_STAGING}" \
+    DESTDIR="${RPI_STAGING}" \
     PREFIX="/usr/local" \
     FC="${HOST_TRIPLE}-gfortran"
 
