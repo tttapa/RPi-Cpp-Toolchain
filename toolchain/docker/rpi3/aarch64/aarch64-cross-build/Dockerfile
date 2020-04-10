@@ -9,7 +9,7 @@ ENV PATH="${PATH}:${TOOLCHAIN_PATH}/bin"
 ENV DOWNLOADS="/tmp/downloads"
 
 # Copy the toolchain from the previous Docker image
-COPY --from=rpi3-aarch64-cross-toolchain \
+COPY --from=tttapa/rpi3-aarch64-cross-toolchain \
     /home/develop/x-tools/${HOST_TRIPLE} \
     ${TOOLCHAIN_PATH}
 
