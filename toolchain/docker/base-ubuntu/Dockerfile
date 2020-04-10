@@ -4,7 +4,7 @@ FROM ubuntu:latest as base-ubuntu
 RUN apt-get update && \
     apt-get install -y sudo git wget \
                        gcc g++ cmake make autoconf automake \
-                       gperf diffutils bzip2 xz-utils \
+                       gperf diffutils bzip2 libbz2-dev xz-utils \
                        flex gawk help2man libncurses-dev patch bison \
                        python-dev gnupg2 texinfo unzip libtool-bin \
                        autogen libtool m4 gettext pkg-config && \
