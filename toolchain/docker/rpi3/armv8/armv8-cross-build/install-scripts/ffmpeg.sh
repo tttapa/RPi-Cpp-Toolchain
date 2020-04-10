@@ -30,13 +30,11 @@ pushd ffmpeg-4.2
     --disable-static \
     --disable-doc \
     --extra-cflags="$(pkg-config --cflags mmal) \
-                    -I${RPI_SYSROOT}/usr/include \
                     -I${RPI_SYSROOT}/usr/local/include \
                     -I${RPI_SYSROOT}/opt/vc/include/IL" \
-    --extra-ldflags="-L${RPI_SYSROOT}/usr/local/lib \
-                        $(pkg-config --libs-only-L mmal) \
-                        -Wl,-rpath-link,${RPI_SYSROOT}/opt/vc/lib \
-                        -Wl,-rpath,/opt/vc/lib" \
+    --extra-ldflags="$(pkg-config --libs-only-L mmal) \
+                     -Wl,-rpath-link,${RPI_SYSROOT}/opt/vc/lib \
+                     -Wl,-rpath,/opt/vc/lib" \
  || cat ffbuild/config.log
     
 # Build
