@@ -1,4 +1,4 @@
-FROM rpi-cpp-toolchain-base-ubuntu as python-opencv-build
+FROM tttapa/rpi-cpp-toolchain-base-ubuntu as python-opencv-build
 
 # Set the path to the toolchain executables
 ENV HOST_CPU=CORTEXA53

@@ -1,4 +1,4 @@
-FROM rpi-cpp-toolchain-base-ubuntu as aarch64-cross-toolchain-distcc
+FROM tttapa/rpi-cpp-toolchain-base-ubuntu as aarch64-cross-toolchain-distcc
 
 # Copy the cross compilation toolchain
 COPY --from=rpi3-aarch64-cross-toolchain \

@@ -1,4 +1,4 @@
-FROM rpi-cpp-toolchain-base-ubuntu as armv8-cross-toolchain-distcc
+FROM tttapa/rpi-cpp-toolchain-base-ubuntu as armv8-cross-toolchain-distcc
 
 # Copy the cross compilation toolchain
 COPY --from=rpi3-armv8-cross-toolchain \
