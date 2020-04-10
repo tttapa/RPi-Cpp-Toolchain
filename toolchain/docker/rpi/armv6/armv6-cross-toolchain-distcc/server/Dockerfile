@@ -1,4 +1,4 @@
-FROM base-ubuntu as armv6-cross-toolchain-distcc
+FROM rpi-cpp-toolchain-base-ubuntu as armv6-cross-toolchain-distcc
 
 # Copy the cross compilation toolchain
 COPY --from=rpi-armv6-cross-toolchain \

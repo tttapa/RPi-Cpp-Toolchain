@@ -1,4 +1,4 @@
-FROM ubuntu:latest as base-ubuntu
+FROM ubuntu:latest as rpi-cpp-toolchain-base-ubuntu
 
 # Install some tools and compilers + clean up
 RUN apt-get update && \
