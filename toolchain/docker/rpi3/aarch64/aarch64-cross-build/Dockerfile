@@ -185,7 +185,7 @@ COPY --chown=develop:develop install-scripts/ninja.sh .
 RUN chmod +x ninja.sh && ./ninja.sh
 
 # Copy the GCC toolchain
-COPY --from=rpi3-aarch64-cross-native-toolchain \
+COPY --from=tttapa/rpi3-aarch64-cross-native-toolchain \
     /home/develop/x-tools/HOST-aarch64-linux-gnu \
     ${RPI_STAGING}/opt
 # Create links to the toolchain in /usr/local/bin
