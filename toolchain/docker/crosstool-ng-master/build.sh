@@ -4,4 +4,4 @@ set -e
 
 cd "$(dirname "${BASH_SOURCE[0]}")"
 
-docker build . -t crosstool-ng-master
+docker build . -t tttapa/crosstool-ng-master

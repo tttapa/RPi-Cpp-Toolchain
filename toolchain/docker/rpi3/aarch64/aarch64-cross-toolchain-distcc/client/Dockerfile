@@ -3,7 +3,7 @@ FROM arm64v8/ubuntu:latest
 # Move aside the original /usr/local/man folder (it's a symlink)
 RUN mv /usr/local/man /usr/local/man-tmp
 # Copy the staging area from the cross compilation to the root of the filesystem
-COPY --from=rpi3-aarch64-develop-cross /home/develop/RPi-staging /
+COPY --from=tttapa/rpi3-aarch64-develop-cross /home/develop/RPi-staging /
 # Restore the man symlink
 RUN cp -ar /usr/local/man/* /usr/local/man-tmp && \
     rm -rf /usr/local/man && \

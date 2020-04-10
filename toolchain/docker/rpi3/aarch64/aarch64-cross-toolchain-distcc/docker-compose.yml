@@ -4,7 +4,7 @@ services:
   distcc-server:
     build:
       context: server
-    image: rpi3-aarch64-cross-toolchain-distcc
+    image: tttapa/rpi3-aarch64-cross-toolchain-distcc
     networks: 
       - distcc_network
     entrypoint: 
@@ -20,7 +20,7 @@ services:
   distcc-client:
     build:
         context: client
-    image: rpi3-aarch64-native-toolchain-distcc
+    image: tttapa/rpi3-aarch64-native-toolchain-distcc
     stdin_open: true
     tty: true
     command: bash

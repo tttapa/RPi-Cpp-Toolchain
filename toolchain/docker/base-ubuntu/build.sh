@@ -4,4 +4,4 @@ set -e
 
 cd "$(dirname "${BASH_SOURCE[0]}")"
 
-docker build . -t rpi-cpp-toolchain-base-ubuntu
+docker build . -t tttapa/rpi-cpp-toolchain-base-ubuntu
