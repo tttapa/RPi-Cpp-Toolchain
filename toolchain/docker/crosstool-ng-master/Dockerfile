@@ -19,7 +19,8 @@ WORKDIR /home/develop
 RUN git clone -b master --single-branch --depth 1 \
         https://github.com/crosstool-ng/crosstool-ng.git
 WORKDIR /home/develop/crosstool-ng
-RUN ./bootstrap && \
+RUN git show --summary && \
+    ./bootstrap && \
     ./configure --prefix=/home/develop/.local && \
     make -j$(($(nproc) * 2)) && \
     make install &&  \
