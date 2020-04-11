@@ -4,7 +4,7 @@ read -p "Are you sure you want to delete all toolchains, sysroots and staging ar
 from this folder? [y/N] " yn
 case $yn in
     [Yy]* ) ;;
-    * ) echo Abort.; exit;;
+    * ) echo "Abort."; exit;;
 esac
 
 set -ex
