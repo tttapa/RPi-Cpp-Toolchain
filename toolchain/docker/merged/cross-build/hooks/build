@@ -3,13 +3,16 @@
 set -ex
 
 case "${DOCKER_TAG}" in
-*-dev)
+*-dev-test)
     docker_target=developer-build
-    target=${DOCKER_TAG%"-dev"}
+    target=${DOCKER_TAG%"-dev-test"}
+    ;;
+*-test)
+    docker_target=build
+    target=${DOCKER_TAG%"-test"}
     ;;
 *)
-    docker_target=build
-    target=${DOCKER_TAG}
+    exit 1
     ;;
 esac
 
