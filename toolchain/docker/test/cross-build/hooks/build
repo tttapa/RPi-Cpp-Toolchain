@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+
+set -ex
+
+case "${DOCKER_TAG}" in
+*-dev)
+    docker_target=developer-build
+    target=${DOCKER_TAG%"-dev"}
+    ;;
+*)
+    docker_target=build
+    target=${DOCKER_TAG}
+    ;;
+esac
+
+pushd ..
+. env/$target.env
+build_args=$(./env/env2arg.py env/$target.env)
+popd
+
+docker build \
+    -f ${DOCKERFILE_PATH} \
+    -t ${IMAGE_NAME} \
+    ${build_args} \
+    --target $docker_target \
+    .
