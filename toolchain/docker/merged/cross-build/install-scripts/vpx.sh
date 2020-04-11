@@ -6,6 +6,15 @@ set -ex
 git clone -b 'v1.8.2' --single-branch --depth 1 \
     https://chromium.googlesource.com/webm/libvpx
 
+# Determine the architecture
+case "${HOST_TRIPLE}" in
+    aarch64* ) VPX_TARGET="arm64-linux-gcc" ;;
+    armv8*   ) VPX_TARGET="armv8-linux-gcc" ;;
+    armv7*   ) VPX_TARGET="armv7-linux-gcc" ;;
+    armv6*   ) VPX_TARGET="generic-gnu" ;;
+    *        ) echo "Unknown architecture ${HOST_TRIPLE}" && exit 1 ;;
+esac
+
 # Configure
 pushd libvpx
 . cross-pkg-config

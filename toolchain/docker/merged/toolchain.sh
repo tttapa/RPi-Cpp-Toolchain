@@ -54,8 +54,22 @@ esac
 
 set -ex
 
+case "$dev" in
+nodev)
+    docker_target=build
+    tag=$target
+    ;;
+dev)
+    docker_target=developer-build
+    tag=$target-dev
+    ;;
+esac
+
 . env/$target.env
 build_args=$(./env/env2arg.py env/$target.env)
 pushd cross-build
-docker build -t tttapa/rpi-cross:$target ${build_args} . 
+docker build \
+    --tag tttapa/rpi-cross:$tag ${build_args} \
+    --target $docker_target \
+    --cpuset-cpus=0-3 . 
 popd

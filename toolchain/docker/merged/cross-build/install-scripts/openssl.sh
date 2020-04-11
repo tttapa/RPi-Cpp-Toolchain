@@ -12,6 +12,13 @@ popd
 tar xzf "${DOWNLOADS}/OpenSSL_1_1_1c.tar.gz"
 pushd openssl-OpenSSL_1_1_1c
 
+# Determine the architecture
+case "${HOST_TRIPLE}" in
+    aarch64* ) OPENSSL_ARCH="linux-aarch64" ;;
+    armv?*   ) OPENSSL_ARCH="linux-armv4" ;;
+    *        ) echo "Unknown architecture ${HOST_TRIPLE}" && exit 1 ;;
+esac
+
 # Configure
 . cross-pkg-config
 ./Configure \
@@ -20,7 +27,7 @@ pushd openssl-OpenSSL_1_1_1c
     CFLAGS="--sysroot=${RPI_SYSROOT}" \
     CPPFLAGS="--sysroot=${RPI_SYSROOT}" \
     LDFLAGS="--sysroot=${RPI_SYSROOT}" \
-    "linux-${OPENSSL_ARCH}"
+    "${OPENSSL_ARCH}"
 
 # Build
 make -j$(($(nproc) * 2))

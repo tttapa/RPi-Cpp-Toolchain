@@ -12,6 +12,15 @@ popd
 tar xjf "$DOWNLOADS/ffmpeg-4.2.tar.bz2"
 pushd ffmpeg-4.2
 
+# Determine the architecture
+case "${HOST_TRIPLE}" in
+    aarch64* ) FFMPEG_ENABLE_NEON="--enable-neon" ;;
+    armv8*   ) FFMPEG_ENABLE_NEON="--enable-neon" ;;
+    armv7*   ) FFMPEG_ENABLE_NEON="--enable-neon" ;;
+    armv6*   ) FFMPEG_ENABLE_NEON=""              ;;
+    *        ) echo "Unknown architecture ${HOST_TRIPLE}" && exit 1 ;;
+esac
+
 # Configure
 . cross-pkg-config
 ./configure \

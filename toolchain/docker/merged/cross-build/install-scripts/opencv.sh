@@ -12,6 +12,15 @@ popd
 tar xzf "${DOWNLOADS}/opencv-4.2.0.tar.gz"
 mkdir opencv-4.2.0/build-arm
 
+# Determine the architecture
+case "${HOST_TRIPLE}" in
+    aarch64* ) OPENCV_ENABLE_NEON="ON";  OPENCV_ENABLE_VFPV3="OFF" ;;
+    armv8*   ) OPENCV_ENABLE_NEON="ON";  OPENCV_ENABLE_VFPV3="ON"  ;;
+    armv7*   ) OPENCV_ENABLE_NEON="ON";  OPENCV_ENABLE_VFPV3="ON"  ;;
+    armv6*   ) OPENCV_ENABLE_NEON="OFF"; OPENCV_ENABLE_VFPV3="OFF" ;;
+    *        ) echo "Unknown architecture ${HOST_TRIPLE}" && exit 1 ;;
+esac
+
 # Configure
 . cross-pkg-config
 . crossenv/bin/activate

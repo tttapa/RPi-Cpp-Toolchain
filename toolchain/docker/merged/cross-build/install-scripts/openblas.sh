@@ -6,6 +6,15 @@ set -ex
 git clone -b 'v0.3.7' --single-branch --depth 1 \
     https://github.com/xianyi/OpenBLAS
 
+# Determine the architecture
+case "${HOST_TRIPLE}" in
+    aarch64-rpi4* ) OPENBLAS_HOST_CPU="CORTEXA72" ;;
+    aarch64-rpi3* ) OPENBLAS_HOST_CPU="CORTEXA53" ;;
+    armv8*        ) OPENBLAS_HOST_CPU="ARMV7" ;; # ARMV8 is 64-bit in OpenBLAS
+    armv7*        ) OPENBLAS_HOST_CPU="ARMV7" ;;
+    armv6*        ) OPENBLAS_HOST_CPU="ARMV6" ;;
+    *             ) echo "Unknown architecture ${HOST_TRIPLE}" && exit 1 ;;
+esac
 
 # Build
 pushd OpenBLAS
