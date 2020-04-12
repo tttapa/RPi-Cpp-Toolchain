@@ -117,6 +117,21 @@ RUN chmod +x xvid.sh && ./xvid.sh
 COPY --chown=develop:develop install-scripts/ffmpeg.sh .
 RUN chmod +x ffmpeg.sh && ./ffmpeg.sh
 
+# X11
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+# X11 ARM
+COPY --chown=develop:develop install-scripts/x11.sh .
+COPY --chown=develop:develop patches/libx11-1.6.9.configure.ac.patch .
+RUN chmod +x x11.sh && ./x11.sh
+
+# Tcl/Tk
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+# Tcl/Tk ARM
+COPY --chown=develop:develop install-scripts/tk.sh .
+RUN chmod +x tk.sh && ./tk.sh
+
 # Python
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
