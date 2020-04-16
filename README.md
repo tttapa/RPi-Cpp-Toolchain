@@ -144,4 +144,4 @@ You also need a cross-platform version of the GDB client on your computer. This 
 
 ## Cross-compiling Python modules and C/C++ extensions
 
-The [`extra/python/cross-compile-module/spam`](extra/python/cross-compile-module/spam) folder contains a small guide explaining how to cross-compile Python modules for the Raspberry Pi.
+The [`extra/python/cross-compile-module`](extra/python/cross-compile-module) folder contains small guides explaining how to cross-compile Python and Cython modules for the Raspberry Pi.
