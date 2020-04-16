@@ -1,14 +1,14 @@
 [
     {
         "name": "Raspberry Pi 3 (AArch64)",
-        "toolchainFile": "${workspaceFolder}/cmake/RPi3-Toolchain-AArch64.cmake"
+        "toolchainFile": "${workspaceFolder}/cmake/aarch64-rpi3-linux-gnu.cmake"
     },
     {
         "name": "Raspberry Pi 3 (ARMv8)",
-        "toolchainFile": "${workspaceFolder}/cmake/RPi3-Toolchain-ARMv8.cmake"
+        "toolchainFile": "${workspaceFolder}/cmake/armv8-rpi3-linux-gnueabihf.cmake"
     },
     {
         "name": "Raspberry Pi (ARMv6)",
-        "toolchainFile": "${workspaceFolder}/cmake/RPi-Toolchain-ARMv6.cmake"
+        "toolchainFile": "${workspaceFolder}/cmake/armv6-rpi-linux-gnueabihf.cmake"
     }
 ]
