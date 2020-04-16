@@ -108,12 +108,12 @@ docker_build_cpuset=
 
 while (( "$#" )); do
     case "$1" in
-        --push)             push=true                          ;;
-        --pull)             build_toolchain=false; build=false ;;
-        --build-toolchain)  build_toolchain=true               ;;
-        --export)           export=true              ;;
-        --export-toolchain) export_toolchain=true    ;;
-        --cpuset-cpus=*)    docker_build_cpuset="$1" ;;
+        --push)             push=true                            ;;
+        --pull)             build_toolchain=false; build=false   ;;
+        --build-toolchain)  build_toolchain=true                 ;;
+        --export)           export=true                          ;;
+        --export-toolchain) export_toolchain=true; build=false   ;;
+        --cpuset-cpus=*)    docker_build_cpuset="$1"             ;;
         *) echo; echo "Unknown option '$1'"; print_usage; exit 1 ;;
     esac
     shift
@@ -191,7 +191,7 @@ if [ $build = true ]; then
         echo "Pushing Docker image $image"
         docker push $image
     fi
-else
+elif [ $export_toolchain = false ]; then
     echo "Pulling Docker image $image"
     [ ! -z $(docker images -q $image) ] || docker pull $image
 fi
@@ -203,6 +203,6 @@ if [ $export = true ]; then
 fi
 
 if [ $export_toolchain = true ]; then
-    . ./scripts/export_toolchain.sh
+    . ./scripts/export-toolchain.sh
     export_toolchain $image $target $target
 fi
