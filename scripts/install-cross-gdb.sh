@@ -3,18 +3,15 @@
 set -e
 
 if [ "$#" -ne 1 ]; then
-    echo "Usage: $0 aarch32|aarch64"
+    echo "Usage: $0 arm|aarch64"
     exit 0
 fi
 
-if [ "$1" == "aarch32" ]; then
-    target=arm-linux-gnueabihf
-elif [ "$1" == "aarch64" ]; then
-    target=aarch64-linux-gnu 
-else 
-    echo "Unknown architecture. Choose either 'aarch32' or 'aarch64'"
-    exit 1
-fi
+case "$1" in
+    arm)     target=arm-linux-gnueabihf ;;
+    aarch64) target=aarch64-linux-gnu ;;
+    *) echo "Unknown architecture. Choose either 'arm' or 'aarch64'"; exit 1 ;;
+esac
 
 cd /tmp
 if [ ! -e gdb-8.3.tar.xz ]; then
@@ -26,4 +23,4 @@ mkdir -p gdb-8.3/build
 cd gdb-8.3/build
 ../configure --prefix=$HOME/.local --target=$target
 make -j$(nproc)
-make install
+make -C gdb install
