@@ -1,9 +1,4 @@
-[![Download from Docker Hub](https://img.shields.io/docker/pulls/tttapa/rpi3-aarch64-python-opencv-cross?label=Docker%20Hub%20RPi3%20AArch64&logo=docker)](https://hub.docker.com/repository/docker/tttapa/rpi3-aarch64-python-opencv-cross)
-[![Download from Docker Hub](https://img.shields.io/docker/pulls/tttapa/rpi3-aarch64-develop-cross?label=Docker%20Hub%20RPi3%20AArch64%20(dev)&logo=docker)](https://hub.docker.com/r/tttapa/rpi3-aarch64-develop-cross)  
-[![Download from Docker Hub](https://img.shields.io/docker/pulls/tttapa/rpi3-armv8-python-opencv-cross?label=Docker%20Hub%20RPi3%20ARMv8&logo=docker)](https://hub.docker.com/repository/docker/tttapa/rpi3-armv8-python-opencv-cross)
-[![Download from Docker Hub](https://img.shields.io/docker/pulls/tttapa/rpi3-armv8-develop-cross?label=Docker%20Hub%20RPi3%20ARMv8%20(dev)&logo=docker)](https://hub.docker.com/r/tttapa/rpi3-armv8-develop-cross)  
-[![Download from Docker Hub](https://img.shields.io/docker/pulls/tttapa/rpi-armv6-python-opencv-cross?label=Docker%20Hub%20RPi%20ARMv6&logo=docker)](https://hub.docker.com/repository/docker/tttapa/rpi-armv6-python-opencv-cross)
-[![Download from Docker Hub](https://img.shields.io/docker/pulls/tttapa/rpi-armv6-develop-cross?label=Docker%20Hub%20RPi%20ARMv6%20(dev)&logo=docker)](https://hub.docker.com/r/tttapa/rpi-armv6-develop-cross)
+[![Download from Docker Hub](https://img.shields.io/docker/pulls/tttapa/rpi-cross?label=Docker%20Hub&logo=docker)](https://hub.docker.com/r/tttapa/rpi-cross/tags)
 
 # Raspberry Pi C++ Toolchain
 
