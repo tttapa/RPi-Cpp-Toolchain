@@ -141,3 +141,7 @@ This requires the right SSH and hostname setup, both on your computer and on the
 Make sure mDNS is setup correctly, so that GDB can find the RPi at the address `rpi3.local`, and that you have a `.ssh/config` file with a config for the Raspberry Pi, called `RPi3`.
 
 You also need a cross-platform version of the GDB client on your computer. This can be installed using the `scripts/install-cross-gdb.sh` script.
+
+## Cross-compiling Python modules and C/C++ extensions
+
+The [`extra/python/cross-compile-module/spam`](extra/python/cross-compile-module/spam) folder contains a small guide explaining how to cross-compile Python modules for the Raspberry Pi.
