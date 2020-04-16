@@ -22,6 +22,8 @@ It has cross-compiled versions of many useful libraries and tools:
  - **GNU dbm**: library for key-value data (Python dependency)
  - **SQLite**: library for embedded databases (Python dependency)
  - **UUID**: library for unique identifiers (Python dependency)
+ - **libX11**: X11 protocol client library (Tk dependency)
+ - **Tcl/Tk**: graphical user interface toolkit (Python/Tkinter dependency)
  - **Python 3.8.1**: Python interpreter and libraries
  - **ZBar**: Bar and QR code decoding library
  - **Raspberry Pi Userland**: VideoCore GPU drivers
@@ -79,7 +81,7 @@ You can find more information about the Docker containers in the [`toolchain/doc
 The toolchain is then used to compile all libraries for the Raspberry Pi.  
 These libraries are installed in two locations:
 1. in the "sysroot": this is a folder where all system files and libraries are installed that are required for the build process of other libraries
-2. in the "staging area": this is the folder that will be copied to the SD card of the Raspberry Pi later. It contains the libraries that we built, but not the system files (because those are already part of the Ubuntu installation of the Pi).
+2. in the "staging area": this is the folder that will be copied to the SD card of the Raspberry Pi later. It contains the libraries that we built, but not the system files (because those are already part of the Ubuntu/Raspbian installation of the Pi).
 
 Everything is installed in `/usr/local/`, so it shouldn't interfere with the software installed by your package manager.
 [`userland`](https://github.com/raspberrypi/userland) is an exception, it's installed in `/opt/vc/`.
@@ -123,7 +125,7 @@ You can of course also configure and build the project manually, without VSCode:
 
 ```sh
 cd build
-cmake -DCMAKE_TOOLCHAIN_FILE=../cmake/RPi3-Toolchain-AArch64.cmake -DCMAKE_BUILD_TYPE=Debug ..
+cmake -DCMAKE_TOOLCHAIN_FILE=../cmake/aarch64-rpi3-linux-gnu.cmake -DCMAKE_BUILD_TYPE=Debug ..
 make -j`nproc`
 ```
 
