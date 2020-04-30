@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -e
+set -ex
 
 if [ "$#" -ne 1 ]; then
     echo "Usage: $0 arm|aarch64"
@@ -13,14 +13,27 @@ case "$1" in
     *) echo "Unknown architecture. Choose either 'arm' or 'aarch64'"; exit 1 ;;
 esac
 
+version=9.1
+
 cd /tmp
-if [ ! -e gdb-8.3.tar.xz ]; then
-    wget https://ftp.gnu.org/gnu/gdb/gdb-8.3.tar.xz
+if [ ! -e gdb-$version.tar.xz ]; then
+    wget https://ftp.gnu.org/gnu/gdb/gdb-$version.tar.xz
 fi
-rm -rf gdb-8.3
-tar xf gdb-8.3.tar.xz
-mkdir -p gdb-8.3/build
-cd gdb-8.3/build
-../configure --prefix=$HOME/.local --target=$target
+rm -rf gdb-$version
+tar xf gdb-$version.tar.xz
+mkdir -p gdb-$version/build
+cd gdb-$version/build
+
+# Get the Python executable and library directory
+[ -z "${PYTHON}" ] && export PYTHON=$(which python3)
+PYTHON_LIBDIR=$("${PYTHON}" -c \
+    "import sysconfig; print(sysconfig.get_config_var('LIBDIR'))")
+
+../configure \
+    --prefix=$HOME/.local \
+    --target=$target \
+    --with-python="${PYTHON}" \
+    LDFLAGS="-L${PYTHON_LIBDIR}"
+
 make -j$(nproc)
 make -C gdb install
