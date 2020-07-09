@@ -7,3 +7,5 @@ FROM tttapa/rpi-cross:${HOST_TRIPLET}
 # script is that they will only be installed once, whereas the build-docker.sh
 # script is executed in a fresh Docker container every time you want to build
 # your module.
+
+RUN . ${HOME}/crossenv/bin/activate && pip install -U setuptools wheel

@@ -2,3 +2,4 @@
 *.o
 dist
 build
+spam.egg-info
