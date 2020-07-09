@@ -3,17 +3,18 @@
 set -ex
 
 # Download
-URL="https://curl.haxx.se/download/curl-7.68.0.tar.gz"
+version=7.70.0
+URL="https://curl.haxx.se/download/curl-$version.tar.gz"
 pushd "${DOWNLOADS}"
 wget -N "$URL"
 popd
 
 # Extract
-tar xzf "${DOWNLOADS}/curl-7.68.0.tar.gz"
+tar xzf "${DOWNLOADS}/curl-$version.tar.gz"
 
 # Configure
 . cross-pkg-config
-pushd curl-7.68.0
+pushd curl-$version
 ./configure \
     --host="${HOST_TRIPLE}" \
     --prefix="/usr/local" \
@@ -30,4 +31,4 @@ make install DESTDIR="${RPI_SYSROOT}"
 
 # Cleanup
 popd
-rm -rf curl-7.68.0
+rm -rf curl-$version

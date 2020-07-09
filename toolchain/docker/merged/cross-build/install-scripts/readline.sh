@@ -19,7 +19,7 @@ pushd readline-8.0
     --enable-shared \
     --prefix="/usr/local" \
     --host="${HOST_TRIPLE}" \
-    CFLAGS="--sysroot=${RPI_SYSROOT}" 
+    CFLAGS="--sysroot=${RPI_SYSROOT} -O3" 
 
 # Build
 make -j$(($(nproc) * 2))

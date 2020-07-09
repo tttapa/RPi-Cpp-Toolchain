@@ -3,21 +3,21 @@
 set -ex
 
 # Download
-URL="https://www.sqlite.org/2019/sqlite-autoconf-3290000.tar.gz"
+version=3310100
+URL="https://www.sqlite.org/2020/sqlite-autoconf-$version.tar.gz"
 pushd "${DOWNLOADS}"
 wget -N "$URL"
 popd
 
 # Extract
-tar xzf "${DOWNLOADS}/sqlite-autoconf-3290000.tar.gz"
-pushd sqlite-autoconf-3290000
+tar xzf "${DOWNLOADS}/sqlite-autoconf-$version.tar.gz"
+pushd sqlite-autoconf-$version
 
 # Configure
 . cross-pkg-config
 ./configure \
         --prefix="/usr/local" \
-        --host="${HOST_TRIPLE}" \
-        CFLAGS="--sysroot=${RPI_SYSROOT}"
+        --host="${HOST_TRIPLE}"
 
 # Build
 make -j$(($(nproc) * 2))
@@ -28,4 +28,4 @@ make install DESTDIR="${RPI_STAGING}"
 
 # Cleanup
 popd
-rm -rf sqlite-autoconf-3290000
+rm -rf sqlite-autoconf-$version

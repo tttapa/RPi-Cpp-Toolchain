@@ -3,18 +3,19 @@
 set -ex
 
 # Download
-URL="http://ftp.br.debian.org/debian-multimedia/pool/main/x/xvidcore/xvidcore_1.3.3.orig.tar.gz"
+version=1.3.7
+URL="https://downloads.xvid.com/downloads/xvidcore-$version.tar.gz"
 pushd "${DOWNLOADS}"
 wget -N "$URL"
 popd
 
 # Extract
-tar xzf "$DOWNLOADS/xvidcore_1.3.3.orig.tar.gz"
+tar xzf "$DOWNLOADS/xvidcore-$version.tar.gz"
 
 # Configure
-pushd xvidcore-1.3.3/build/generic
+pushd xvidcore/build/generic
 . cross-pkg-config
-CFLAGS="--sysroot=${RPI_SYSROOT}" \
+CFLAGS="--sysroot=${RPI_SYSROOT} -O3" \
 CPPLAGS="--sysroot=${RPI_SYSROOT}" \
 LDLAGS="--sysroot=${RPI_SYSROOT}" \
 ./configure \
@@ -30,4 +31,4 @@ make install DESTDIR="${RPI_STAGING}"
 
 # Cleanup
 popd
-rm -rf xvidcore-1.3.3
+rm -rf xvidcore

@@ -30,17 +30,14 @@ CONFIG_SITE="$PWD/config.site" \
     --prefix="/usr/local" \
     CFLAGS="--sysroot=${RPI_SYSROOT} \
                 -I${RPI_SYSROOT}/usr/local/include \
-                -L${RPI_SYSROOT}/usr/local/lib \
-                -L${RPI_SYSROOT}/usr/local/lib64" \
+                -L${RPI_SYSROOT}/usr/local/lib" \
     CPPFLAGS="--sysroot=${RPI_SYSROOT} \
                 -I${RPI_SYSROOT}/usr/local/include" \
     CXXFLAGS="--sysroot=${RPI_SYSROOT} \
                 -I${RPI_SYSROOT}/usr/local/include \
-                -L${RPI_SYSROOT}/usr/local/lib \
-                -L${RPI_SYSROOT}/usr/local/lib64" \
+                -L${RPI_SYSROOT}/usr/local/lib" \
     LDFLAGS="--sysroot=${RPI_SYSROOT} \
-                -L${RPI_SYSROOT}/usr/local/lib \
-                -L${RPI_SYSROOT}/usr/local/lib64"
+                -L${RPI_SYSROOT}/usr/local/lib"
 cat config.log
 
 # Build

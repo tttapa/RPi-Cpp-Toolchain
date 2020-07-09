@@ -3,14 +3,15 @@
 set -ex
 
 # Download
-URL="ftp://ftp.gnu.org/gnu/ncurses/ncurses-6.1.tar.gz"
+version=6.2
+URL="ftp://ftp.gnu.org/gnu/ncurses/ncurses-$version.tar.gz"
 pushd "${DOWNLOADS}"
 wget -N "$URL"
 popd
 
 # Extract
-tar xzf "${DOWNLOADS}/ncurses-6.1.tar.gz"
-pushd ncurses-6.1
+tar xzf "${DOWNLOADS}/ncurses-$version.tar.gz"
+pushd ncurses-$version
 
 # Configure
 ./configure \
@@ -25,4 +26,4 @@ install -v -m755 progs/tic "$HOME/tools"
 
 # Cleanup
 popd
-rm -rf ncurses-6.1
+rm -rf ncurses-$version

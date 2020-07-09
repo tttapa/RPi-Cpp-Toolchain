@@ -6,6 +6,11 @@ set -ex
 git clone --single-branch --depth 1 \
     https://code.videolan.org/videolan/x264.git
 
+# Configure seems to add -mcpu flags itself when nothing is specified, prevent 
+# that:
+MCPU=$(armv8-rpi3-linux-gnueabihf-gcc -Q --help=target | \
+       grep -- -mcpu= | tr -d '[:space:]')
+
 # Configure
 pushd x264
 . cross-pkg-config
@@ -14,7 +19,8 @@ pushd x264
     --cross-prefix="${HOST_TRIPLE}-" \
     --sysroot="${RPI_SYSROOT}" \
     --enable-shared \
-    --prefix="/usr/local" && \
+    --extra-cflags="${MCPU}" \
+    --prefix="/usr/local"
 
 # Build
 make -j$(($(nproc) * 2))

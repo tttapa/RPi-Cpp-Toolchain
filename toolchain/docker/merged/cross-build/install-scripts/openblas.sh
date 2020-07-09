@@ -3,7 +3,8 @@
 set -ex
 
 # Download
-git clone -b 'v0.3.7' --single-branch --depth 1 \
+version=0.3.9
+git clone -b v$version --single-branch --depth 1 \
     https://github.com/xianyi/OpenBLAS
 
 # Determine the architecture
@@ -15,6 +16,10 @@ case "${HOST_TRIPLE}" in
     armv6*        ) OPENBLAS_HOST_CPU="ARMV6" ;;
     *             ) echo "Unknown architecture ${HOST_TRIPLE}" && exit 1 ;;
 esac
+
+# This is suboptimal on ARMv8 systems in 32-bit mode, but it seems that the
+# OpenBLAS developers aren't planning to do anything about it:
+# https://github.com/xianyi/OpenBLAS/issues/2409
 
 # Build
 pushd OpenBLAS

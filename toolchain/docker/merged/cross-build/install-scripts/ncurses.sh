@@ -3,14 +3,15 @@
 set -ex
 
 # Download
-URL="ftp://ftp.gnu.org/gnu/ncurses/ncurses-6.1.tar.gz"
+version=6.2
+URL="ftp://ftp.gnu.org/gnu/ncurses/ncurses-$version.tar.gz"
 pushd "${DOWNLOADS}"
 wget -N "$URL"
 popd
 
 # Extract
-tar xzf "${DOWNLOADS}/ncurses-6.1.tar.gz"
-pushd ncurses-6.1
+tar xzf "${DOWNLOADS}/ncurses-$version.tar.gz"
+pushd ncurses-$version
 
 # Configure
 . cross-pkg-config
@@ -26,7 +27,7 @@ pushd ncurses-6.1
     --enable-pc-files \
     --with-build-cc="gcc" \
     --host="${HOST_TRIPLE}" \
-    CFLAGS="--sysroot=${RPI_SYSROOT}"
+    CFLAGS="--sysroot=${RPI_SYSROOT} -O3"
 
 # Build
 make -j$(($(nproc) * 2))
@@ -39,4 +40,4 @@ make install DESTDIR="${RPI_STAGING}" \
 
 # Cleanup
 popd
-rm -rf ncurses-6.1
+rm -rf ncurses-$version

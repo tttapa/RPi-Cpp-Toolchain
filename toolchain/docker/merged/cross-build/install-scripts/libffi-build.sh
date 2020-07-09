@@ -3,14 +3,15 @@
 set -ex
 
 # Download
-URL="https://codeload.github.com/libffi/libffi/tar.gz/v3.2.1"
+version=3.3
+URL="https://codeload.github.com/libffi/libffi/tar.gz/v$version"
 pushd "${DOWNLOADS}"
-wget -N "$URL" -O libffi-3.2.1.tar.gz
+wget -N "$URL" -O libffi-$version.tar.gz
 popd
 
 # Extract
-tar xzf "${DOWNLOADS}/libffi-3.2.1.tar.gz"
-pushd libffi-3.2.1
+tar xzf "${DOWNLOADS}/libffi-$version.tar.gz"
+pushd libffi-$version
 
 # Configure
 ./autogen.sh
@@ -25,4 +26,4 @@ make install
 
 # Cleanup
 popd
-rm -rf libffi-3.2.1
+rm -rf libffi-$version

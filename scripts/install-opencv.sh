@@ -20,7 +20,7 @@ fi
 python3 -m pip install numpy
 
 # Configuration
-VERSION=4.2.0
+VERSION=4.3.0
 PREFIX="$HOME/.local"
 
 if [ ! -z "$VIRTUAL_ENV" ]; then
@@ -35,7 +35,7 @@ if [ ! -e opencv-$VERSION.tar.gz ]; then
     wget -O opencv-$VERSION.tar.gz https://codeload.github.com/opencv/opencv/tar.gz/$VERSION
 fi
 echo "-- Extracting"
-tar -xzf opencv-$VERSION.tar.gz
+# tar -xzf opencv-$VERSION.tar.gz
 
 # Detect Python directories
 py_include=`python3 -c "import sysconfig as sc; print(sc.get_path('include'))"`
@@ -54,7 +54,7 @@ cmake \
     -DOPENCV_GENERATE_PKGCONFIG=ON \
     -DBUILD_TESTS=OFF \
     -DBUILD_PERF_TESTS=OFF \
-    -DBUILD_EXAMPLES=OFF \
+    -DBUILD_EXAMPLES=ON \
     -DPYTHON3_EXECUTABLE=`which python3` \
     -DBUILD_OPENCV_PYTHON2=OFF \
     -DBUILD_OPENCV_PYTHON3=ON \

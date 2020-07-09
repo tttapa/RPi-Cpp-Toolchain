@@ -15,9 +15,9 @@ pushd libuuid-1.0.3
 # Configure
 . cross-pkg-config
 ./configure \
-        --prefix="/usr/local" \
-        --host="${HOST_TRIPLE}" \
-        CFLAGS="--sysroot=${RPI_SYSROOT}"
+    --prefix="/usr/local" \
+    --host="${HOST_TRIPLE}" \
+    CFLAGS="--sysroot=${RPI_SYSROOT} -O3"
 
 # Build
 make -j$(($(nproc) * 2))

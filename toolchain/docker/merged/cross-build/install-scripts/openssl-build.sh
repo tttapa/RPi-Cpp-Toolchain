@@ -3,14 +3,15 @@
 set -ex
 
 # Download
-URL="https://github.com/openssl/openssl/archive/OpenSSL_1_1_1c.tar.gz"
+version=1_1_1g
+URL="https://github.com/openssl/openssl/archive/OpenSSL_$version.tar.gz"
 pushd "${DOWNLOADS}"
 wget -N "$URL"
 popd
 
 # Extract
-tar xzf "${DOWNLOADS}/OpenSSL_1_1_1c.tar.gz"
-pushd openssl-OpenSSL_1_1_1c
+tar xzf "${DOWNLOADS}/OpenSSL_$version.tar.gz"
+pushd openssl-OpenSSL_$version
 
 # Configure
 ./config \
@@ -24,4 +25,4 @@ make install_sw
 
 # Cleanup
 popd
-rm -rf openssl-OpenSSL_1_1_1c
+rm -rf openssl-OpenSSL_$version

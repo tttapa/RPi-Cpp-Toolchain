@@ -9,11 +9,13 @@ ARG HOST_ARCH
 ARG HOST_TRIPLE
 ARG HOST_TRIPLE_NO_VENDOR
 ARG HOST_TRIPLE_LIB_DIR
+ARG HOST_BITNESS
 
 ENV HOST_ARCH ${HOST_ARCH}
 ENV HOST_TRIPLE ${HOST_TRIPLE}
 ENV HOST_TRIPLE_NO_VENDOR ${HOST_TRIPLE_NO_VENDOR}
 ENV HOST_TRIPLE_LIB_DIR ${HOST_TRIPLE_LIB_DIR}
+ENV HOST_BITNESS ${HOST_BITNESS}
 
 ENV TOOLCHAIN_PATH="/home/develop/x-tools/${HOST_TRIPLE}"
 ENV PATH="${PATH}:${TOOLCHAIN_PATH}/bin"
@@ -33,6 +35,14 @@ RUN mkdir "${RPI_SYSROOT}" "${RPI_STAGING}" && \
     cp -rp "${TOOLCHAIN_PATH}/${HOST_TRIPLE}/sysroot/"* "${RPI_SYSROOT}"/ && \
     chmod -R u+w "${RPI_SYSROOT}"
 RUN mkdir -p "${DOWNLOADS}"
+RUN mkdir -p ${RPI_STAGING}/usr/local && \
+    [ "${HOST_BITNESS}" -eq "64" ] && \
+    ln -s lib "${RPI_STAGING}/usr/local/lib64" || \
+    true
+RUN mkdir -p ${RPI_SYSROOT}/usr/local && \
+    [ "${HOST_BITNESS}" -eq "64" ] && \
+    ln -s lib "${RPI_SYSROOT}/usr/local/lib64" || \
+    true
 
 # Copy the cross-compilation pkg-config wrappers
 COPY --chown=develop:develop tools/ ./tools/
@@ -135,6 +145,13 @@ RUN chmod +x tk.sh && ./tk.sh
 # Python
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+# Configure LD so it finds libffi.so.7
+USER root
+RUN echo "/home/develop/.local/lib" > /etc/ld.so.conf.d/home.local.conf \
+ && ldconfig
+USER develop
+RUN ln -s /usr/lib/ssl /home/develop/.local/ssl
+
 # Python build
 COPY --chown=develop:develop install-scripts/python-build.sh .
 RUN chmod +x python-build.sh && ./python-build.sh
@@ -170,18 +187,27 @@ RUN rm -rf crossenv/cross/lib/python3.8/site-packages/__pycache__ && \
     mv "crossenv/cross/lib/python3.8/site-packages/"* \
        "${RPI_STAGING}/usr/local/lib/python3.8/site-packages"
 
+# GoogleTest
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+COPY --chown=develop:develop install-scripts/${HOST_TRIPLE}.cmake .
+COPY --chown=develop:develop install-scripts/googletest.sh .
+RUN chmod +x googletest.sh && ./googletest.sh
+
 # System libraries
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # Copy gdbserver to the staging area, as well as the latest C++ and Fortran 
-# libraries
-RUN mkdir -p "${RPI_STAGING}/usr/local/lib/${HOST_TRIPLE_NO_VENDOR}/" && \
+# libraries, OpenMP ...
+RUN mkdir -p "${RPI_STAGING}/usr/local/lib/${HOST_TRIPLE_LIB_DIR}/" && \
     cp -a \
         "${RPI_SYSROOT}/lib/libstdc++.so"* \
-        "${RPI_STAGING}/usr/local/lib/${HOST_TRIPLE_NO_VENDOR}/" && \
+        "${RPI_STAGING}/usr/local/lib/${HOST_TRIPLE_LIB_DIR}/" && \
+    cp -a \
+        "${RPI_SYSROOT}/lib/libgomp.so"* \
+        "${RPI_STAGING}/usr/local/lib/${HOST_TRIPLE_LIB_DIR}/" && \
     cp -a \
         "${RPI_SYSROOT}/lib/libgfortran.so"* \
-        "${RPI_STAGING}/usr/local/lib/${HOST_TRIPLE_NO_VENDOR}/" && \
+        "${RPI_STAGING}/usr/local/lib/${HOST_TRIPLE_LIB_DIR}/" && \
     cp -a \
         "$TOOLCHAIN_PATH/${HOST_TRIPLE}/debug-root/usr/bin/gdbserver" \
         "${RPI_STAGING}/usr/local/bin"
@@ -202,7 +228,6 @@ RUN chmod +x make.sh && ./make.sh
 
 # CMake ARM
 COPY --chown=develop:develop install-scripts/cmake.sh .
-COPY --chown=develop:develop install-scripts/${HOST_TRIPLE}.cmake.cmake .
 RUN chmod +x cmake.sh && ./cmake.sh
 
 # CCache ARM

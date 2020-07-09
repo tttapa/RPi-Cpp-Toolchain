@@ -3,14 +3,15 @@
 set -ex
 
 # Download
-URL="https://codeload.github.com/opencv/opencv/tar.gz/4.2.0"
+version=4.3.0
+URL="https://codeload.github.com/opencv/opencv/tar.gz/$version"
 pushd "${DOWNLOADS}"
-wget -N "$URL" -O opencv-4.2.0.tar.gz
+wget -N "$URL" -O opencv-$version.tar.gz
 popd
 
 # Extract
-tar xzf "${DOWNLOADS}/opencv-4.2.0.tar.gz"
-mkdir opencv-4.2.0/build-arm
+tar xzf "${DOWNLOADS}/opencv-$version.tar.gz"
+mkdir opencv-$version/build-arm
 
 # Determine the architecture
 case "${HOST_TRIPLE}" in
@@ -24,7 +25,7 @@ esac
 # Configure
 . cross-pkg-config
 . crossenv/bin/activate
-pushd opencv-4.2.0/build-arm
+pushd opencv-$version/build-arm
 NUMPY_INC=$(python3.8 -c "import numpy; print(numpy.get_include(),end='')")
 cmake \
     -DCMAKE_TOOLCHAIN_FILE=../platforms/linux/arm.toolchain.cmake \
@@ -62,6 +63,6 @@ make install DESTDIR="${RPI_STAGING}"
 
 # Cleanup
 popd
-rm -rf opencv-4.2.0
+rm -rf opencv-$version
 
 # TODO: check if it's necessary to install NumPy on build

@@ -15,6 +15,6 @@ cd zbar-0.10/build
     --disable-video --without-imagemagick --without-gtk --without-python \
     --without-qt --without-jpeg \
     --prefix=$HOME/.local \
-    CFLAGS=
+    CFLAGS="-O3"
 make -j$(($(nproc) * 2))
 make install

@@ -3,14 +3,15 @@
 set -ex
 
 # Download
-URL="https://ffmpeg.org/releases/ffmpeg-4.2.tar.bz2"
+version=4.2.2
+URL="https://ffmpeg.org/releases/ffmpeg-$version.tar.bz2"
 pushd "${DOWNLOADS}"
 wget -N "$URL"
 popd
 
 # Extract
-tar xjf "$DOWNLOADS/ffmpeg-4.2.tar.bz2"
-pushd ffmpeg-4.2
+tar xjf "$DOWNLOADS/ffmpeg-$version.tar.bz2"
+pushd ffmpeg-$version
 
 # Determine the architecture
 case "${HOST_TRIPLE}" in
@@ -56,4 +57,4 @@ make install DESTDIR="${RPI_STAGING}"
 
 # Cleanup
 popd
-rm -rf ffmpeg-4.2
+rm -rf ffmpeg-$version

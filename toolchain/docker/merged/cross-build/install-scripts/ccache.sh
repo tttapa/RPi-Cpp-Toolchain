@@ -3,17 +3,18 @@
 set -ex
 
 # Download
-URL="https://github.com/ccache/ccache/releases/download/v3.7.7/ccache-3.7.7.tar.gz"
+version=3.7.9
+URL="https://github.com/ccache/ccache/releases/download/v$version/ccache-$version.tar.gz"
 pushd "${DOWNLOADS}"
 wget -N "$URL"
 popd
 
 # Extract
-tar xzf "${DOWNLOADS}/ccache-3.7.7.tar.gz"
+tar xzf "${DOWNLOADS}/ccache-$version.tar.gz"
 
 # Configure
 . cross-pkg-config
-pushd ccache-3.7.7
+pushd ccache-$version
 ./configure \
     --host="${HOST_TRIPLE}" \
     --prefix="/usr/local" \
@@ -31,4 +32,4 @@ make install DESTDIR="${RPI_STAGING}"
 
 # Cleanup
 popd
-rm -rf ccache-3.7.7
+rm -rf ccache-$version

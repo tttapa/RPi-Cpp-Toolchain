@@ -3,22 +3,23 @@
 set -ex
 
 # Download
-URL="https://github.com/ninja-build/ninja/archive/v1.10.0.tar.gz"
+version=1.10.0
+URL="https://github.com/ninja-build/ninja/archive/v$version.tar.gz"
 pushd "${DOWNLOADS}"
-wget -N "$URL" -O ninja-1.10.0.tar.gz
+wget -N "$URL" -O ninja-$version.tar.gz
 popd
 
 # Extract
-tar xzf "${DOWNLOADS}/ninja-1.10.0.tar.gz"
+tar xzf "${DOWNLOADS}/ninja-$version.tar.gz"
 
 # Configure
 . cross-pkg-config
 . crossenv/bin/activate
-pushd ninja-1.10.0
+pushd ninja-$version
 mkdir build-cmake
 pushd build-cmake
 cmake .. \
-    -DCMAKE_TOOLCHAIN_FILE="../${HOST_TRIPLE}.cmake.cmake" \
+    -DCMAKE_TOOLCHAIN_FILE="../${HOST_TRIPLE}.cmake" \
     -DCMAKE_BUILD_TYPE=Release \
     -DCMAKE_INSTALL_PREFIX="/usr/local"
 
@@ -33,4 +34,4 @@ popd
 
 # Cleanup
 popd
-rm -rf ninja-1.10.0
+rm -rf ninja-$version

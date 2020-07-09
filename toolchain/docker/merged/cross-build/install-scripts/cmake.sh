@@ -3,7 +3,7 @@
 set -ex
 
 # Download
-version=3.17.1
+version=3.17.2
 URL="https://github.com/Kitware/CMake/releases/download/v$version/cmake-$version.tar.gz"
 pushd "${DOWNLOADS}"
 wget -N "$URL"
@@ -17,7 +17,7 @@ tar xzf "${DOWNLOADS}/cmake-$version.tar.gz"
 . crossenv/bin/activate
 pushd cmake-$version
 ./bootstrap --parallel=$(($(nproc) * 2)) -- \
-        -DCMAKE_TOOLCHAIN_FILE="../${HOST_TRIPLE}.cmake.cmake" \
+        -DCMAKE_TOOLCHAIN_FILE="../${HOST_TRIPLE}.cmake" \
         -DCMAKE_BUILD_TYPE=Release
 
 # Build

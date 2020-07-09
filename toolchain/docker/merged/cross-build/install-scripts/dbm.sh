@@ -19,7 +19,7 @@ pushd gdbm-1.18.1
     --host="${HOST_TRIPLE}" \
     CPPFLAGS="--sysroot=${RPI_SYSROOT} \
             -I${RPI_SYSROOT}/usr/local/include" \
-    CFLAGS="--sysroot=${RPI_SYSROOT} \
+    CFLAGS="--sysroot=${RPI_SYSROOT} -O3 \
             -I${RPI_SYSROOT}/usr/local/include" \
     LDFLAGS="--sysroot=${RPI_SYSROOT} \
              -L${RPI_SYSROOT}/usr/local/lib"

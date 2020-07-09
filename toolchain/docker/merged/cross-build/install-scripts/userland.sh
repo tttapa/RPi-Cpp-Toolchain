@@ -3,8 +3,12 @@
 set -ex
 
 # Download
-git clone --single-branch --depth 1 \
+git clone --single-branch \
     https://github.com/raspberrypi/userland.git
+# TODO: 64-bit MMAL support?
+pushd userland
+git checkout 291f9cb826d51ac30c1114cdc165836eacd8db52
+popd
 
 mkdir -p userland/build/arm-linux/release
 pushd userland/build/arm-linux/release
