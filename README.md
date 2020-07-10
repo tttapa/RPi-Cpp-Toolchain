@@ -19,7 +19,7 @@ It has cross-compiled versions of many useful libraries and tools:
  - **UUID**: library for unique identifiers (Python dependency)
  - **libX11**: X11 protocol client library (Tk dependency)
  - **Tcl/Tk**: graphical user interface toolkit (Python/Tkinter dependency)
- - **Python 3.8.1**: Python interpreter and libraries
+ - **Python 3.8.3**: Python interpreter and libraries
  - **ZBar**: Bar and QR code decoding library
  - **Raspberry Pi Userland**: VideoCore GPU drivers
  - **VPX**: VP8/VP9 codec SDK
@@ -29,7 +29,7 @@ It has cross-compiled versions of many useful libraries and tools:
  - **OpenBLAS**: linear algebra library (NumPy dependency)
  - **NumPy**: multi-dimensional array container for Python (OpenCV dependency)
  - **SciPy**: Python module for mathematics, science, and engineering
- - **OpenCV 4.2.0**: computer vision library and Python module
+ - **OpenCV 4.3.0**: computer vision library and Python module
  - **GDB Server**: on-target remote debugger
  - **GCC 9.2.0**: C, C++ and Fortran compilers
  - **GNU Make**: build automation tool
