@@ -134,12 +134,17 @@ esac
 # Build or pull the Docker image with the cross-compilation toolchain
 image=tttapa/rpi-cross-toolchain:$target
 if [ $build_toolchain = true ]; then
-    pushd docker/merged/cross-toolchain
+    pushd docker/merged
     echo "Building Docker image $image"
+    . env/$target.env
+    build_args=$(./env/env2arg.py env/$target.env)
+    pushd cross-toolchain
     docker build \
         --tag $image \
+        ${build_args} \
         --build-arg HOST_TRIPLE=$target \
         ${docker_build_cpuset} .
+    popd
     popd
     # Push the Docker image 
     if [ $push = true ]; then
@@ -154,12 +159,17 @@ fi
 # Build or pull the Docker image with the cross-native toolchain
 image=tttapa/rpi-cross-native-toolchain:$target
 if [ $build_toolchain = true ] && [ $dev = dev ]; then
-    pushd docker/merged/cross-native-toolchain
+    pushd docker/merged
     echo "Building Docker image $image"
+    . env/$target.env
+    build_args=$(./env/env2arg.py env/$target.env)
+    pushd cross-native-toolchain
     docker build \
         --tag $image \
+        ${build_args} \
         --build-arg HOST_TRIPLE=$target \
         ${docker_build_cpuset} .
+    popd
     popd
     # Push the Docker image 
     if [ $push = true ]; then
@@ -197,11 +207,13 @@ elif [ $export_toolchain = false ]; then
 fi
 
 # Export the toolchain etc. from the Docker image to the computer
+image=tttapa/rpi-cross:$tag
 if [ $export = true ]; then
     . ./scripts/export.sh
     export_all $image $target $target
 fi
 
+image=tttapa/rpi-cross-toolchain:$target
 if [ $export_toolchain = true ]; then
     . ./scripts/export-toolchain.sh
     export_toolchain $image $target $target

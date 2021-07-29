@@ -21,8 +21,15 @@ RUN git clone -b master --single-branch --depth 1 \
 WORKDIR /home/develop/crosstool-ng
 RUN git show --summary && \
     ./bootstrap && \
-    ./configure --prefix=/home/develop/.local && \
+    mkdir build && cd build && \
+    ../configure --prefix=/home/develop/.local && \
     make -j$(($(nproc) * 2)) && \
     make install &&  \
-    cd && rm -rf crosstool-ng
+    cd .. && rm -rf build
 ENV PATH=/home/develop/.local/bin:$PATH
+WORKDIR /home/develop 
+RUN wget https://ftp.debian.org/debian/pool/main/b/binutils/binutils-source_2.31.1-16_all.deb && \
+    mkdir binutils && cd binutils && \
+    ar x ../binutils-source_2.31.1-16_all.deb && \
+    tar xf data.tar.xz && \
+    cp usr/src/binutils/patches/129_multiarch_libpath.patch /home/develop
