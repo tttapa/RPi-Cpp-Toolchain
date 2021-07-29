@@ -156,6 +156,7 @@ else
     [ ! -z $(docker images -q $image) ] || docker pull $image
 fi
 
+: ' # Disabled for now
 # Build or pull the Docker image with the cross-native toolchain
 image=tttapa/rpi-cross-native-toolchain:$target
 if [ $build_toolchain = true ] && [ $dev = dev ]; then
@@ -180,6 +181,7 @@ elif [ $dev = dev ]; then
     echo "Pulling Docker image $image"
     [ ! -z $(docker images -q $image) ] || docker pull $image
 fi
+'
 
 # Build or pull the Docker image with cross-compiled libraries
 image=tttapa/rpi-cross:$tag

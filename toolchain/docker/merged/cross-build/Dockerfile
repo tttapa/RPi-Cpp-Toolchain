@@ -1,7 +1,7 @@
 ARG CROSS_TOOLCHAIN_IMAGE
 
 FROM tttapa/rpi-cross-toolchain:${CROSS_TOOLCHAIN_IMAGE} as cross-toolchain
-FROM tttapa/rpi-cross-native-toolchain:${CROSS_TOOLCHAIN_IMAGE} as cross-native-toolchain
+# FROM tttapa/rpi-cross-native-toolchain:${CROSS_TOOLCHAIN_IMAGE} as cross-native-toolchain
 
 FROM tttapa/rpi-cpp-toolchain-base-ubuntu as build
 
@@ -257,26 +257,26 @@ RUN chmod +x cmake-build.sh && ./cmake-build.sh
 COPY --chown=develop:develop install-scripts/ninja.sh .
 RUN chmod +x ninja.sh && ./ninja.sh
 
-# Copy the GCC toolchain
-COPY --from=cross-native-toolchain \
-    "/home/develop/x-tools/HOST-${HOST_TRIPLE_NO_VENDOR}" \
-    ${RPI_STAGING}/opt
-# Create links to the toolchain executables in /usr/local/bin
-RUN cd "${RPI_STAGING}/usr/local/bin" && \
-    find "../../../opt/${HOST_TRIPLE}/bin" -type f \
-        -name "${HOST_TRIPLE}-*" \
-        -exec ln -s {} . ';'
-# Create links without the target prefix 
-# (e.g. gcc instead of aarch64-rpi3-linux-gnu-gcc)
-COPY --chown=develop:develop dev-tools/strip-toolchain-prefix.sh .
-RUN chmod +x strip-toolchain-prefix.sh \
- && cd "${RPI_STAGING}/usr/local/bin" \
- && /home/develop/strip-toolchain-prefix.sh \
-        "${HOST_TRIPLE}" \
-        "../../../opt/${HOST_TRIPLE}/bin" \
-        "${RPI_STAGING}/usr/local/bin"
-# Make links to distcc for gcc and g++
-RUN mkdir -p "${RPI_STAGING}/usr/local/lib/distcc/bin" \
- && cd "${RPI_STAGING}/usr/local/lib/distcc/bin" \
- && ln -s "../../../bin/distcc" "${HOST_TRIPLE}-gcc" \
- && ln -s "../../../bin/distcc" "${HOST_TRIPLE}-g++"
+# # Copy the GCC toolchain
+# COPY --from=cross-native-toolchain \
+#     "/home/develop/x-tools/HOST-${HOST_TRIPLE_NO_VENDOR}" \
+#     ${RPI_STAGING}/opt
+# # Create links to the toolchain executables in /usr/local/bin
+# RUN cd "${RPI_STAGING}/usr/local/bin" && \
+#     find "../../../opt/${HOST_TRIPLE}/bin" -type f \
+#         -name "${HOST_TRIPLE}-*" \
+#         -exec ln -s {} . ';'
+# # Create links without the target prefix 
+# # (e.g. gcc instead of aarch64-rpi3-linux-gnu-gcc)
+# COPY --chown=develop:develop dev-tools/strip-toolchain-prefix.sh .
+# RUN chmod +x strip-toolchain-prefix.sh \
+#  && cd "${RPI_STAGING}/usr/local/bin" \
+#  && /home/develop/strip-toolchain-prefix.sh \
+#         "${HOST_TRIPLE}" \
+#         "../../../opt/${HOST_TRIPLE}/bin" \
+#         "${RPI_STAGING}/usr/local/bin"
+# # Make links to distcc for gcc and g++
+# RUN mkdir -p "${RPI_STAGING}/usr/local/lib/distcc/bin" \
+#  && cd "${RPI_STAGING}/usr/local/lib/distcc/bin" \
+#  && ln -s "../../../bin/distcc" "${HOST_TRIPLE}-gcc" \
+#  && ln -s "../../../bin/distcc" "${HOST_TRIPLE}-g++"
