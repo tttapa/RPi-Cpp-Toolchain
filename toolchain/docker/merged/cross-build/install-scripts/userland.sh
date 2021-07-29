@@ -21,6 +21,7 @@ cmake \
     -DCMAKE_SYSROOT="${RPI_SYSROOT}" \
     -DCMAKE_INSTALL_PREFIX="/opt/vc" \
     -DCMAKE_INSTALL_RPATH='${CMAKE_INSTALL_PREFIX}/lib' \
+    -DCMAKE_C_FLAGS="-Wno-error=format-overflow" \
     ../../..
 
 # Build

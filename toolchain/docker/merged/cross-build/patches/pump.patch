@@ -1,4 +1,4 @@
 31c31
 < PYTHON=/home/develop/crossenv/cross/bin/python
 ---
-> PYTHON=python3.8
+> PYTHON=python3.9

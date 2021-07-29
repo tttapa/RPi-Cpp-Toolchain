@@ -39,7 +39,7 @@ set -x
 
 # Uses the python-config script in the RPi's sysroot, not the one on the 
 # build machine
-PY_CONFIG="${RPI_SYSROOT}/usr/local/bin/python3.8-config"
+PY_CONFIG="${RPI_SYSROOT}/usr/local/bin/python3.9-config"
 OPTS=$(${PY_CONFIG} --cflags --ldflags --embed)
 
 # Use the cross-compiler

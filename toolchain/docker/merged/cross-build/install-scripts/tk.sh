@@ -3,9 +3,10 @@
 set -ex
 
 # Download
-git clone --single-branch --branch core-8-6-9 --depth 1 \
+version=8-6-11
+git clone --single-branch --branch core-$version --depth 1 \
     https://github.com/tcltk/tcl.git
-git clone --single-branch --branch core-8-6-9 --depth 1 \
+git clone --single-branch --branch core-$version --depth 1 \
     https://github.com/tcltk/tk.git
 
 # Determine the architecture

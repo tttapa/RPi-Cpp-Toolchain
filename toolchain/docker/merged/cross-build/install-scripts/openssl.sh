@@ -3,7 +3,7 @@
 set -ex
 
 # Download
-version="1_1_1g"
+version="1_1_1k"
 URL="https://github.com/openssl/openssl/archive/OpenSSL_$version.tar.gz"
 pushd "${DOWNLOADS}"
 wget -N "$URL"

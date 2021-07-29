@@ -3,7 +3,7 @@
 set -ex
 
 # Download
-git clone -b 'v1.8.2' --single-branch --depth 1 \
+git clone -b 'v1.10.0' --single-branch --depth 1 \
     https://chromium.googlesource.com/webm/libvpx
 
 # Determine the architecture

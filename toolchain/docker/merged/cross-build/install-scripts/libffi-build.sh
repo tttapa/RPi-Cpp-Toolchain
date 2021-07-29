@@ -3,7 +3,7 @@
 set -ex
 
 # Download
-version=3.3
+version=3.4.2
 URL="https://codeload.github.com/libffi/libffi/tar.gz/v$version"
 pushd "${DOWNLOADS}"
 wget -N "$URL" -O libffi-$version.tar.gz

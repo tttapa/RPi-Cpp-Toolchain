@@ -3,7 +3,7 @@
 set -ex
 
 # Download
-version=0.3.9
+version=0.3.17
 git clone -b v$version --single-branch --depth 1 \
     https://github.com/xianyi/OpenBLAS
 

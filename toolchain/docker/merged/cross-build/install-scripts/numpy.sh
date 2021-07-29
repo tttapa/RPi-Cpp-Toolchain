@@ -10,36 +10,22 @@ set -ex
 WORKING=$PWD
 GFORTRAN=${HOST_TRIPLE}-gfortran
 
-BUILD_PYTHON=`which python3.8`
-HOST_PYTHON="${RPI_SYSROOT}/usr/local/bin/python3.8"
+BUILD_PYTHON=`which python3.9`
+HOST_PYTHON="${RPI_SYSROOT}/usr/local/bin/python3.9"
 SYSROOT="${RPI_SYSROOT}"
 
-numpy_version=1.19.0
-scipy_version=1.5.1
-NUMPY_URL=https://files.pythonhosted.org/packages/f1/2c/717bdd12404c73ec0c8c734c81a0bad7048866bc36a88a1b69fd52b01c07/numpy-1.19.0.zip
-SCIPY_URL=https://files.pythonhosted.org/packages/8a/6c/7777c60626cf620ce24d6349af69f3d2a4f298729d688cc4cd9528ae3c61/scipy-1.5.1.tar.gz
+numpy_version=1.21.1
+NUMPY_URL=https://files.pythonhosted.org/packages/0b/a7/e724c8df240687b5fd62d8c71f1a6709d455c4c09432c7412e3e64f4cbe5/numpy-1.21.1.zip
 
 
 ################################################################
 # Set up crossenv
 $BUILD_PYTHON -m crossenv $HOST_PYTHON crossenv
 . crossenv/bin/activate
-# Set the Linux version of the crossenv (needed by NumPy)
-cat > /tmp/set_release.py << EOF
-from configparser import ConfigParser
-config = ConfigParser()
-filename = "$HOME/crossenv/crossenv.cfg"
-config.read(filename)
-config['uname']['release'] = '4.15'
-with open(filename, 'w') as configfile:
-    config.write(configfile)
-EOF
-python3.8 /tmp/set_release.py
-
 python3 -c "import os; print(os.uname())"
 
-BUILD_SITE=$PWD/crossenv/build/lib/python3.8/site-packages
-CROSS_SITE=$PWD/crossenv/cross/lib/python3.8/site-packages
+BUILD_SITE=$PWD/crossenv/build/lib/python3.9/site-packages
+CROSS_SITE=$PWD/crossenv/cross/lib/python3.9/site-packages
 
 ################################################################
 # Host-numpy
@@ -75,23 +61,5 @@ sed -i "s|@LIBDIR|${LIBDIR}|" npymath.ini
 sed -i "s|@INCDIR|${INCDIR}|" npymath.ini
 cd -
 
-#################################################################
-# host-scipy
-wget $SCIPY_URL
-tar xf scipy-*.tar.gz && rm scipy-*.tar.gz
-cd scipy-*.*.*
-cat > site.cfg <<EOF
-[openblas]
-libraries = openblas
-library_dirs = $SYSROOT/usr/local/lib
-include_dirs = $SYSROOT/usr/local/include
-extra_link_args = -lgfortran
-EOF
-
-F90=$GFORTRAN python setup.py bdist_wheel
-pip install $(ls ./dist/scipy*.whl)
-cd ..
-
 # Cleanup
 rm -rf numpy-*.*.*
-rm -rf scipy-*.*.*

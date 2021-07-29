@@ -3,14 +3,14 @@
 set -ex
 
 # Download
-URL="ftp://ftp.gnu.org/gnu/gdbm/gdbm-1.18.1.tar.gz"
+URL="https://ftp.gnu.org/gnu/gdbm/gdbm-1.20.tar.gz"
 pushd "${DOWNLOADS}"
 wget -N "$URL"
 popd
 
 # Extract
-tar xzf "${DOWNLOADS}/gdbm-1.18.1.tar.gz"
-pushd gdbm-1.18.1
+tar xzf "${DOWNLOADS}/gdbm-1.20.tar.gz"
+pushd gdbm-1.20
 
 # Configure
 . cross-pkg-config
@@ -32,4 +32,4 @@ make install DESTDIR="${RPI_STAGING}"
 
 # Cleanup
 popd
-rm -rf gdbm-1.18.1
+rm -rf gdbm-1.20

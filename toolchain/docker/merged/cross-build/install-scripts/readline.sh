@@ -3,14 +3,15 @@
 set -ex
 
 # Download
-URL="https://ftp.gnu.org/gnu/readline/readline-8.0.tar.gz"
+version=8.1
+URL="https://ftp.gnu.org/gnu/readline/readline-$version.tar.gz"
 pushd "${DOWNLOADS}"
 wget -N "$URL"
 popd
 
 # Extract
-tar xzf "${DOWNLOADS}/readline-8.0.tar.gz"
-pushd readline-8.0
+tar xzf "${DOWNLOADS}/readline-$version.tar.gz"
+pushd readline-$version
 
 # Configure
 . cross-pkg-config
@@ -30,4 +31,4 @@ make install DESTDIR="${RPI_STAGING}"
 
 # Cleanup
 popd
-rm -rf readline-8.0
+rm -rf readline-$version

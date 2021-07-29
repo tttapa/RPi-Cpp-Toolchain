@@ -4,7 +4,7 @@ set -ex
 
 # Download
 version=6.2
-URL="ftp://ftp.gnu.org/gnu/ncurses/ncurses-$version.tar.gz"
+URL="https://ftp.gnu.org/gnu/ncurses/ncurses-$version.tar.gz"
 pushd "${DOWNLOADS}"
 wget -N "$URL"
 popd

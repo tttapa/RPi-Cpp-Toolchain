@@ -8,7 +8,7 @@ git clone --single-branch --depth 1 \
 
 # Configure seems to add -mcpu flags itself when nothing is specified, prevent 
 # that:
-MCPU=$(armv8-rpi3-linux-gnueabihf-gcc -Q --help=target | \
+MCPU=$(${HOST_TRIPLE}-gcc -Q --help=target | \
        grep -- -mcpu= | tr -d '[:space:]')
 
 # Configure

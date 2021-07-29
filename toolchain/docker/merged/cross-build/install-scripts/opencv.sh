@@ -3,7 +3,7 @@
 set -ex
 
 # Download
-version=4.3.0
+version=4.5.3
 URL="https://codeload.github.com/opencv/opencv/tar.gz/$version"
 pushd "${DOWNLOADS}"
 wget -N "$URL" -O opencv-$version.tar.gz
@@ -26,7 +26,7 @@ esac
 . cross-pkg-config
 . crossenv/bin/activate
 pushd opencv-$version/build-arm
-NUMPY_INC=$(python3.8 -c "import numpy; print(numpy.get_include(),end='')")
+NUMPY_INC=$(python3.9 -c "import numpy; print(numpy.get_include(),end='')")
 cmake \
     -DCMAKE_TOOLCHAIN_FILE=../platforms/linux/arm.toolchain.cmake \
     -DGNU_MACHINE="${HOST_TRIPLE}" \
@@ -44,8 +44,8 @@ cmake \
     -DCMAKE_INSTALL_PREFIX="/usr/local" \
     -DOPENCV_GENERATE_PKGCONFIG=ON \
     -DBUILD_TESTS=OFF -DBUILD_PERF_TESTS=OFF \
-    -DPYTHON3_INCLUDE_PATH="${RPI_SYSROOT}/usr/local/include/python3.8" \
-    -DPYTHON3_LIBRARIES="${RPI_SYSROOT}/usr/local/lib/libpython3.8.so" \
+    -DPYTHON3_INCLUDE_PATH="${RPI_SYSROOT}/usr/local/include/python3.9" \
+    -DPYTHON3_LIBRARIES="${RPI_SYSROOT}/usr/local/lib/libpython3.9.so" \
     -DPYTHON3_NUMPY_INCLUDE_DIRS="$NUMPY_INC" \
     -DBUILD_OPENCV_PYTHON2=OFF \
     -DBUILD_OPENCV_PYTHON3=ON \

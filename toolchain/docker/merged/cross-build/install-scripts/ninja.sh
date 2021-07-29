@@ -3,7 +3,7 @@
 set -ex
 
 # Download
-version=1.10.0
+version=1.10.2
 URL="https://github.com/ninja-build/ninja/archive/v$version.tar.gz"
 pushd "${DOWNLOADS}"
 wget -N "$URL" -O ninja-$version.tar.gz

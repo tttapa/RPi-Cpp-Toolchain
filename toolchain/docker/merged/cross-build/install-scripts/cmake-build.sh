@@ -3,7 +3,7 @@
 set -ex
 
 # Download
-version=3.17.2
+version=3.21.1
 URL="https://github.com/Kitware/CMake/releases/download/v$version/cmake-$version-Linux-x86_64.sh"
 pushd "${DOWNLOADS}"
 wget -N "$URL"

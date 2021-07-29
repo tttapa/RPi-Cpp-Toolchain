@@ -3,8 +3,8 @@
 set -ex
 
 # Download
-version=7.70.0
-URL="https://curl.haxx.se/download/curl-$version.tar.gz"
+version=7.78.0
+URL="https://github.com/curl/curl/releases/download/curl-${version//./_}/curl-$version.tar.gz"
 pushd "${DOWNLOADS}"
 wget -N "$URL"
 popd
