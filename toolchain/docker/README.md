@@ -2,8 +2,7 @@
 
 ## `crosstool-ng-master`
 
-This folder builds a Docker container based on CentOS 7 with Crosstool-NG and its dependencies installed.  
-CentOS 7 is used so that the resulting toolchain can be used on older systems as well (with an older GLibC and Linux Kernel version).
+This folder builds a Docker container based on Ubuntu 20.04 with crosstool-NG and its dependencies installed.  
 
 ## `base-ubuntu`
 
