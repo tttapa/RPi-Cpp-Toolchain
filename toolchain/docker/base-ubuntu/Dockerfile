@@ -1,6 +1,7 @@
 FROM ubuntu:latest as rpi-cpp-toolchain-base-ubuntu
 
 # Install some tools and compilers + clean up
+ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && \
     apt-get install -y sudo git wget \
                        gcc g++ cmake make autoconf automake \
