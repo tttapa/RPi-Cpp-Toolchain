@@ -8,9 +8,9 @@ function export_all {
     echo "Exporting toolchain, sysroot and staging area ..."
     echo "Creating archives"
     container=$(docker run -d $image \
-        bash -c "tar cf RPi-staging.tar RPi-staging & \
-                tar cf RPi-sysroot.tar RPi-sysroot & \
-                tar cf x-tools.tar x-tools & \
+        bash -c "tar cf RPi-staging.tar --hard-dereference RPi-staging & \
+                tar cf RPi-sysroot.tar --hard-dereference RPi-sysroot & \
+                tar cf x-tools.tar --hard-dereference x-tools & \
                 wait")
     status=$(docker wait $container)
     if [ $status -ne 0 ]; then

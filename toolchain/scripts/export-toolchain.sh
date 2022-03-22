@@ -8,7 +8,7 @@ function export_toolchain {
     echo "Exporting toolchain ..."
     echo "Creating archives"
     container=$(docker run -d $image \
-        bash -c "tar cf x-tools.tar x-tools")
+        bash -c "tar cf x-tools.tar --hard-dereference x-tools")
     status=$(docker wait $container)
     if [ $status -ne 0 ]; then
         echo "Error creating toolchain archives"
