@@ -2,7 +2,7 @@
 
 set -ex
 
-version="master" # Release tag on GitHub
+version="main" # Release tag on GitHub
 
 # Download
 git clone --single-branch --depth=1 --branch $version \
