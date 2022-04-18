@@ -1,8 +1,8 @@
 FROM ubuntu:focal as ct-ng
 
 # Install dependencies to build toolchain
-ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && \
+    DEBIAN_FRONTEND=noninteractive \
     apt-get install -y gcc g++ gperf bison flex texinfo help2man make libncurses5-dev unzip \
                        python3-dev autoconf automake libtool libtool-bin gawk wget rsync git && \
     apt-get clean autoclean && \

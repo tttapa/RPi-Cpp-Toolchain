@@ -3,7 +3,7 @@
 set -ex
 
 # Download
-version=3.9.6
+version=3.10.4
 URL="https://www.python.org/ftp/python/$version/Python-$version.tgz"
 pushd "${DOWNLOADS}"
 wget -N "$URL"

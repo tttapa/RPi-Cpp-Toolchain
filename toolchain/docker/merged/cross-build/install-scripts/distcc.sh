@@ -3,7 +3,8 @@
 set -ex
 
 # Download
-git clone --depth=1 --single-branch \
+version=3.4
+git clone --depth=1 --single-branch --branch "v$version" \
     https://github.com/distcc/distcc.git
 
 # Configure

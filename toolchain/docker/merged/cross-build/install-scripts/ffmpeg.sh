@@ -3,7 +3,7 @@
 set -ex
 
 # Download
-version=4.2.2
+version=5.0.1
 URL="https://ffmpeg.org/releases/ffmpeg-$version.tar.bz2"
 pushd "${DOWNLOADS}"
 wget -N "$URL"
@@ -33,7 +33,6 @@ esac
     --cross-prefix="${HOST_TRIPLE}-" \
     --toolchain=hardened \
     --enable-gpl --enable-nonfree \
-    --enable-avresample \
     --enable-libvpx --enable-libx264 --enable-libxvid \
     --enable-omx --enable-omx-rpi --enable-mmal \
     ${FFMPEG_ENABLE_NEON} \

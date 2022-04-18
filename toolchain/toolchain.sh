@@ -35,9 +35,6 @@ function print_usage {
     echo "    --pull"
     echo "        Don't build the image locally, pull everything from Docker Hub"
     echo
-    echo "    --build-toolchain"
-    echo "        Build the toolchains locally instead of pulling them from Docker Hub"
-    echo
     echo "    --export"
     echo "        Export the toolchain, sysroot and staging area to your computer"
     echo
@@ -99,7 +96,6 @@ esac
 # Parse the other options
 shift
 
-build_toolchain=false
 build=true
 push=false
 export=false
@@ -109,8 +105,7 @@ docker_build_cpuset=
 while (( "$#" )); do
     case "$1" in
         --push)             push=true                            ;;
-        --pull)             build_toolchain=false; build=false   ;;
-        --build-toolchain)  build_toolchain=true                 ;;
+        --pull)             build=false                          ;;
         --export)           export=true                          ;;
         --export-toolchain) export_toolchain=true; build=false   ;;
         --cpuset-cpus=*)    docker_build_cpuset="$1"             ;;
@@ -131,57 +126,10 @@ dev)
     ;;
 esac
 
-# Build or pull the Docker image with the cross-compilation toolchain
-image=tttapa/rpi-cross-toolchain:$target
-if [ $build_toolchain = true ]; then
-    pushd docker/merged
-    echo "Building Docker image $image"
-    . env/$target.env
-    build_args=$(./env/env2arg.py env/$target.env)
-    pushd cross-toolchain
-    docker build \
-        --tag $image \
-        ${build_args} \
-        --build-arg HOST_TRIPLE=$target \
-        ${docker_build_cpuset} .
-    popd
-    popd
-    # Push the Docker image 
-    if [ $push = true ]; then
-        echo "Pushing Docker image $image"
-        docker push $image
-    fi
-else
-    echo "Pulling Docker image $image"
-    [ ! -z $(docker images -q $image) ] || docker pull $image
-fi
-
-: ' # Disabled for now
-# Build or pull the Docker image with the cross-native toolchain
-image=tttapa/rpi-cross-native-toolchain:$target
-if [ $build_toolchain = true ] && [ $dev = dev ]; then
-    pushd docker/merged
-    echo "Building Docker image $image"
-    . env/$target.env
-    build_args=$(./env/env2arg.py env/$target.env)
-    pushd cross-native-toolchain
-    docker build \
-        --tag $image \
-        ${build_args} \
-        --build-arg HOST_TRIPLE=$target \
-        ${docker_build_cpuset} .
-    popd
-    popd
-    # Push the Docker image 
-    if [ $push = true ]; then
-        echo "Pushing Docker image $image"
-        docker push $image
-    fi
-elif [ $dev = dev ]; then
-    echo "Pulling Docker image $image"
-    [ ! -z $(docker images -q $image) ] || docker pull $image
-fi
-'
+# Pull the Docker image with the cross-compilation toolchain
+image=ghcr.io/tttapa/docker-arm-cross-toolchain:$target
+echo "Pulling Docker image $image"
+[ ! -z $(docker images -q $image) ] || docker pull $image
 
 # Build or pull the Docker image with cross-compiled libraries
 image=tttapa/rpi-cross:$tag

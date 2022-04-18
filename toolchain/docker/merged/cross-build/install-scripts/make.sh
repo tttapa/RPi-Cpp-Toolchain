@@ -3,17 +3,18 @@
 set -ex
 
 # Download
-URL="https://ftpmirror.gnu.org/gnu/make/make-4.3.tar.gz"
+version=4.3
+URL="https://ftpmirror.gnu.org/gnu/make/make-$version.tar.gz"
 pushd "${DOWNLOADS}"
 wget -N "$URL"
 popd
 
 # Extract
-tar xzf "${DOWNLOADS}/make-4.3.tar.gz"
+tar xzf "${DOWNLOADS}/make-$version.tar.gz"
 
 # Configure
 . cross-pkg-config
-pushd make-4.3
+pushd make-$version
 ./configure \
     --host="${HOST_TRIPLE}" \
     --prefix="/usr/local" \
@@ -28,4 +29,4 @@ make install DESTDIR="${RPI_STAGING}"
 
 # Cleanup
 popd
-rm -rf make-4.3
+rm -rf make-$version

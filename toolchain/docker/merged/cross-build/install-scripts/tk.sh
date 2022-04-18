@@ -3,7 +3,7 @@
 set -ex
 
 # Download
-version=8-6-11
+version=8-6-12
 git clone --single-branch --branch core-$version --depth 1 \
     https://github.com/tcltk/tcl.git
 git clone --single-branch --branch core-$version --depth 1 \

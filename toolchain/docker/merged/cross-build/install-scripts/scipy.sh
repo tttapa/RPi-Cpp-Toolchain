@@ -9,12 +9,12 @@ set -ex
 
 GFORTRAN=${HOST_TRIPLE}-gfortran
 
-BUILD_PYTHON=`which python3.9`
-HOST_PYTHON="${RPI_SYSROOT}/usr/local/bin/python3.9"
+BUILD_PYTHON=`which python3.10`
+HOST_PYTHON="${RPI_SYSROOT}/usr/local/bin/python3.10"
 SYSROOT="${RPI_SYSROOT}"
 
-scipy_version=1.7.0
-SCIPY_URL=https://files.pythonhosted.org/packages/bb/bb/944f559d554df6c9adf037aa9fc982a9706ee0e96c0d5beac701cb158900/scipy-1.7.0.tar.gz
+scipy_version=1.8.0
+SCIPY_URL=https://files.pythonhosted.org/packages/b4/a2/4faa34bf0cdbefd5c706625f1234987795f368eb4e97bde9d6f46860843e/scipy-1.8.0.tar.gz
 
 
 ################################################################

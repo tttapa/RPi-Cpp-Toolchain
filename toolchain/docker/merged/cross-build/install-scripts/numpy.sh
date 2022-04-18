@@ -10,8 +10,8 @@ set -ex
 WORKING=$PWD
 GFORTRAN=${HOST_TRIPLE}-gfortran
 
-BUILD_PYTHON=`which python3.9`
-HOST_PYTHON="${RPI_SYSROOT}/usr/local/bin/python3.9"
+BUILD_PYTHON=`which python3.10`
+HOST_PYTHON="${RPI_SYSROOT}/usr/local/bin/python3.10"
 SYSROOT="${RPI_SYSROOT}"
 
 numpy_version=1.21.1
@@ -24,8 +24,8 @@ $BUILD_PYTHON -m crossenv $HOST_PYTHON crossenv
 . crossenv/bin/activate
 python3 -c "import os; print(os.uname())"
 
-BUILD_SITE=$PWD/crossenv/build/lib/python3.9/site-packages
-CROSS_SITE=$PWD/crossenv/cross/lib/python3.9/site-packages
+BUILD_SITE=$PWD/crossenv/build/lib/python3.10/site-packages
+CROSS_SITE=$PWD/crossenv/cross/lib/python3.10/site-packages
 
 ################################################################
 # Host-numpy
@@ -44,8 +44,8 @@ library_dirs = $SYSROOT/usr/local/lib
 include_dirs = $SYSROOT/usr/local/include
 extra_link_args = -lgfortran
 EOF
-F90=$GFORTRAN cross-python setup.py bdist_wheel
-pip install $(ls ./dist/numpy*.whl)
+FC=$GFORTRAN F90=$GFORTRAN F77=$GFORTRAN cross-python setup.py bdist_wheel
+host-pip install $(ls ./dist/numpy*.whl)
 cd ..
 
 ################################################################

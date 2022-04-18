@@ -1,5 +1,5 @@
---- lib/python3.9/site-packages/numpy/lib/utils.py
-+++ lib/python3.9/site-packages/numpy/lib/utils.py
+--- lib/python3.10/site-packages/numpy/lib/utils.py
++++ lib/python3.10/site-packages/numpy/lib/utils.py
 @@ -43,6 +43,11 @@
          # using installed numpy core headers
          import numpy.core as core

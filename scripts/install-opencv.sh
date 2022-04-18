@@ -20,7 +20,7 @@ fi
 python3 -m pip install numpy
 
 # Configuration
-VERSION=4.3.0
+VERSION=4.5.5
 PREFIX="$HOME/.local"
 
 if [ ! -z "$VIRTUAL_ENV" ]; then

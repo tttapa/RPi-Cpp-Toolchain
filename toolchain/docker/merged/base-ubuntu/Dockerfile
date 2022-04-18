@@ -1,8 +1,8 @@
 FROM ubuntu:focal as rpi-cpp-toolchain-base-ubuntu
 
 # Install some tools and compilers + clean up
-ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && \
+    DEBIAN_FRONTEND=noninteractive \
     apt-get install -y sudo git wget \
                        gcc g++ cmake make autoconf automake \
                        gperf diffutils bzip2 libbz2-dev xz-utils \

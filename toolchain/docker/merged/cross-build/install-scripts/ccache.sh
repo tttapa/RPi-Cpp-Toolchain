@@ -3,7 +3,7 @@
 set -ex
 
 # Download
-version=4.3
+version=4.6
 URL="https://github.com/ccache/ccache/releases/download/v$version/ccache-$version.tar.gz"
 pushd "${DOWNLOADS}"
 wget -N "$URL"

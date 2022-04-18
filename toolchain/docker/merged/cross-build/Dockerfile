@@ -1,6 +1,6 @@
 ARG CROSS_TOOLCHAIN_IMAGE
 
-FROM tttapa/rpi-cross-toolchain:${CROSS_TOOLCHAIN_IMAGE} as cross-toolchain
+FROM ghcr.io/tttapa/docker-arm-cross-toolchain:${CROSS_TOOLCHAIN_IMAGE} as cross-toolchain
 # FROM tttapa/rpi-cross-native-toolchain:${CROSS_TOOLCHAIN_IMAGE} as cross-native-toolchain
 
 FROM tttapa/rpi-cpp-toolchain-base-ubuntu as build
@@ -169,8 +169,8 @@ COPY --chown=develop:develop install-scripts/openblas.sh .
 RUN chmod +x openblas.sh && ./openblas.sh
 
 # Install NumPy and Crossenv on build
-RUN python3.9 -m pip install crossenv
-RUN python3.9 -m crossenv "${RPI_SYSROOT}/usr/local/bin/python3.9" crossenv
+RUN python3.10 -m pip install crossenv
+RUN python3.10 -m crossenv "${RPI_SYSROOT}/usr/local/bin/python3.10" crossenv
 
 # Wheel, Cython, Pybind11, Numpy and Scipy packages ARM
 RUN . crossenv/bin/activate && pip install wheel cython pybind11
@@ -180,7 +180,7 @@ RUN chmod +x numpy.sh && ./numpy.sh
 COPY --chown=develop:develop install-scripts/pythran.sh .
 RUN chmod +x pythran.sh && ./pythran.sh
 COPY --chown=develop:develop patches/numpy.utils.py.patch .
-RUN . crossenv/bin/activate && patch "$VIRTUAL_ENV/../build/lib/python3.9/site-packages/numpy/lib/utils.py" numpy.utils.py.patch
+RUN . crossenv/bin/activate && patch "$VIRTUAL_ENV/../build/lib/python3.10/site-packages/numpy/lib/utils.py" numpy.utils.py.patch
 COPY --chown=develop:develop install-scripts/scipy.sh .
 RUN chmod +x scipy.sh && ./scipy.sh
 
@@ -189,9 +189,9 @@ COPY --chown=develop:develop install-scripts/opencv.sh .
 RUN chmod +x opencv.sh && ./opencv.sh
 
 # Move the compiled Python packages to the staging area
-RUN rm -rf crossenv/cross/lib/python3.9/site-packages/__pycache__ && \
-    mv "crossenv/cross/lib/python3.9/site-packages/"* \
-       "${RPI_STAGING}/usr/local/lib/python3.9/site-packages"
+RUN rm -rf crossenv/cross/lib/python3.10/site-packages/__pycache__ && \
+    mv "crossenv/cross/lib/python3.10/site-packages/"* \
+       "${RPI_STAGING}/usr/local/lib/python3.10/site-packages"
 
 # GoogleTest
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -3,7 +3,7 @@
 set -ex
 
 # Download
-version=7.78.0
+version=7.82.0
 URL="https://github.com/curl/curl/releases/download/curl-${version//./_}/curl-$version.tar.gz"
 pushd "${DOWNLOADS}"
 wget -N "$URL"

@@ -3,8 +3,9 @@
 set -ex
 
 # Download
-version=3360000
-URL="https://www.sqlite.org/2021/sqlite-autoconf-$version.tar.gz"
+yr=2022
+version=3380200
+URL="https://www.sqlite.org/$yr/sqlite-autoconf-$version.tar.gz"
 pushd "${DOWNLOADS}"
 wget -N "$URL"
 popd
