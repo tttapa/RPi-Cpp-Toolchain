@@ -20,6 +20,7 @@ cmake \
     -DCMAKE_BUILD_TYPE=Release \
     -DCMAKE_TOOLCHAIN_FILE="../../${HOST_TRIPLE}.cmake" \
     -DZSTD_FROM_INTERNET=ON \
+    -DHIREDIS_FROM_INTERNET=ON \
     ..
 
 # Build & Install
