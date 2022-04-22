@@ -14,13 +14,12 @@ BUILD_PYTHON=`which python3.10`
 HOST_PYTHON="${RPI_SYSROOT}/usr/local/bin/python3.10"
 SYSROOT="${RPI_SYSROOT}"
 
-numpy_version=1.21.1
-NUMPY_URL=https://files.pythonhosted.org/packages/0b/a7/e724c8df240687b5fd62d8c71f1a6709d455c4c09432c7412e3e64f4cbe5/numpy-1.21.1.zip
+numpy_version=1.21.6
+NUMPY_URL=https://files.pythonhosted.org/packages/45/b7/de7b8e67f2232c26af57c205aaad29fe17754f793404f59c8a730c7a191a/numpy-1.21.6.zip
 
 
 ################################################################
 # Set up crossenv
-$BUILD_PYTHON -m crossenv $HOST_PYTHON crossenv
 . crossenv/bin/activate
 python3 -c "import os; print(os.uname())"
 
@@ -45,7 +44,7 @@ include_dirs = $SYSROOT/usr/local/include
 extra_link_args = -lgfortran
 EOF
 FC=$GFORTRAN F90=$GFORTRAN F77=$GFORTRAN cross-python setup.py bdist_wheel
-host-pip install $(ls ./dist/numpy*.whl)
+pip install $(ls ./dist/numpy*.whl)
 cd ..
 
 ################################################################

@@ -19,7 +19,6 @@ SCIPY_URL=https://files.pythonhosted.org/packages/b4/a2/4faa34bf0cdbefd5c706625f
 
 ################################################################
 # Set up crossenv
-$BUILD_PYTHON -m crossenv $HOST_PYTHON crossenv
 . crossenv/bin/activate
 python -c "import os; print(os.uname())"
 
@@ -41,7 +40,7 @@ export NPY_NUM_BUILD_JOBS=$(($(nproc) * 2))
 export OPT='-DNDEBUG -O3'
 export FOPT='-DNDEBUG -O3'
 
-F90=$GFORTRAN python setup.py bdist_wheel
+FC=$GFORTRAN F90=$GFORTRAN F77=$GFORTRAN python setup.py bdist_wheel
 pip install $(ls ./dist/scipy*.whl)
 cd ..
 

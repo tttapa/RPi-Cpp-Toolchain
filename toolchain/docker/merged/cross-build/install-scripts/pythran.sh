@@ -9,7 +9,6 @@ URL=https://files.pythonhosted.org/packages/c6/e6/986a967dcca91d89e36f4d4a2f69a0
 
 ################################################################
 # Set up crossenv
-$BUILD_PYTHON -m crossenv $HOST_PYTHON crossenv
 . crossenv/bin/activate
 python3 -c "import os; print(os.uname())"
 
