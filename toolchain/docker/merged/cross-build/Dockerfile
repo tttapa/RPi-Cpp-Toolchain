@@ -170,7 +170,11 @@ RUN chmod +x openblas.sh && ./openblas.sh
 
 # Install NumPy and Crossenv on build
 RUN python3.10 -m pip install crossenv
-RUN python3.10 -m crossenv "${RPI_SYSROOT}/usr/local/bin/python3.10" crossenv
+ARG HOST_PYTHON_MACHINE
+ENV HOST_PYTHON_MACHINE ${HOST_PYTHON_MACHINE}
+RUN python3.10 -m crossenv \
+    --machine ${HOST_PYTHON_MACHINE} \
+    "${RPI_SYSROOT}/usr/local/bin/python3.10" crossenv
 
 # Wheel, Cython, Pybind11, Numpy and Scipy packages ARM
 RUN . crossenv/bin/activate && pip install wheel cython pybind11
@@ -246,7 +250,6 @@ RUN chmod +x curl.sh && ./curl.sh
 
 # Git ARM
 COPY --chown=develop:develop install-scripts/git.sh .
-COPY --chown=develop:develop patches/git-2.25.0.patch .
 RUN chmod +x git.sh && ./git.sh
 
 # CMake build
