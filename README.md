@@ -1,9 +1,20 @@
+| **Note**: The toolchains themselves have been moved to a separate repository, [tttapa/docker-arm-cross-toolchain](https://github.com/tttapa/docker-arm-cross-toolchain) |
+|:---:|
+
+You can download and extract the toolchain in one go using `wget` and `tar`,
+for example:
+```sh
+mkdir -p ~/opt
+wget -qO- https://github.com/tttapa/docker-arm-cross-toolchain/releases/latest/download/x-tools-aarch64-rpi3-linux-gnu.tar.bz2 | tar xJ -C ~/opt
+```
+
+---
+
 [![Download from Docker Hub](https://img.shields.io/docker/pulls/tttapa/rpi-cross?label=Docker%20Hub&logo=docker)](https://hub.docker.com/r/tttapa/rpi-cross/tags)
 
 # Raspberry Pi C++ Toolchain
 
 This repository contains all you need to develop and cross-compile C++ applications for the Raspberry Pi (both 32 and 64 bit).
-Everything was tested using [Ubuntu Server 18.04](https://ubuntu.com/download/raspberry-pi) (64 bit) and Raspbian Buster (32 bit).  
 It explains how to build a cross-compilation toolchain, and an example "Hello World" C++ project configured using CMake.
 
 It has cross-compiled versions of many useful libraries and tools:
@@ -31,7 +42,6 @@ It has cross-compiled versions of many useful libraries and tools:
  - **SciPy**: Python module for mathematics, science, and engineering
  - **OpenCV 4.5.5**: computer vision library and Python module
  - **GDB Server**: on-target remote debugger
- - **GCC 11.1.0**: C, C++ and Fortran compilers
  - **GNU Make**: build automation tool
  - **Ninja**: build system
  - **CMake**: build system
@@ -39,6 +49,7 @@ It has cross-compiled versions of many useful libraries and tools:
  - **CCache**: compiler cache
  - **cURL**: tool and library for transferring data over the network (Git dependency)
  - **Git**: version control system
+ <!-- - **GCC 11.1.0**: C, C++ and Fortran compilers -->
  
 ## Documentation
  
@@ -47,44 +58,42 @@ The documentation is still a work in progress, but parts of it are already avail
 
 ***
 
-## Pulling the Toolchain and Libraries from Docker Hub
+## Pulling the libraries from Docker Hub
 
 If you don't want to build everything from scratch (it takes quite a while to compile everything),
 you can download the pre-built version from [**Docker Hub**](https://hub.docker.com/r/tttapa/)
-using the `--pull` option of the `toolchain.sh` script in the [`toolchain` folder](toolchain).
+using the `--pull` option of the `build.sh` script in the [`docker-arm-cross-build-scripts` folder](docker-arm-cross-build-scripts).
 
 ## Building everything yourself
 
-To build everything yourself, you can just run the `toolchain.sh` without the `--pull` option.  
-The `--build-toolchain` option can be used to build not only the libraries from source, but also
-the cross-compilation toolchain.
+To build everything yourself, you can just run the `build.sh` without the `--pull` option.
 
 The following is just an overview of the different steps that are executed by that script.
 
-### Building the Toolchain
+### The cross-compilation toolchain
 
 Crosstool-NG is used to build a modern GCC toolchain that runs on your computer and generates binaries for the Raspberry Pi.
 This is much faster than compiling everything on the Pi itself.
 
-The toolchains are built inside of a Docker container for clean and reproducable builds. 
-It also makes it relatively easy to start a build from scratch if you have to.
+The toolchain used to be built by the scripts in this repository, but have since been moved to their own repository,
+[**tttapa/docker-arm-cross-toolchain**](https://github.com/tttapa/docker-arm-cross-toolchain).
 
-You can find more information about the Docker containers in the [`toolchain/docker` folder](toolchain/docker).
+You can download them directly from the [Releases page](https://github.com/tttapa/docker-arm-cross-toolchain/releases)
 
-### Cross-Compiling the Necessary Libraries
+### Cross-compiling the necessary libraries
 
 The toolchain is then used to compile all libraries for the Raspberry Pi.  
 These libraries are installed in two locations:
-1. in the "sysroot": this is a folder where all system files and libraries are installed that are required for the build process of other libraries
-2. in the "staging area": this is the folder that will be copied to the SD card of the Raspberry Pi later. It contains the libraries that we built, but not the system files (because those are already part of the Ubuntu/Raspbian installation of the Pi).
+1. in the **“sysroot”**: this is a folder where all system files and libraries are installed that are required for the build process of other libraries
+2. in the **“staging area”**: this is the folder that will be copied to the SD card of the Raspberry Pi later. It contains the libraries that we built, but not the system files (because those are already part of the Ubuntu/Raspbian installation of the Pi).
 
 Everything is installed in `/usr/local/`, so it shouldn't interfere with the software installed by your package manager.
 [`userland`](https://github.com/raspberrypi/userland) is an exception, it's installed in `/opt/vc/`.
 
 If you just want to know how to cross-compile a specific package, have a look at the scripts in the
-[`toolchain/docker/merged/cross-build/install-scripts`](toolchain/docker/merged/cross-build/install-scripts) folder.  
+[`docker-arm-cross-build-scripts/cross-build/install-scripts`](docker-arm-cross-build-scripts/cross-build/install-scripts) folder.  
 
-### Exporting the Toolchain, Sysroot and Staging Area
+### Exporting the toolchain, sysroot and staging area
 
 Once all components have been built, they have to be extracted from the Docker build containers, and installed to the correct locations.  
 You can extract everything using the `--extract` option of the `toolchain.sh` script. To extract only the toolchain,
@@ -108,7 +117,7 @@ ssh -t RPi3 "sudo tar xf /tmp/staging-rpi3-aarch64.tar -C / --strip-components=1
 ssh -t RPi3 "sudo ldconfig"
 ```
 
-## Building the Example Project
+## Building the example project
 
 You have to tell CMake to use the new toolchain with the correct "sysroot" directory. This is done through the CMake Toolchain files in the `cmake` directory.
 
@@ -119,12 +128,11 @@ It'll configure the CMake project for you, and then you can build everything by 
 You can of course also configure and build the project manually, without VSCode:
 
 ```sh
-cd build
-cmake -DCMAKE_TOOLCHAIN_FILE=../cmake/aarch64-rpi3-linux-gnu.cmake -DCMAKE_BUILD_TYPE=Debug ..
-make -j`nproc`
+cmake -Bbuild -S. -DCMAKE_TOOLCHAIN_FILE=../cmake/aarch64-rpi3-linux-gnu.cmake -DCMAKE_BUILD_TYPE=Debug
+cmake --build build -j
 ```
 
-The binaries will be in the `build/bin` folder, and you can copy them to the Raspberry Pi over SSH using `scp` for example.
+The binaries will be in the `build` folder, and you can copy them to the Raspberry Pi over SSH using `scp` for example.
 
 ### Debugging
 
@@ -135,12 +143,10 @@ The CMake Tools extension makes debugging very easy, just click the bug icon in 
 
 A useful feature of this repository is that it allows you to debug on-target: the GUI for the debugger runs on your computer, but the actual code runs on the Raspberry Pi. This uses SSH and the GDB server.
 
-Check out the `.vscode/launch.json` and `.vscode/tasks.json` files to see how it works: first, the active target binary is copied to the Raspberry Pi over SSH, next, the GDB server is started on the RPi, and finally, the GDB client is started locally.
+Check out the `.vscode/launch.json` and `.vscode/tasks.json` files to see how it works: first, the active target binary is copied to the Raspberry Pi over SSH, the GDB server is started on the RPi, and the local GDB client connects to it.
 
 This requires the right SSH and hostname setup, both on your computer and on the RPi. Instructions can be found here: <https://tttapa.github.io/Pages/Raspberry-Pi/Installation+Setup/index.html>  
-Make sure mDNS is setup correctly, so that GDB can find the RPi at the address `rpi3.local`, and that you have a `.ssh/config` file with a config for the Raspberry Pi, called `RPi3`.
-
-You also need a cross-platform version of the GDB client on your computer. This can be installed using the `scripts/install-cross-gdb.sh` script.
+Make sure mDNS is setup correctly, and that you have a `.ssh/config` file with a config for the Raspberry Pi, called `RPi`.
 
 ## Cross-compiling Python modules and C/C++ extensions
 
