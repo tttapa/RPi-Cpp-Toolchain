@@ -1,11 +1,3 @@
 {
-    "files.associations": {
-        "*.ipp": "cpp",
-        "array": "cpp",
-        "chrono": "cpp",
-        "ratio": "cpp",
-        "iosfwd": "cpp"
-    },
     "cmake.configureOnOpen": true,
-    "docker.defaultRegistryPath": "tttapa"
 }

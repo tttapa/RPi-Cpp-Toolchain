@@ -4,45 +4,9 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "Copy Debug Target to RPi",
+            "label": "Copy executable (RPi)",
             "type": "shell",
-            "command": "scp ${command:cmake.launchTargetPath} RPi3:/tmp/",
-            "problemMatcher": []
-        },
-        {
-            "label": "Start GDB Server (Raspberry Pi)",
-            "type": "shell",
-            "command": "ssh",
-            "args": [
-                "RPi3",
-                "gdbserver",
-                ":2159",
-                "/tmp/$(basename ${command:cmake.launchTargetPath})"
-            ],
-            "isBackground": true,
-            "problemMatcher": {
-                "owner": "custom",
-                "pattern": {
-                    "regexp": ""
-                },
-                "background": {
-                    "activeOnStart": true,
-                    "beginsPattern": "^Process .* created; pid = \\d+$",
-                    "endsPattern": "^Listening on port 2159$"
-                }
-            },
-            "dependsOn": [
-                "Copy Debug Target to RPi"
-            ]
-        },
-        {
-            "label": "Run on ARM (Docker)",
-            "type": "shell",
-            "command": "${workspaceFolder}/scripts/run-docker.sh",
-            "args": [
-                "rpi3-aarch64-python-opencv",
-                "${command:cmake.launchTargetPath}"
-            ],
+            "command": "scp ${command:cmake.launchTargetPath} RPi:/tmp",
             "problemMatcher": []
         },
     ]
