@@ -1,5 +1,0 @@
-#!/usr/bin/env bash
-
-export PKG_CONFIG_LIBDIR="${RPI_SYSROOT}/usr/local/lib:${RPI_SYSROOT}/opt/vc/lib"
-export PKG_CONFIG_PATH="${RPI_SYSROOT}/usr/local/lib/pkgconfig:${RPI_SYSROOT}/usr/local/share/pkgconfig:${RPI_SYSROOT}/opt/vc/lib/pkgconfig"
-export PKG_CONFIG_SYSROOT_DIR="${RPI_SYSROOT}"

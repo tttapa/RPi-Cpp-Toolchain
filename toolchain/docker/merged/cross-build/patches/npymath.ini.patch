@@ -1,8 +1,0 @@
-7,10c7,8
-< pkgname=numpy.core
-< prefix=${pkgdir}
-< libdir=${prefix}/lib
-< includedir=${prefix}/include
----
-> libdir=@LIBDIR
-> includedir=@INCDIR

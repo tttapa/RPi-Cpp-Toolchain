@@ -1,5 +1,5 @@
 *.tar
 *.tar.gz
-toolchain/x-tools
-toolchain/sysroot-*
-toolchain/RPi-staging
+*.tar.bz2
+build
+.*cache

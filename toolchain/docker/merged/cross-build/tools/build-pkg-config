@@ -1,5 +1,0 @@
-#!/usr/bin/env bash
-
-unset PKG_CONFIG_LIBDIR
-export PKG_CONFIG_PATH="$HOME/.local/share/pkgconfig:$HOME/.local/lib/pkgconfig"
-unset PKG_CONFIG_SYSROOT_DIR

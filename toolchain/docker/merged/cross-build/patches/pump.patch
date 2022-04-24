@@ -1,4 +1,0 @@
-31c31
-< PYTHON=/home/develop/crossenv/cross/bin/python
----
-> PYTHON=python3.10

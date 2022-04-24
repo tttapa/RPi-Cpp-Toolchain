@@ -1,4 +1,0 @@
-247c247
-<         [KEYSYMDEFDIR=`$PKG_CONFIG --variable=includedir xproto`/X11])
----
->         [KEYSYMDEFDIR=`printf $lt_sysroot; $PKG_CONFIG --variable=includedir xproto`/X11])

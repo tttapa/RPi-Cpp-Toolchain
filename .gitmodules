@@ -1,3 +1,9 @@
-[submodule "googletest"]
-	path = googletest
-	url = https://github.com/google/googletest.git
+[submodule "docker-crosstool-ng-multiarch"]
+	path = docker-crosstool-ng-multiarch
+	url = https://github.com/tttapa/docker-crosstool-ng-multiarch
+[submodule "docker-arm-cross-toolchain"]
+	path = docker-arm-cross-toolchain
+	url = https://github.com/tttapa/docker-arm-cross-toolchain
+[submodule "docker-arm-cross-build-scripts"]
+	path = docker-arm-cross-build-scripts
+	url = https://github.com/tttapa/docker-arm-cross-build-scripts
