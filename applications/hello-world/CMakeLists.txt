@@ -9,5 +9,7 @@ add_executable(hello-world
 # include paths are set correctly, and that the executable is linked with the
 # library as well.
 target_link_libraries(hello-world 
-    greeter
+    greeter::greeter
 )
+
+include("cmake/Install.cmake")

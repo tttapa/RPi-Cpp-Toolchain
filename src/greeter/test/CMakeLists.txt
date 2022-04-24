@@ -1,14 +1,16 @@
+find_package(GTest MODULE REQUIRED)
+
 # Add a new test executable with the name "greeter.test" that is compiled from 
 # the source file "greeter.test.cpp".
 add_executable(greeter.test
-    greeter.test.cpp
+    "greeter.test.cpp"
 )
 
 # The test executable requires the "greeter" library (it's the library under
 # test), as well as the Google Test main function to actually run all tests.
 target_link_libraries(greeter.test 
     greeter
-    gtest_main
+    GTest::gtest_main
 )
 
 # Only look for tests if we're not cross-compiling. When cross-compiling, it's

@@ -1,7 +1,7 @@
 #pragma once
 
-#include <iosfwd>  // std::ostream
-#include <string>  // std::string
+#include <iosfwd> // std::ostream
+#include <string> // std::string
 
 namespace greeter {
 
@@ -15,4 +15,4 @@ namespace greeter {
  */
 void sayHello(const std::string &name, std::ostream &os);
 
-}  // namespace greeter
+} // namespace greeter
