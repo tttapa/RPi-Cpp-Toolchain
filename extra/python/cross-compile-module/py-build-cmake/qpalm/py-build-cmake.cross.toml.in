@@ -1,0 +1,15 @@
+implementation = 'cp'
+version = '310'
+abi = 'cp310'
+arch = 'linux_@HOST_PYTHON_MACHINE@'
+toolchain_file = 'toolchain.cmake'
+copy_from_native_build = ['qpalm/*.pyi']
+
+[cmake]
+generator = 'Ninja Multi-Config'
+config = ["Debug", "Release"]
+
+[cmake.options]
+Python3_PREFIX = "@RPI_SYSROOT@/usr/local"
+CMAKE_CXX_FLAGS = "-static-libgcc -static-libstdc++"
+CMAKE_DEBUG_POSTFIX = '_d'

@@ -7,3 +7,6 @@
 [submodule "docker-arm-cross-build-scripts"]
 	path = docker-arm-cross-build-scripts
 	url = https://github.com/tttapa/docker-arm-cross-build-scripts
+[submodule "extra/python/cross-compile-module/py-build-cmake/qpalm/QPALM"]
+	path = extra/python/cross-compile-module/py-build-cmake/qpalm/QPALM
+	url = https://github.com/kul-optec/QPALM

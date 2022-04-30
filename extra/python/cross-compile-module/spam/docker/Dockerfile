@@ -1,5 +1,5 @@
 ARG HOST_TRIPLET
-FROM tttapa/rpi-cross:${HOST_TRIPLET}
+FROM tttapa/docker-arm-cross-build-scripts:${HOST_TRIPLET}
 
 # You can download or install any dependencies you need here
 
