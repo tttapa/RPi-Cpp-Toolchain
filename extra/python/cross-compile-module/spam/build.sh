@@ -25,6 +25,9 @@ docker build --build-arg HOST_TRIPLET . # build with output
 image=$(docker build --build-arg HOST_TRIPLET -q .) # get the image hash
 popd
 
+# Make sure the Docker user has permissions to write to the shared volume.
+chmod a+w .
+
 # Run the build-docker.sh script inside of this new Docker container
 docker run \
     --rm \
