@@ -8,16 +8,7 @@ FROM tttapa/docker-arm-cross-build-scripts:${HOST_TRIPLET}
 # script is executed in a fresh Docker container every time you want to build
 # your module.
 
-RUN wget -qO cmake.sh https://github.com/Kitware/CMake/releases/download/v3.23.1/cmake-3.23.1-linux-$(uname -m).sh && \
-    sudo bash cmake.sh --prefix=/usr/local --skip-license --exclude-subdir && \
-    rm cmake.sh
-# TODO: only the x86 version of Ninja is available as a binary
-RUN wget -qO ninja.zip https://github.com/ninja-build/ninja/releases/download/v1.10.2/ninja-linux.zip && \
-    unzip ninja.zip && \
-    sudo mv ninja /usr/local/bin && \
-    rm ninja.zip
-RUN cmake --version
-RUN ninja --version
+# Install Eigen
 RUN git clone --single-branch --depth=1 --branch 3.4.0 https://gitlab.com/libeigen/eigen.git && \
     cd eigen && \
     cmake -Bbuild -S. -G "Ninja Multi-Config" \
