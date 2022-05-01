@@ -58,6 +58,47 @@ extensions.
 The documentation is still a work in progress, but parts of it are already available here:  
 [**Documentation**](https://tttapa.github.io/Pages/Raspberry-Pi/C++-Development/index.html)
 
+The main script is [`docker-arm-cross-build-scripts/build.sh`](docker-arm-cross-build-scripts/build.sh),
+execute it without any flags to print the usage information:
+
+```txt
+./docker-arm-cross-build-scripts/build.sh
+
+Build or pull the Raspberry Pi GCC toolchain and cross-compiled libraries.
+
+Usage
+    ./docker-arm-cross-build-scripts/build.sh <board> [--dev] [--push] [--pull] [--export] [--buildx]
+
+Boards
+    rpi
+        Raspberry Pi 1, 32-bit.
+        Recommended for: RPi A/B/A+/B+, CM 1, RPi Zero/Zero W
+
+    rpi3-armv8
+        Raspberry Pi 3, 32-bit.
+        Recommended for: RPi 2B rev. 1.2, RPi 3B/3B+, CM 3, RPi 4B/400, CM 4, RPi Zero 2 W
+
+    rpi3-aarch64
+        Raspberry Pi 3, 64-bit.
+        Recomended for: RPi 2B rev. 1.2, RPi 3B/3B+, CM 3, RPi 4B/400, CM 4, RPi Zero 2 W
+
+Options
+    --dev
+        Cross-compile the development tools as well (e.g. distcc, ccache, CMake, Git, Ninja, Make)
+
+    --push
+        After building, push the resulting image to Docker Hub
+
+    --pull
+        Don't build the image locally, pull everything from Docker Hub
+
+    --export
+        Export the toolchain, sysroot and staging area to your computer
+
+    --buildx
+        Build the image using docker buildx
+```
+
 ***
 
 ## Pulling the libraries from Docker Hub
