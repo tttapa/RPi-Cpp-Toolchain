@@ -1,9 +1,13 @@
+<div align="center">
+
 | **Note**: The toolchains themselves have been moved to a separate repository:<br>[tttapa/docker-arm-cross-toolchain](https://github.com/tttapa/docker-arm-cross-toolchain) |
 |:---:|
 
+</div>
+
 ---
 
-[![Download from Docker Hub](https://img.shields.io/docker/pulls/tttapa/rpi-cross?label=Docker%20Hub&logo=docker)](https://hub.docker.com/r/tttapa/rpi-cross/tags)
+[![Download from Docker Hub](https://img.shields.io/docker/pulls/tttapa/docker-arm-cross-build-scripts?label=Docker%20Hub&logo=docker)](https://hub.docker.com/r/tttapa/docker-arm-cross-build-scripts/tags)
 
 # Raspberry Pi C++ Toolchain
 
@@ -58,12 +62,13 @@ extensions.
 The documentation is still a work in progress, but parts of it are already available here:  
 [**Documentation**](https://tttapa.github.io/Pages/Raspberry-Pi/C++-Development/index.html)
 
-The main script is [`docker-arm-cross-build-scripts/build.sh`](docker-arm-cross-build-scripts/build.sh),
+The main script is [`docker-arm-cross-build-scripts/build.sh`](https://github.com/tttapa/docker-arm-cross-build-scripts/blob/main/build.sh),
 execute it without any flags to print the usage information:
 
 ```txt
 ./docker-arm-cross-build-scripts/build.sh
-
+```
+```txt
 Build or pull the Raspberry Pi GCC toolchain and cross-compiled libraries.
 
 Usage
@@ -105,7 +110,7 @@ Options
 
 If you don't want to build everything from scratch (it takes quite a while to
 compile everything), you can download the pre-built version from [**Docker Hub**](https://hub.docker.com/r/tttapa/)
-using the `--pull` option of the `build.sh` script in the [`docker-arm-cross-build-scripts` folder](docker-arm-cross-build-scripts).
+using the `--pull` option of the `build.sh` script in the [`docker-arm-cross-build-scripts` folder](https://github.com/tttapa/docker-arm-cross-build-scripts/blob/main).
 For example:
 
 ```sh
@@ -151,7 +156,7 @@ Everything is installed in `/usr/local/`, so it shouldn't interfere with the sof
 [`userland`](https://github.com/raspberrypi/userland) is an exception, it's installed in `/opt/vc/`.
 
 If you just want to know how to cross-compile a specific package, have a look at the scripts in the
-[`docker-arm-cross-build-scripts/cross-build/install-scripts`](docker-arm-cross-build-scripts/cross-build/install-scripts)
+[`docker-arm-cross-build-scripts/cross-build/install-scripts`](https://github.com/tttapa/docker-arm-cross-build-scripts/blob/main/cross-build/install-scripts)
 folder.  
 
 ### Exporting the toolchain, sysroot and staging area
