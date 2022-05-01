@@ -8,9 +8,10 @@ add_executable(greeter.test
 
 # The test executable requires the "greeter" library (it's the library under
 # test), as well as the Google Test main function to actually run all tests.
-target_link_libraries(greeter.test 
-    greeter
-    GTest::gtest_main
+target_link_libraries(greeter.test
+    PRIVATE
+        greeter
+        GTest::gtest_main
 )
 
 # Only look for tests if we're not cross-compiling. When cross-compiling, it's
